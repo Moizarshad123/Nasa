@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\BigOrderController;
+
 
 Route::match(['get', 'post'], 'login', [AdminController::class, 'login'])->name('login');
 Route::match(['get', 'post'], 'register', [AdminController::class, 'register'])->name('register');
@@ -15,6 +17,7 @@ Route::get('/', function (){
 
 Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
 
+    Route::resource('orderBigDC',BigOrderController::class);
     Route::controller(AdminController::class)->group(function() {
         Route::get('dashboard', 'dashboard')->name('dashboard');
     });

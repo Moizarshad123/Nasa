@@ -6,7 +6,7 @@
 
 @section('content')
     <div class="row row-cols-1 row-cols-md-3 g-4">
-        <div class="col-lg-7 col-md-12">
+        {{-- <div class="col-lg-7 col-md-12">
             <div class="card widget h-100">
                 <div class="card-header d-flex">
                     <h6 class="card-title">
@@ -632,7 +632,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 @endsection
 
