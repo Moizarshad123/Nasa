@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
+use App\Models\Setting;
 use Auth, Mail;
 
 class AdminController extends Controller
@@ -47,5 +48,21 @@ class AdminController extends Controller
             }
         }
         return view('login');
+    }
+
+    public function site_setting(Request $request) {
+
+       
+        $content = Setting::find(1);
+        if ($request->method() == 'POST') {
+
+            $content->urgent_amount = $request->input('urgent_amount') ?? '';
+            $content->expose_amount = $request->input('expose_amount');
+            $content->media_amount  = $request->input('media_amount');
+            $content->save();
+
+            return redirect()->back()->with('success', 'Site Setting Updated Successfully');
+        }
+        return view('admin.settings', compact('content'));
     }
 }

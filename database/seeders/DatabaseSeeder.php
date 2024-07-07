@@ -10,5 +10,8 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(RolesSeeder::class);
         $this->call(SizesSeeder::class);
+        $this->call(SettingsSeeder::class);
+
+        
     }
 }
