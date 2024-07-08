@@ -62,7 +62,7 @@
             </div>
             <div class="col-md-4">
                 <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Customer Name</label>
+                    <label for="exampleInputEmail1" class="form-label">Customer Mobile</label>
                     <input type="text" class="form-control" id="phone" name="phone" aria-describedby="emailHelp">
                 </div>
             </div>

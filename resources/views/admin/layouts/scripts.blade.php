@@ -16,3 +16,6 @@
     <script src="{{asset('admin/plugins/toastr/toastr.min.js')}}"></script>
     <script src="{{asset('admin/dist/js/sweet_alert.js')}}"></script>
 
+
+    <script src="{{asset('admin/datatables/datatables.net/js/jquery.dataTables.min.js')}}"></script>
+    <script src="https://cdn.datatables.net/1.10.19/js/dataTables.bootstrap4.min.js"></script>

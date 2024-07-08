@@ -30,6 +30,11 @@ class Order extends Model
         'discount_amount',
         'net_amount',
         'outstanding_amount', 
-        'remarks'
+        'remarks',
+        'status'
     ];
+
+    public function category() {
+        return $this->hasOne(Category::class, 'id', 'category_id');
+    }
 }

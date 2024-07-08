@@ -52,11 +52,19 @@
                     <span>Order Big DC</span>
                 </a>
             </li>
-
+            <li>
+                <a class="{{ request()->IS('admin/product') ? 'active' : '' }}"  href="{{ route('admin.product.index') }}">
+                    <span class="nav-link-icon">
+                        <i class="bi bi-truck"></i>
+                    </span>
+                    <span>Product Big</span>
+                </a>
+            </li>
+            
             <li>
                 <a class="{{ request()->IS('admin/settings') ? 'active' : '' }}"  href="{{ route('admin.settings') }}">
                     <span class="nav-link-icon">
-                        <i class="bi bi-person-badge"></i>
+                        <i class="bi bi-gear"></i>
                     </span>
                     <span>Settings</span>
                 </a>

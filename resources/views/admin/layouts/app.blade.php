@@ -8,6 +8,9 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>NASA - @yield('title')</title>
 
+     <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <!-- Favicon -->
     {{-- <link rel="shortcut icon" href="../../assets/images/fav-ic-n.png" /> --}}
     @include('admin.layouts.styles')

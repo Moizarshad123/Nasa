@@ -12,14 +12,54 @@ use App\Models\OrderDetail;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Setting;
-use Auth, Mail;
+use Auth, Mail, DataTables;
 
 class BigOrderController extends Controller
 {
     public function index()
     {
-        $orders = Order::orderByDESC('id')->get();
-        return view('admin.big_orders.index', compact('orders'));
+        try {
+            if (request()->ajax()) {
+            
+                $orders = Order::with("category")->orderByDESC('id')->get();
+                return datatables()->of($orders)
+                    ->addColumn('category', function ($data) {
+                        return $data->category->title;
+                    })
+                    ->addColumn('del_date', function ($data) {
+                        return date('d-m-Y', strtotime($data->delivery_date));
+                    })
+                    ->addColumn('orderStatus', function ($data) {
+                        if($data->status == "Active") {
+                            return '<span class="badge bg-warning">Active</span>';
+                        }
+                    })                    
+                    ->addColumn('action', function ($data) {
+
+                        return '<div class="d-flex">
+                            <div class="dropdown ms-auto">
+                                <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
+                                    aria-haspopup="true" aria-expanded="false">
+                                    <i class="bi bi-three-dots"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a href="#" class="dropdown-item">Show</a>
+                                    <a href="'.url('admin/orderBigDC/'.$data->id.'/edit').'" class="dropdown-item">Edit</a>
+                                    <a href="javascript:void(0);" class="dropdown-item" data-id="' . $data->id . '">Delete</a>
+                                </div>
+                            </div>
+                        </div>';
+                    })->rawColumns(['orderStatus', 'del_date', 'category', 'action'])->make(true);
+            }
+
+        } catch (\Exception $ex) {
+            return redirect('/')->with('error', $ex->getMessage());
+        }
+
+        return view('admin.big_orders.index');
+
+       
+        // return view('admin.big_orders.index', compact('orders'));
     }
 
     public function create()

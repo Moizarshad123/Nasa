@@ -18,4 +18,8 @@ class Product extends Model
         "studio_frame_total",
         "media_frame_total"
     ];
+
+    public function category() {
+        return $this->hasOne(Category::class, 'id', 'product_category_id');
+    }
 }

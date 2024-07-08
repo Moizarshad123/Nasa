@@ -37,6 +37,7 @@ class CreateOrdersTable extends Migration
             $table->Integer('net_amount')->nullable();
             $table->Integer('outstanding_amount')->nullable(); 
             $table->text('remarks')->nullable();
+            $table->String('status')->default('Active');
             $table->timestamps();
         });
     }
