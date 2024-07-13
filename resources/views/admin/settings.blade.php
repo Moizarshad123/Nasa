@@ -14,27 +14,51 @@
 
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="name">Urgent Amount</label>
-                        <input type="text" class="form-control" name="urgent_amount" id="urgent_amount"
-                                value="{{ $content->urgent_amount ?? '' }}" required>
+                        <label for="name">Urgent Amount Order (Big)</label>
+                        <input type="number" class="form-control" name="urgent_amount_big" id="urgent_amount_big"
+                                value="{{ $content->urgent_amount_big ?? '' }}" required>
                     </div>
                 </div>
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="name">Expose Amount</label>
-                        <input type="text" class="form-control" name="expose_amount" id="expose_amount"
-                                value="{{ $content->expose_amount ?? '' }}" required>
+                        <label for="name">Expose Amount Order (Big)</label>
+                        <input type="number" class="form-control" name="expose_amount_big" id="expose_amount_big"
+                                value="{{ $content->expose_amount_big ?? '' }}" required>
                     </div>
                 </div>
                 <div class="col-md-6">
 
                     <div class="form-group">
-                        <label for="name">Media Amount </label>
-                        <input type="text" class="form-control" name="media_amount" id="media_amount"
-                            value="{{ $content->media_amount ?? '' }}" required>
+                        <label for="name">Media Amount Order (Big)</label>
+                        <input type="number" class="form-control" name="media_amount_big" id="media_amount_big"
+                            value="{{ $content->media_amount_big ?? '' }}" required>
                     </div>
-                  
+                </div>
+
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="name">Urgent Amount Order (Small)</label>
+                        <input type="number" class="form-control" name="urgent_amount_small" id="urgent_amount_small"
+                                value="{{ $content->urgent_amount_small ?? '' }}" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+
+                    <div class="form-group">
+                        <label for="name">Expose Amount Order (Small)</label>
+                        <input type="number" class="form-control" name="expose_amount_small" id="expose_amount_small"
+                                value="{{ $content->expose_amount_small ?? '' }}" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+
+                    <div class="form-group">
+                        <label for="name">Media Amount Order (Small)</label>
+                        <input type="number" class="form-control" name="media_amount_small" id="media_amount_small"
+                            value="{{ $content->media_amount_small ?? '' }}" required>
+                    </div>
                 </div>
 
               

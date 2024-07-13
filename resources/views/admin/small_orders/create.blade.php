@@ -31,7 +31,7 @@
 <!-- Content -->
 
 <div class="container-xxl flex-grow-1 container-p-y">
-    <form method="POST" action="{{ route('admin.orderBigDC.store')}}">
+    <form method="POST" action="{{ route('admin.orderSmallDC.store')}}">
         @csrf
         <div class="row">
             <div class="col-md-6">
@@ -216,12 +216,8 @@
                     <tr>
                         <th>Expose</th>
                         <th>Size</th>
+                        <th>Country</th>
                         <th>Qty</th>
-                        <th>Print Cost</th>
-                        <th>Studio LPM Total</th>
-                        <th>Media LPM Total</th>
-                        <th>Studio Frame Total</th>
-                        <th>Media Frame Total</th>
                         <th>Total</th>
                         <th>Remarks</th>
                         <th>
@@ -230,75 +226,6 @@
                             </button>
                         </th>
                     </tr>
-                    {{-- <tr>
-                        <td>
-                            <div class="form-group col-md-6" style=" width: 100%;">
-                                    <select name="person_id[]" class="form-control" class="person_id">
-                                        <option value="Expose1">Expose 1</option>
-                                        <option value="Expose2">Expose 2</option>
-                                        <option value="Expose3">Expose 3</option>
-                                        <option value="Expose4">Expose 4</option>
-                                        <option value="Expose5">Expose 5</option>
-                                        <option value="Expose6">Expose 6</option>
-                                        <option value="Expose7">Expose 7</option>
-                                        <option value="Expose8">Expose 8</option>
-                                        <option value="Expose9">Expose 9</option>
-                                        <option value="Expose10">Expose 10</option>
-                                    </select>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <select name="sizes[]" class="form_control sizes">
-                                  
-                                </select>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <input type="text" name="qty[]" class="form-control" value="1">
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <input type="text" name="premium_standard_cost[]" class="form-control">
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <input type="text" name="studio_lpm_total[]" class="form-control" >
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <input type="text" name="media_lpm_total[]" class="form-control" >
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <input type="text" name="studio_frame_total[]" class="form-control" >
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <input type="text" name="media_frame_total[]" class="form-control">
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <input type="text" name="amount[]" class="form-control">
-                            </div>
-                        </td>
-                        <td>
-                            <div class="form-group">
-                                <textarea name="remarks[]" cols="18" rows="2"></textarea>
-                            </div>
-                        </td>
-                        <td>
-                            <button class="btnDeleteChoice btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
-
-                        </td>
-                    </tr> --}}
                 </tbody>
             </table>
         </div>
@@ -363,9 +290,9 @@
 <script>
 $(document).ready(function () {
 
-    const expose_amount = "{{$setting->expose_amount_big}}";
-    const urgent_amount = "{{$setting->urgent_amount_big}}";
-    const media_amount  = "{{$setting->media_amount_big}}";
+    const expose_amount = "{{$setting->expose_amount_small}}";
+    const urgent_amount = "{{$setting->urgent_amount_small}}";
+    const media_amount  = "{{$setting->media_amount_small}}";
 
 
     function calValues() {
@@ -398,6 +325,7 @@ $(document).ready(function () {
     
        let category_id = $('#category_id').val();
        let sizes = '';
+       let countries = '';
        $.ajax({
             dataType: 'json',
             type: 'GET',
@@ -413,67 +341,68 @@ $(document).ready(function () {
                 $('#loading_image').fadeOut('fast');
             },
             success: function (response) {
-                sizes = response.products;
+                console.log(response);
+                sizes    = response.products;
+                countries = response.countries;
+
             }
         });
 
         $("#MTCTypetbChoice:last").append(`<tr>
                                     <td>
                                         <div class="form-group col-md-6" style=" width: 100%;">
-                                                <select name="person_id[]" class="form-control" class="person_id">
-                                                    <option value="Expose1">Expose 1</option>
-                                                    <option value="Expose2">Expose 2</option>
-                                                    <option value="Expose3">Expose 3</option>
-                                                    <option value="Expose4">Expose 4</option>
-                                                    <option value="Expose5">Expose 5</option>
-                                                    <option value="Expose6">Expose 6</option>
-                                                    <option value="Expose7">Expose 7</option>
-                                                    <option value="Expose8">Expose 8</option>
-                                                    <option value="Expose9">Expose 9</option>
-                                                    <option value="Expose10">Expose 10</option>
+                                                <select name="person_id[]" class="form-control person_id" required>
+                                                    <option value="Person1">Person 1</option>
+                                                    <option value="Person2">Person 2</option>
+                                                    <option value="Person3">Person 3</option>
+                                                    <option value="Person4">Person 4</option>
+                                                    <option value="Person5">Person 5</option>
+                                                    <option value="Person6">Person 6</option>
+                                                    <option value="Person7">Person 7</option>
+                                                    <option value="Person8">Person 8</option>
+                                                    <option value="Person9">Person 9</option>
+                                                    <option value="Person10">Person 10</option>
                                                 </select>
+                                                
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group">
-                                            <select name="sizes[]" class="form-control sizes">
+                                            <select name="sizes[]" class="form-control sizes" required>
                                                 <option value="">Select Size</option>
                                                 `+sizes+`
                                             </select>
                                         </div>
                                     </td>
-                                    <td>
+
+                                     <td>
                                         <div class="form-group">
-                                            <input type="number" min="1" name="qty[]" class="qty form-control" value="1">
+                                            <select name="country[]" class="form-control country" required>
+                                                <option value="">Select Country</option>
+                                                `+countries+`
+                                               
+                                            </select>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="form-group">
-                                            <input type="text" name="premium_standard_cost[]" class="form-control premium_standard_cost">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <input type="checkbox" name="studio_lpm_total_check[]" class="studio_lpm_total_check" >
-                                            <input type="text" name="studio_lpm_total[]" class="form-control studio_lpm_total" value="0">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <input type="checkbox" name="media_lpm_total_check[]" class="media_lpm_total_check" >
-                                            <input type="text" name="media_lpm_total[]" class="media_lpm_total form-control" value="0">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-group">
-                                             <input type="checkbox" name="studio_frame_total_check[]" class="studio_frame_total_check" >
-                                            <input type="text" name="studio_frame_total[]" class="studio_frame_total form-control"  value="0">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-group">
-                                             <input type="checkbox" name="media_frame_total_check[]" class="media_frame_total_check" >
-                                            <input type="text" name="media_frame_total[]" class="media_frame_total form-control" value="0">
+                                             <select name="qty[]" class="qty form-control">
+                                                    <option value="4">4</option>
+                                                    <option value="8">8</option>
+                                                    <option value="12">12</option>
+                                                    <option value="16">16</option>
+                                                    <option value="20">20</option>
+                                                    <option value="24">24</option>
+                                                    <option value="28">28</option>
+                                                    <option value="32">32</option>
+                                                    <option value="36">36</option>
+                                                    <option value="40">40</option>
+                                                    <option value="44">44</option>
+                                                    <option value="48">48</option>
+                                                    <option value="52">52</option>
+                                                    <option value="56">56</option>
+                                                    <option value="60">60</option>
+                                                </select>
                                         </div>
                                     </td>
                                     <td>
@@ -515,200 +444,6 @@ $(document).ready(function () {
         calValues();
     });
 
-    $(document).on('change', '.studio_lpm_total_check', function() {
-        if ($(this).is(':checked')) {
-            
-            let product_id = $(this).closest('tr').find('.sizes').val();
-            let price = 0;
-            $.ajax({
-
-                dataType: 'json',
-                type: 'GET',
-                url: '{{ route("admin.getStudioLPMTotal") }}',
-                data: {
-                    "product_id": product_id
-                },
-                async: false,
-                success: function (response) {
-                    price = response;    
-                }
-            });
-            // console.log(price);
-            $(this).closest('tr').find('.studio_lpm_total').val(price);
-            
-            let premium_standard_cost =  $(this).closest('tr').find('.premium_standard_cost').val();
-            let media_lpm_total       =  $(this).closest('tr').find('.media_lpm_total').val();
-            let studio_frame_total    =  $(this).closest('tr').find('.studio_frame_total').val();
-            let media_frame_total     =  $(this).closest('tr').find('.media_frame_total').val();
-
-            let total = parseFloat(premium_standard_cost) +  parseFloat(price) +  parseFloat(media_lpm_total) + parseFloat(studio_frame_total) +  parseFloat(media_frame_total);
-
-
-            $(this).closest('tr').find('.amount').val(total);
-
-
-        } else {
-            $(this).closest('tr').find('.studio_lpm_total').val(0);
-
-            let premium_standard_cost =  $(this).closest('tr').find('.premium_standard_cost').val();
-            let media_lpm_total       =  $(this).closest('tr').find('.media_lpm_total').val();
-            let studio_frame_total    =  $(this).closest('tr').find('.studio_frame_total').val();
-            let media_frame_total     =  $(this).closest('tr').find('.media_frame_total').val();
-
-            let total = parseFloat(premium_standard_cost) + parseFloat(media_lpm_total) + parseFloat(studio_frame_total) +  parseFloat(media_frame_total);
-
-
-            $(this).closest('tr').find('.amount').val(total);
-        }
-        calValues()
-    });
-
-    $(document).on('change', '.media_lpm_total_check', function() {
-        if ($(this).is(':checked')) {
-            
-            let product_id = $(this).closest('tr').find('.sizes').val();
-            let price = 0;
-            $.ajax({
-
-                dataType: 'json',
-                type: 'GET',
-                url: '{{ route("admin.getMediaLPMTotal") }}',
-                data: {
-                    "product_id": product_id
-                },
-                async: false,
-                success: function (response) {
-                    price = response;    
-                }
-            });
-            // console.log(price);
-            $(this).closest('tr').find('.media_lpm_total').val(price);
-            
-            let premium_standard_cost =  $(this).closest('tr').find('.premium_standard_cost').val();
-            let studio_lpm_total      =  $(this).closest('tr').find('.studio_lpm_total').val();
-            let studio_frame_total    =  $(this).closest('tr').find('.studio_frame_total').val();
-            let media_frame_total     =  $(this).closest('tr').find('.media_frame_total').val();
-
-            let total = parseFloat(premium_standard_cost) +  parseFloat(price) +  parseFloat(studio_lpm_total) + parseFloat(studio_frame_total) +  parseFloat(media_frame_total);
-
-
-            $(this).closest('tr').find('.amount').val(total);
-
-
-        } else {
-            $(this).closest('tr').find('.media_lpm_total').val(0);
-
-            let premium_standard_cost =  $(this).closest('tr').find('.premium_standard_cost').val();
-            let studio_lpm_total      =  $(this).closest('tr').find('.studio_lpm_total').val();
-            let studio_frame_total    =  $(this).closest('tr').find('.studio_frame_total').val();
-            let media_frame_total     =  $(this).closest('tr').find('.media_frame_total').val();
-
-            let total = parseFloat(premium_standard_cost) + parseFloat(studio_lpm_total) + parseFloat(studio_frame_total) +  parseFloat(media_frame_total);
-
-
-            $(this).closest('tr').find('.amount').val(total);
-        }
-
-        calValues();
-    });
-
-    $(document).on('change', '.studio_frame_total_check', function() {
-
-        if ($(this).is(':checked')) {
-            
-            let product_id = $(this).closest('tr').find('.sizes').val();
-            let price = 0;
-            $.ajax({
-
-                dataType: 'json',
-                type: 'GET',
-                url: '{{ route("admin.getStudioFrameTotal") }}',
-                data: {
-                    "product_id": product_id
-                },
-                async: false,
-                success: function (response) {
-                    price = response;    
-                }
-            });
-            // console.log(price);
-            $(this).closest('tr').find('.studio_frame_total').val(price);
-            
-            let premium_standard_cost =  $(this).closest('tr').find('.premium_standard_cost').val();
-            let studio_lpm_total      =  $(this).closest('tr').find('.studio_lpm_total').val();
-            let media_lpm_total       =  $(this).closest('tr').find('.media_lpm_total').val();
-            let media_frame_total     =  $(this).closest('tr').find('.media_frame_total').val();
-
-            let total = parseFloat(premium_standard_cost) +  parseFloat(price) +  parseFloat(studio_lpm_total) + parseFloat(media_lpm_total) +  parseFloat(media_frame_total);
-
-
-            $(this).closest('tr').find('.amount').val(total);
-
-
-        } else {
-            $(this).closest('tr').find('.studio_frame_total').val(0);
-
-            let premium_standard_cost =  $(this).closest('tr').find('.premium_standard_cost').val();
-            let studio_lpm_total      =  $(this).closest('tr').find('.studio_lpm_total').val();
-            let media_lpm_total       =  $(this).closest('tr').find('.media_lpm_total').val();
-            let media_frame_total     =  $(this).closest('tr').find('.media_frame_total').val();
-
-            let total = parseFloat(premium_standard_cost) + parseFloat(studio_lpm_total) + parseFloat(media_lpm_total) +  parseFloat(media_frame_total);
-
-
-            $(this).closest('tr').find('.amount').val(total);
-        }
-
-        calValues();
-    });
-
-    $(document).on('change', '.media_frame_total_check', function() {
-
-        if ($(this).is(':checked')) {
-            
-            let product_id = $(this).closest('tr').find('.sizes').val();
-            let price = 0;
-            $.ajax({
-
-                dataType: 'json',
-                type: 'GET',
-                url: '{{ route("admin.getStudioFrameTotal") }}',
-                data: {
-                    "product_id": product_id
-                },
-                async: false,
-                success: function (response) {
-                    price = response;    
-                }
-            });
-            // console.log(price);
-            $(this).closest('tr').find('.media_frame_total').val(price);
-            
-            let premium_standard_cost =  $(this).closest('tr').find('.premium_standard_cost').val();
-            let studio_lpm_total      =  $(this).closest('tr').find('.studio_lpm_total').val();
-            let media_lpm_total       =  $(this).closest('tr').find('.media_lpm_total').val();
-            let studio_frame_total    =  $(this).closest('tr').find('.studio_frame_total').val();
-
-            let total = parseFloat(premium_standard_cost) +  parseFloat(price) +  parseFloat(studio_lpm_total) + parseFloat(media_lpm_total) +  parseFloat(studio_frame_total);
-
-            $(this).closest('tr').find('.amount').val(total);
-
-        } else {
-
-            $(this).closest('tr').find('.media_frame_total').val(0);
-            let premium_standard_cost =  $(this).closest('tr').find('.premium_standard_cost').val();
-            let studio_lpm_total      =  $(this).closest('tr').find('.studio_lpm_total').val();
-            let media_lpm_total       =  $(this).closest('tr').find('.media_lpm_total').val();
-            let studio_frame_total    =  $(this).closest('tr').find('.studio_frame_total').val();
-
-            let total = parseFloat(premium_standard_cost) +  parseFloat(studio_lpm_total) + parseFloat(media_lpm_total) +  parseFloat(studio_frame_total);
-
-            $(this).closest('tr').find('.amount').val(total);
-        }
-
-        calValues();
-    });
-
     $("#MTCTypetbChoice").on('click', '.btnDeleteChoice', function (e) {
         e.preventDefault()
         $(this).closest('tr').remove();
@@ -731,17 +466,9 @@ $(document).ready(function () {
         });
         let qty =  $(this).closest('tr').find('.qty').val();
 
-        let studio_lpm_total   =  $(this).closest('tr').find('.studio_lpm_total').val();
-        let media_lpm_total    =  $(this).closest('tr').find('.media_lpm_total').val();
-        let studio_frame_total =  $(this).closest('tr').find('.studio_frame_total').val();
-        let media_frame_total  =  $(this).closest('tr').find('.media_frame_total').val();
 
         let amt   = parseFloat(pro_price)  * qty;
-        let total = amt +  parseFloat(studio_lpm_total) +  parseFloat(media_lpm_total) + parseFloat(studio_frame_total) +  parseFloat(media_frame_total);
-
-
-        $(this).closest('tr').find('.premium_standard_cost').val(amt);
-        $(this).closest('tr').find('.amount').val(total);
+        $(this).closest('tr').find('.amount').val(amt);
 
         calValues();
     });
@@ -749,7 +476,6 @@ $(document).ready(function () {
     $(document).on('change', '.qty', function (e) {
 
         let qty          = $(this).val();
-        // let print_cost = $(this).closest('tr').find('.premium_standard_cost').val();
         let product_id = $(this).closest('tr').find('.sizes').val();
         let pro_price  = 0;
         $.ajax({
@@ -771,10 +497,7 @@ $(document).ready(function () {
         let media_frame_total  =  $(this).closest('tr').find('.media_frame_total').val();
 
         let amt   = parseFloat(pro_price) * qty;
-        let total = amt +  parseFloat(studio_lpm_total) + parseFloat(media_lpm_total) + parseFloat(studio_frame_total) + parseFloat(media_frame_total);
-
-        $(this).closest('tr').find('.premium_standard_cost').val(amt);
-        $(this).closest('tr').find('.amount').val(total);
+        $(this).closest('tr').find('.amount').val(amt);
         calValues();
     });
     

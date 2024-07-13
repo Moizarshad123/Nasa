@@ -60,6 +60,14 @@
                     <span>Product Big</span>
                 </a>
             </li>
+            <li>
+                <a class="{{ request()->IS('admin/orderSmallDC') ? 'active' : '' }}"  href="{{ route('admin.orderSmallDC.index') }}">
+                    <span class="nav-link-icon">
+                        <i class="bi bi-receipt"></i>
+                    </span>
+                    <span>Order Small DC</span>
+                </a>
+            </li>
             
             <li>
                 <a class="{{ request()->IS('admin/settings') ? 'active' : '' }}"  href="{{ route('admin.settings') }}">

@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\BigOrderController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\SmallOrderController;
+
 
 
 
@@ -21,6 +23,8 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
 
     Route::resource('orderBigDC',BigOrderController::class);
     Route::resource('product',ProductController::class);
+    Route::resource('orderSmallDC',SmallOrderController::class);
+
 
     
     Route::controller(BigOrderController::class)->group(function() {

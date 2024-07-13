@@ -1,9 +1,9 @@
 @extends('admin.layouts.app')
-@section('title', 'Create Order Big')
+@section('title', 'Edit Order Big')
 
 @section('css')
 <style>
-     #reOrderNumber{
+    #reOrderNumber{
         display: none;
      }
     #showEmails {
@@ -31,22 +31,17 @@
 <!-- Content -->
 
 <div class="container-xxl flex-grow-1 container-p-y">
-    <form method="POST" action="{{ route('admin.orderBigDC.store')}}">
+    <form method="POST" action="{{ route('admin.orderBigDC.update', $oder->id)}}">
         @csrf
+        @method('PUT')
         <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Order Number</label>
-                    <input readonly type="text" name="order_number" class="form-control" id="order_number" value="{{ $order_number ?? ""}}" aria-describedby="emailHelp">
-                </div>
-            </div>
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Category<span style="color: red">*</span></label>
                     <select name="category_id" class="form-control" id="category_id" required>
                         <option value="">Select Category</option>
                         @foreach ($categories as $item)
-                            <option value="{{$item->id}}">{{$item->title}}</option>
+                            <option value="{{$item->id}}" {{ $order->category_id == $item->id ? "selected" : ""}}>{{$item->title}}</option>
                         @endforeach
 
                     </select>
@@ -57,85 +52,85 @@
             <div class="col-md-4">
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Customer Name</label>
-                    <input type="text" name="customer_name" value="{{old('customer_name')}}" class="form-control" id="customer_name" aria-describedby="customer_name">
+                    <input type="text" name="customer_name" value="{{ $order->customer_name }}" class="form-control" id="customer_name" aria-describedby="customer_name">
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Customer Mobile</label>
-                    <input type="text" class="form-control" id="phone" name="phone" aria-describedby="emailHelp" value="{{old('phone')}}">
+                    <input type="text" class="form-control" id="phone" name="phone" aria-describedby="emailHelp" value="{{ $order->phone}}">
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Number Of Person/Expose</label>
                     <select name="no_of_persons" id="no_of_persons" class="form-control" >
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
-                        <option value="10">10</option>
+                        <option value="1" {{ $order->no_of_persons == 1 ? "selected" : ""}}>1</option>
+                        <option value="2" {{ $order->no_of_persons == 2 ? "selected" : ""}}>2</option>
+                        <option value="3" {{ $order->no_of_persons == 3 ? "selected" : ""}}>3</option>
+                        <option value="4" {{ $order->no_of_persons == 4 ? "selected" : ""}}>4</option>
+                        <option value="5" {{ $order->no_of_persons == 5 ? "selected" : ""}}>5</option>
+                        <option value="6" {{ $order->no_of_persons == 6 ? "selected" : ""}}>6</option>
+                        <option value="7" {{ $order->no_of_persons == 7 ? "selected" : ""}}>7</option>
+                        <option value="8" {{ $order->no_of_persons == 8 ? "selected" : ""}}>8</option>
+                        <option value="9" {{ $order->no_of_persons == 9 ? "selected" : ""}}>9</option>
+                        <option value="10 {{ $order->no_of_persons == 10 ? "selected" : ""}}">10</option>
                     </select>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-4">
+            {{-- <div class="col-md-4">
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Order Creating Date</label>
                     <input type="date" readonly value="{{ date('Y-m-d') }}" class="form-control" id="creating_date" name="creating_date" aria-describedby="emailHelp">
                 </div>
-            </div>
-            <div class="col-md-4">
+            </div> --}}
+            <div class="col-md-6">
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Order Delivery Date</label>
-                    <input type="date" class="form-control" name="delivery_date" value="{{old('delivery_date')}}">
+                    <input type="date" class="form-control" name="delivery_date" value="{{ $order->delivery_date }}">
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
                 <label for="order_delivery_time">Order Delivery Time</label>
                 <select name="delivery_time" id="delivery_time" class="form-control" autocomplete="off">
                     <option value="">Select Time</option>
-                    <option value="12:00am">12:00pm</option>
-                    <option value="08:00am">08:00am</option>
-                    <option value="08:30am">08:30am</option>
-                    <option value="09:00am">09:00am</option>
-                    <option value="09:30am">09:30am</option>
-                    <option value="10:00am">10:00am</option>
-                    <option value="10:30am">10:30am</option>
-                    <option value="11:00am">11:00am</option>
-                    <option value="11:30am">11:30am</option>
-                    <option value="12:00pm">12:00pm</option>
-                    <option value="12:30pm">12:30pm</option>
-                    <option value="01:00pm">01:00pm</option>
-                    <option value="01:30pm">01:30pm</option>
-                    <option value="02:00pm">02:00pm</option>
-                    <option value="02:30pm">02:30pm</option>
-                    <option value="03:00pm">03:00pm</option>
-                    <option value="03:30pm">03:30pm</option>
-                    <option value="04:00pm">04:00pm</option>
-                    <option value="04:30pm">04:30pm</option>
-                    <option value="05:00pm">05:00pm</option>
-                    <option value="05:30pm">05:30pm</option>
-                    <option value="06:00pm">06:00pm</option>
-                    <option value="06:30pm">06:30pm</option>
-                    <option value="07:00pm">07:00pm</option>
-                    <option value="07:30pm">07:30pm</option>
-                    <option value="08:00pm">08:00pm</option>
-                    <option value="08:30pm">08:30pm</option>
-                    <option value="09:00pm">09:00pm</option>
-                    <option value="09:30pm">09:30pm</option>
-                    <option value="10:00pm">10:00pm</option>
-                    <option value="10:30pm">10:30pm</option>
-                    <option value="11:00pm">11:00pm</option>
-                    <option value="11:30pm">11:30pm</option>
-                    <option value="12:00am">12:00am</option>
-                    <option value="12:30am">12:30am</option>
+                    <option value="12:00am" {{ $order->delivery_time == "12:00am" ? "selected" : ""}}>12:00pm</option>
+                    <option value="08:00am" {{ $order->delivery_time == "08:00am" ? "selected" : ""}}>08:00am</option>
+                    <option value="08:30am" {{ $order->delivery_time == "08:30am" ? "selected" : ""}}>08:30am</option>
+                    <option value="09:00am" {{ $order->delivery_time == "09:00am" ? "selected" : ""}}>09:00am</option>
+                    <option value="09:30am" {{ $order->delivery_time == "09:30am" ? "selected" : ""}}>09:30am</option>
+                    <option value="10:00am" {{ $order->delivery_time == "10:00am" ? "selected" : ""}}>10:00am</option>
+                    <option value="10:30am" {{ $order->delivery_time == "10:30am" ? "selected" : ""}}>10:30am</option>
+                    <option value="11:00am" {{ $order->delivery_time == "11:00am" ? "selected" : ""}}>11:00am</option>
+                    <option value="11:30am" {{ $order->delivery_time == "11:30am" ? "selected" : ""}}>11:30am</option>
+                    <option value="12:00pm" {{ $order->delivery_time == "12:00pm" ? "selected" : ""}}>12:00pm</option>
+                    <option value="12:30pm" {{ $order->delivery_time == "12:30pm" ? "selected" : ""}}>12:30pm</option>
+                    <option value="01:00pm" {{ $order->delivery_time == "01:00pm" ? "selected" : ""}}>01:00pm</option>
+                    <option value="01:30pm" {{ $order->delivery_time == "01:30pm" ? "selected" : ""}}>01:30pm</option>
+                    <option value="02:00pm" {{ $order->delivery_time == "02:00pm" ? "selected" : ""}}>02:00pm</option>
+                    <option value="02:30pm" {{ $order->delivery_time == "02:30pm" ? "selected" : ""}}>02:30pm</option>
+                    <option value="03:00pm" {{ $order->delivery_time == "03:00pm" ? "selected" : ""}}>03:00pm</option>
+                    <option value="03:30pm" {{ $order->delivery_time == "03:30pm" ? "selected" : ""}}>03:30pm</option>
+                    <option value="04:00pm" {{ $order->delivery_time == "04:00pm" ? "selected" : ""}}>04:00pm</option>
+                    <option value="04:30pm" {{ $order->delivery_time == "04:30pm" ? "selected" : ""}}>04:30pm</option>
+                    <option value="05:00pm" {{ $order->delivery_time == "05:00pm" ? "selected" : ""}}>05:00pm</option>
+                    <option value="05:30pm" {{ $order->delivery_time == "05:30pm" ? "selected" : ""}}>05:30pm</option>
+                    <option value="06:00pm" {{ $order->delivery_time == "06:00pm" ? "selected" : ""}}>06:00pm</option>
+                    <option value="06:30pm" {{ $order->delivery_time == "06:30pm" ? "selected" : ""}}>06:30pm</option>
+                    <option value="07:00pm" {{ $order->delivery_time == "07:00pm" ? "selected" : ""}}>07:00pm</option>
+                    <option value="07:30pm" {{ $order->delivery_time == "07:30pm" ? "selected" : ""}}>07:30pm</option>
+                    <option value="08:00pm" {{ $order->delivery_time == "08:00pm" ? "selected" : ""}}>08:00pm</option>
+                    <option value="08:30pm" {{ $order->delivery_time == "08:30pm" ? "selected" : ""}}>08:30pm</option>
+                    <option value="09:00pm" {{ $order->delivery_time == "09:00pm" ? "selected" : ""}}>09:00pm</option>
+                    <option value="09:30pm" {{ $order->delivery_time == "09:30pm" ? "selected" : ""}}>09:30pm</option>
+                    <option value="10:00pm" {{ $order->delivery_time == "10:00pm" ? "selected" : ""}}>10:00pm</option>
+                    <option value="10:30pm" {{ $order->delivery_time == "10:30pm" ? "selected" : ""}}>10:30pm</option>
+                    <option value="11:00pm" {{ $order->delivery_time == "11:00pm" ? "selected" : ""}}>11:00pm</option>
+                    <option value="11:30pm" {{ $order->delivery_time == "11:30pm" ? "selected" : ""}}>11:30pm</option>
+                    <option value="12:00am" {{ $order->delivery_time == "12:00am" ? "selected" : ""}}>12:00am</option>
+                    <option value="12:30am" {{ $order->delivery_time == "12:30am" ? "selected" : ""}}>12:30am</option>
                 </select>
             </div>
         </div>
@@ -144,15 +139,15 @@
                 <div class="mb-3">
                     <label for="order_nature">Order Nature</label>
                     <select name="order_nature" id="order_nature" class="form-control">
-                        <option value="normal">Normal</option>
-                        <option value="urgent">Urgent</option>
+                        <option value="normal" {{ $order->order_nature == "normal" ? "selected" : ""}}>Normal</option>
+                        <option value="urgent" {{ $order->order_nature == "urgent" ? "selected" : ""}}>Urgent</option>
                     </select>
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="mb-3">
                     <label for="order_nature_amount">Order Nature Amount</label>
-                    <input type="text" class="form-control" name="order_nature_amount" id="order_nature_amount" value="0" />
+                    <input type="text" class="form-control" name="order_nature_amount" id="order_nature_amount" value="{{ $order->order_nature_amount }}" />
                 </div>
             </div>
         </div>
@@ -161,21 +156,28 @@
             <div class="col-md-4">
                 <div class="mb-3">
                     <span class="span2" style="margin-top:23px;margin-left:10px;">Email Requirement
-                        <input type="checkbox"  class="" id="is_email" name="is_email" />
+                        <input type="checkbox"  {{ $order->is_email == 1 ? "checked" : "" }} class="" id="is_email" name="is_email" />
                     </span>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="mb-3">
                     <label for="email_amount">Email Amount</label>
-                    <input type="text" class="form-control" readonly name="email_amount" id="email_amount" value="0" />
+                    <input type="text" class="form-control" readonly name="email_amount" id="email_amount" value="{{ $order->email_amount }}" />
                 </div>
             </div>
             <div class="col-md-4">
-                <div class="mb-3" id="showEmails">
-                    <label for="email_list">Emails</label>
-                    <textarea type="text"  class="form-control" name="emails" id="emails" ></textarea>
-                </div>
+                @if($order->is_email == 1)
+                    <div class="mb-3">
+                        <label for="email_list">Emails</label>
+                        <textarea type="text"  class="form-control" name="emails" id="emails">{{ $order->emails }}</textarea>
+                    </div>
+                @else 
+                    <div class="mb-3" id="showEmails">
+                        <label for="email_list">Emails</label>
+                        <textarea type="text"  class="form-control" name="emails" id="emails" ></textarea>
+                    </div>
+                @endif
             </div>
         </div>
         <div class="row">
@@ -184,28 +186,35 @@
                     <label for="email_list">Expose/Media/Redorder<span style="color:red">*</span></label>
                     <select name="order_type" id="order_type" class="form-control">
                         <option value="">SELECT</option>
-                        <option value="expose">Expose</option>
-                        <option value="reorder">Reorder</option>
-                        <option value="media">Media</option>
+                        <option value="expose" {{ $order->order_type == "expose" ? "selected" : ""}}>Expose</option>
+                        <option value="reorder" {{ $order->order_type == "reorder" ? "selected" : ""}}>Reorder</option>
+                        <option value="media" {{ $order->order_type == "media" ? "selected" : ""}}>Media</option>
                     </select>
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="mb-3">
                     <label for="amount">Amount</label>
-                    <input type="text" readonly class="form-control" name="total" id="amount" value="0" />
+                    <input type="text" readonly class="form-control" name="total" id="amount" value="{{  $order->amount }}" />
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="mb-3" id="reOrderNumber">
-                    <label for="reorder_number">Re Order Number</label>
-                    <input type="text" class="form-control" name="re_order_number" id="re_order_number" value="0" />
-                </div>
+                @if($order->order_type == "reorder")
+                    <div class="mb-3">
+                        <label for="reorder_number">Re Order Number</label>
+                        <input type="text" class="form-control" name="re_order_number" id="re_order_number" value="{{$order->re_order_number}}" />
+                    </div>
+                @else
+                    <div class="mb-3" id="reOrderNumber">
+                        <label for="reorder_number">Re Order Number</label>
+                        <input type="text" class="form-control" name="re_order_number" id="re_order_number" value="0" />
+                    </div>
+                @endif
             </div>
             <div class="col-md-3">
                 <div class="mb-3" >
                     <label for="remarks">Remarks</label>
-                    <textarea id="remarks" class="form-control" name="main_remarks" rows="4" cols="50">{{old('main_remarks')}} </textarea>
+                    <textarea id="remarks" class="form-control" name="main_remarks" rows="4" cols="50">{{ $order->main_remarks }} </textarea>
                 </div>
             </div>
         </div>
@@ -309,32 +318,28 @@
                 <div class="mb-3">
                     
                     <label for="amount">Grand total</label>
-                    <input type="text" readonly class="form-control" name="grand_total" id="grand_total" value="0" />
+                    <input type="text" readonly class="form-control" name="grand_total" id="grand_total" value="{{ $order->grand_total }}" />
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="mb-3">
                     <label for="discount_amount">Discount Amount</label>
-                    <input type="text" class="form-control" name="discount_amount" id="discount_amount" value="0" />
+                    <input type="text" class="form-control" name="discount_amount" id="discount_amount" value="{{ $order->discount_amount }}" />
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="mb-3">
                     <label for="reorder_number">Net Amount</label>
-                    <input type="text" readonly class="form-control" name="net_amount" id="net_amount" value="0" />
+                    <input type="text" readonly class="form-control" name="net_amount" id="net_amount" value="{{ $order->net_amount }}" />
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="mb-3">
                     <label for="remarks">Outstanding Amount</label>
-                    
-                    <input type="text" readonly class="form-control" name="outstanding_amount" id="outstanding_amount" value="0" />
-
+                    <input type="text" readonly class="form-control" name="outstanding_amount" id="outstanding_amount" value="{{ $order->outstanding_amount }}" />
                 </div>
             </div>
         </div>
-    
-      
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
     {{-- <div id="confirmModal" class="modal fade" role="dialog">
@@ -363,9 +368,9 @@
 <script>
 $(document).ready(function () {
 
-    const expose_amount = "{{$setting->expose_amount_big}}";
-    const urgent_amount = "{{$setting->urgent_amount_big}}";
-    const media_amount  = "{{$setting->media_amount_big}}";
+    const expose_amount = "{{$setting->expose_amount}}";
+    const urgent_amount = "{{$setting->urgent_amount}}";
+    const media_amount  = "{{$setting->media_amount}}";
 
 
     function calValues() {
@@ -413,7 +418,7 @@ $(document).ready(function () {
                 $('#loading_image').fadeOut('fast');
             },
             success: function (response) {
-                sizes = response.products;
+                sizes = response;
             }
         });
 

@@ -12,6 +12,8 @@ use App\Models\OrderDetail;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Setting;
+use App\Models\Country;
+
 use Auth, Mail, DataTables;
 
 class BigOrderController extends Controller
@@ -43,7 +45,6 @@ class BigOrderController extends Controller
                                     <i class="bi bi-three-dots"></i>
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end">
-                                    <a href="#" class="dropdown-item">Show</a>
                                     <a href="'.url('admin/orderBigDC/'.$data->id.'/edit').'" class="dropdown-item">Edit</a>
                                     <a href="javascript:void(0);" class="dropdown-item" data-id="' . $data->id . '">Delete</a>
                                 </div>
@@ -72,7 +73,6 @@ class BigOrderController extends Controller
             $order_number ="Bb".(($order_number) + 1);
         } else {
             $order_number ="Bb2300";
-
         }
         return view('admin.big_orders.create', compact("categories", "order_number", "setting"));
     }
@@ -140,30 +140,87 @@ class BigOrderController extends Controller
 
     public function edit($id)
     {
-        //
+        $categories = Category::skip(2)->take(2)->get();
+        $setting    = Setting::find(1);
+        $order  = Order::find($id);
+        $detail = OrderDetail::where('order_id', $id)->get();
+        return view('admin.big_orders.edit', compact('order', 'detail', 'categories', 'setting'));
     }
 
     public function update(Request $request, $id)
     {
-        //
+        try {
+            
+            $order = Order::find($id);
+            $order->category_id        = $request->category_id;
+            $order->customer_name      = $request->customer_name;
+            $order->phone              = $request->phone;
+            $order->no_of_persons      = $request->no_of_persons;
+            $order->delivery_date      = $request->delivery_date;
+            $order->delivery_time      = $request->delivery_time;
+            $order->order_nature       = $request->order_nature;
+            $order->order_nature_amount = $request->order_nature_amount; 
+            $order->is_email           = $request->has('is_email') ? 1 : 0;
+            $order->email_amount       = $request->email_amount;
+            $order->emails             = $request->emails; 
+            $order->order_type         = $request->order_type;
+            $order->re_order_number    = $request->re_order_number;
+            $order->amount             = $request->total;
+            $order->grand_total        = $request->grand_total;
+            $order->discount_amount    = $request->discount_amount;
+            $order->net_amount         = $request->net_amount;
+            $order->outstanding_amount = $request->outstanding_amount; 
+            $order->remarks            = $request->main_remarks;
+            $order->save();
+
+            if(count($request->person_id) > 0) {
+                foreach ($request->person_id as $key => $value) {
+                   
+                   
+                    OrderDetail::create([
+                        "order_id"           => $order->id,
+                        "expose"             => $request->person_id[$key],
+                        "size"               => $request->sizes[$key],
+                        "qty"                => $request->qty[$key],
+                        "print_cost"         => $request->premium_standard_cost[$key],
+                        "studio_LPM_total"   => $request->studio_lpm_total[$key],
+                        "media_LPM_total"    => $request->media_lpm_total[$key],
+                        "studio_frame_total" => $request->studio_frame_total[$key],
+                        "media_frame_total"  => $request->media_frame_total[$key],
+                        "total"              => $request->amount[$key],
+                        "remarks"            => $request->remarks[$key]
+                    ]);
+                }
+            }
+
+            return redirect()->back()->with("success", "Order created");
+        } catch (\Exception $e) {
+           return redirect()->back()->with("error", $e->getMessage());
+        }
     }
 
     public function destroy($id)
     {
-        //
+      
     }
-
-
 
     public function getSizes(Request $request) {
         $products = Product::where('product_category_id', $request->category_id)->get();
+        $countries = Country::all();
         $data = '';
         if(count($products) > 0) {
             foreach($products as $product) {
                 $data .= '<option value="'.$product->id.'">'.$product->title.'</option>';
             }
         }
-        return response()->json($data);
+        $cty = '';
+        if(count($countries) > 0) {
+            foreach($countries as $country) {
+                $cty .= '<option value="'.$country->country.'">'.$country->country.'</option>';
+            }
+        }
+        $arr = ["products"=> $data, "countries"=> $cty];
+        return response()->json($arr);
     }
 
     public function getSizeAmount(Request $request) {

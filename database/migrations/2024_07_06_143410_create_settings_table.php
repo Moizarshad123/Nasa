@@ -10,9 +10,13 @@ class CreateSettingsTable extends Migration
     {
         Schema::create('settings', function (Blueprint $table) {
             $table->id();
-            $table->Integer('urgent_amount')->nullable();
-            $table->Integer('expose_amount')->nullable();
-            $table->Integer('media_amount')->nullable();
+            $table->Integer('urgent_amount_big')->nullable();
+            $table->Integer('expose_amount_big')->nullable();
+            $table->Integer('media_amount_big')->nullable();
+            $table->Integer('urgent_amount_small')->nullable();
+            $table->Integer('expose_amount_small')->nullable();
+            $table->Integer('media_amount_small')->nullable();
+            
             $table->timestamps();
         });
     }

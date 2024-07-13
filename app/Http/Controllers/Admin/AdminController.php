@@ -56,9 +56,12 @@ class AdminController extends Controller
         $content = Setting::find(1);
         if ($request->method() == 'POST') {
 
-            $content->urgent_amount = $request->input('urgent_amount') ?? '';
-            $content->expose_amount = $request->input('expose_amount');
-            $content->media_amount  = $request->input('media_amount');
+            $content->urgent_amount_big = $request->input('urgent_amount_big');
+            $content->expose_amount_big = $request->input('expose_amount_big');
+            $content->media_amount_big  = $request->input('media_amount_big');
+            $content->urgent_amount_small = $request->input('urgent_amount_small');
+            $content->expose_amount_small = $request->input('expose_amount_small');
+            $content->media_amount_small  = $request->input('media_amount_small');
             $content->save();
 
             return redirect()->back()->with('success', 'Site Setting Updated Successfully');
