@@ -17,6 +17,7 @@ class CreateOrdersTable extends Migration
             $table->id();
             $table->Integer('category_id');
             $table->Integer('user_id');
+            $table->Integer('assign_to')->nullable();
             $table->String("order_number");
             $table->String('customer_name')->nullable();
             $table->String('phone')->nullable();

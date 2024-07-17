@@ -63,6 +63,69 @@ class BigOrderController extends Controller
         // return view('admin.big_orders.index', compact('orders'));
     }
 
+    public function editingDepartment(Request $request) {
+        try {
+            if (request()->ajax()) {
+            
+                $orders = Order::with("category")->orderByDESC('id')->get();
+                return datatables()->of($orders)
+                    ->addColumn('category', function ($data) {
+                        return $data->category->title;
+                    })
+                    ->addColumn('del_date', function ($data) {
+                        return date('d-m-Y', strtotime($data->delivery_date));
+                    })
+                    ->addColumn('orderStatus', function ($data) {
+                        if($data->status == "Active") {
+                            return '<span class="badge bg-warning">Active</span>';
+                        }
+                    })                    
+                    ->addColumn('action', function ($data) {
+
+                        return '<div class="d-flex">
+                            <div class="dropdown ms-auto">
+                                <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
+                                    aria-haspopup="true" aria-expanded="false">
+                                    <i class="bi bi-three-dots"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a href="'.url('admin/view-order/'.$data->id).'" class="dropdown-item">Edit</a>
+                                </div>
+                            </div>
+                        </div>';
+                    })->rawColumns(['orderStatus', 'del_date', 'category', 'action'])->make(true);
+            }
+
+        } catch (\Exception $ex) {
+            return redirect('/')->with('error', $ex->getMessage());
+        }
+
+        return view('admin.editing_department');
+    }
+
+    public function viewOrder($id) {
+        $order  = Order::with("category")->find($id);
+        $detail = OrderDetail::with('product')->where('order_id', $id)->get();
+        $firstTwoChars = substr($order->order_number, 0, 2);
+        return view('admin.view_orders', compact('order', "detail", "firstTwoChars"));
+    }
+
+    public function changeOrderStatus($id, $status) {
+
+        $order  = Order::find($id);
+        $order->assign_to = auth()->user()->id;
+        if($status == 2) {
+            $order->status = "Editing Department";
+        } else {
+            $order->status = "Printing Department";
+        }
+        $order->save();
+
+        return redirect('admin/editing-department')->with('success', "Order status change successfully..!!");
+    }
+
+    
+
     public function create()
     {
         $categories = Category::skip(2)->take(2)->get();
@@ -243,7 +306,6 @@ class BigOrderController extends Controller
         $studio_frame_total = Product::where('id', $request->product_id)->pluck("studio_frame_total")->first();
         return response()->json($studio_frame_total);
     }
-
 
     public function getMediaFrameTotal(Request $request) {
         $media_frame_total = Product::where('id', $request->product_id)->pluck("media_frame_total")->first();

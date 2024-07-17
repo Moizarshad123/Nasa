@@ -63,7 +63,8 @@
             <div class="col-md-4">
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Customer Mobile</label>
-                    <input type="text" class="form-control" id="phone" name="phone" aria-describedby="emailHelp" value="{{old('phone')}}">
+                    <input type="text" class="form-control" placeholder="0300-1234567" maxlength="12" id="phone" name="phone" aria-describedby="emailHelp" value="{{old('phone')}}">
+                    <small id="phoneHelp" style="color: red; display: none;">Please enter a valid phone number (0300-1234567).</small>
                 </div>
             </div>
             <div class="col-md-4">
@@ -286,13 +287,28 @@
 @endsection
 
 @section('js')
+<script>
+    $(document).ready(function() {
+        $('#phone').on('keyup', function() {
+            let value = $(this).val();
+            value = value.replace(/[^0-9]/g, ''); // Remove any non-digit characters
+            
+            if (value.length > 4) {
+                value = value.slice(0, 4) + '-' + value.slice(4);
+            }
+
+            $(this).val(value);
+        });
+    });
+</script>
 
 <script>
 $(document).ready(function () {
 
-    const expose_amount = "{{$setting->expose_amount_small}}";
+    
     const urgent_amount = "{{$setting->urgent_amount_small}}";
     const media_amount  = "{{$setting->media_amount_small}}";
+    const expose_amount = "{{$setting->expose_amount_small}}";
 
 
     function calValues() {
@@ -344,7 +360,6 @@ $(document).ready(function () {
                 console.log(response);
                 sizes    = response.products;
                 countries = response.countries;
-
             }
         });
 
@@ -515,8 +530,14 @@ $(document).ready(function () {
 
     $(document).on('change', '#order_type', function (e) {
         if($(this).val() == "expose") {
+
+            let category_id = $('#category_id').val();
             var no = $('#no_of_persons').val()
-            $("#amount").val(parseFloat(expose_amount) * no);
+            if(category_id == 2) {
+                $("#amount").val(0);
+            } else {
+                $("#amount").val(parseFloat(expose_amount) * no);
+            }
             calValues();
             $('#reOrderNumber').hide();
 

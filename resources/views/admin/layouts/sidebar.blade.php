@@ -68,7 +68,15 @@
                     <span>Order Small DC</span>
                 </a>
             </li>
-            
+
+            <li>
+                <a class="{{ request()->IS('admin/editing-department') ? 'active' : '' }}"  href="{{ route('admin.editingDepartment') }}">
+                    <span class="nav-link-icon">
+                        <i class="bi bi-receipt"></i>
+                    </span>
+                    <span>Editing Department</span>
+                </a>
+            </li>
             <li>
                 <a class="{{ request()->IS('admin/settings') ? 'active' : '' }}"  href="{{ route('admin.settings') }}">
                     <span class="nav-link-icon">

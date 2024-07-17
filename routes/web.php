@@ -7,8 +7,6 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SmallOrderController;
 
 
-
-
 Route::match(['get', 'post'], 'login', [AdminController::class, 'login'])->name('login');
 Route::match(['get', 'post'], 'register', [AdminController::class, 'register'])->name('register');
 Route::get('logout', function (){
@@ -24,8 +22,6 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::resource('orderBigDC',BigOrderController::class);
     Route::resource('product',ProductController::class);
     Route::resource('orderSmallDC',SmallOrderController::class);
-
-
     
     Route::controller(BigOrderController::class)->group(function() {
         Route::GET('get-sizes', "getSizes")->name('getSizes');
@@ -33,7 +29,9 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::GET('getStudioLPMTotal',"getStudioLPMTotal")->name('getStudioLPMTotal');
         Route::GET('getMediaLPMTotal',"getMediaLPMTotal")->name('getMediaLPMTotal');
         Route::GET('getStudioFrameTotal',"getStudioFrameTotal")->name('getStudioFrameTotal');
-        Route::GET('getMediaFrameTotal',"getMediaFrameTotal")->name('getMediaFrameTotal');
+        Route::GET('editing-department',"editingDepartment")->name('editingDepartment');
+        Route::GET('view-order/{id}',"viewOrder")->name('viewOrder');
+        Route::GET('change-order-status/{id}/{status}',"changeOrderStatus")->name('changeOrderStatus');
 
         
         

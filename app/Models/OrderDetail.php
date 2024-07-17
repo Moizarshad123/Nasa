@@ -21,4 +21,9 @@ class OrderDetail extends Model
         "total",
         "remarks"
     ];
+
+
+    public function product() {
+        return $this->hasOne(Product::class, 'id', 'size');
+    }
 }
