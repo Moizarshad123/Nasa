@@ -13,6 +13,8 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Setting;
 use App\Models\Country;
+use App\Models\Size;
+
 
 use Auth, Mail, DataTables;
 
@@ -205,8 +207,8 @@ class BigOrderController extends Controller
     {
         $categories = Category::skip(2)->take(2)->get();
         $setting    = Setting::find(1);
-        $order  = Order::find($id);
-        $detail = OrderDetail::where('order_id', $id)->get();
+        $order      = Order::find($id);
+        $detail     = OrderDetail::where('order_id', $id)->get();
         return view('admin.big_orders.edit', compact('order', 'detail', 'categories', 'setting'));
     }
 
@@ -265,6 +267,26 @@ class BigOrderController extends Controller
     public function destroy($id)
     {
       
+    }
+
+    public function sizes(Request $request) {
+        $sizes = Size::all();
+        $countries = Country::all();
+        $data = '';
+
+        if(count($sizes) > 0) {
+            foreach($sizes as $size) {
+                $data .= '<option value="'.$size->size.'">'.$size->size.'</option>';
+            }
+        }
+        $cty = '';
+        if(count($countries) > 0) {
+            foreach($countries as $country) {
+                $cty .= '<option value="'.$country->country.'">'.$country->country.'</option>';
+            }
+        }
+        $arr = ["products"=> $data, "countries"=> $cty];
+        return response()->json($arr);
     }
 
     public function getSizes(Request $request) {

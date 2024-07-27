@@ -25,6 +25,8 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     
     Route::controller(BigOrderController::class)->group(function() {
         Route::GET('get-sizes', "getSizes")->name('getSizes');
+        Route::GET('sizes', "sizes")->name('sizes');
+
         Route::GET('get-size-amount', "getSizeAmount")->name('getSizeAmount');
         Route::GET('getStudioLPMTotal',"getStudioLPMTotal")->name('getStudioLPMTotal');
         Route::GET('getMediaLPMTotal',"getMediaLPMTotal")->name('getMediaLPMTotal');

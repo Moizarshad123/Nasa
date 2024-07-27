@@ -9,6 +9,9 @@
     #showEmails {
         display: none;
     }
+    #changeBackground {
+        display: none;
+    } 
     .addBtn {
         margin-top: 12px;
         margin-left: 80px;
@@ -85,6 +88,7 @@
                 </div>
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-4">
                 <div class="mb-3">
@@ -140,6 +144,7 @@
                 </select>
             </div>
         </div>
+
         <div class="row">
             <div class="col-md-6">
                 <div class="mb-3">
@@ -179,8 +184,9 @@
                 </div>
             </div>
         </div>
+
         <div class="row">
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="mb-3">
                     <label for="email_list">Expose/Media/Redorder<span style="color:red">*</span></label>
                     <select name="order_type" id="order_type" class="form-control">
@@ -191,19 +197,69 @@
                     </select>
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
                 <div class="mb-3">
                     <label for="amount">Amount</label>
                     <input type="text" readonly class="form-control" name="total" id="amount" value="0" />
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-4">
+                <div class="mb-3">
+                    <label for="email_list">Background Change?</label>
+                    <select name="is_background" id="is_background" class="form-control">
+                        <option value="">SELECT</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+            </div>
+          
+        </div>
+
+        <div  id="changeBackground">       
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="email_list">Color</label>
+                        <input type="text" name="bg_color" id="bg_color" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="amount">How many?</label>
+                        <select name="bg_qty" id="bg_qty" class="form-control" >
+                            <option value="0">Select Qty</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                            <option value="9">9</option>
+                            <option value="10">10</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="email_list">Background Change Amount</label>
+                        <input type="text" readonly name="bg_amount" id="bg_amount" class="form-control" value="0">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-6">
                 <div class="mb-3" id="reOrderNumber">
                     <label for="reorder_number">Re Order Number</label>
                     <input type="text" class="form-control" name="re_order_number" id="re_order_number" value="0" />
                 </div>
             </div>
-            <div class="col-md-3">
+            <div class="col-md-6">
                 <div class="mb-3" >
                     <label for="remarks">Remarks</label>
                     <textarea id="remarks" class="form-control" name="main_remarks" rows="4" cols="50">{{old('main_remarks')}} </textarea>
@@ -230,7 +286,6 @@
                 </tbody>
             </table>
         </div>
-
 
         <div class="row" style="margin-top:50px">
             <div class="col-md-3">
@@ -262,7 +317,6 @@
             </div>
         </div>
     
-      
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
     {{-- <div id="confirmModal" class="modal fade" role="dialog">
@@ -289,6 +343,7 @@
 @section('js')
 <script>
     $(document).ready(function() {
+
         $('#phone').on('keyup', function() {
             let value = $(this).val();
             value = value.replace(/[^0-9]/g, ''); // Remove any non-digit characters
@@ -323,13 +378,16 @@ $(document).ready(function () {
         var order_nature_amount = $('#order_nature_amount').val();
         let amount              = $('#amount').val();
         let discount_amount     = $('#discount_amount').val();
+        let bg_amount           = $('#bg_amount').val();
+
+
         // let total_value = email_amount + order_nature_amount + amount;
 
         // $('#order_sum').val(parseFloat(total_value));
-        $('#grand_total').val(parseFloat(total) + parseFloat(amount) + parseFloat(order_nature_amount) + parseFloat(
+        $('#grand_total').val(parseFloat(bg_amount) + parseFloat(total) + parseFloat(amount) + parseFloat(order_nature_amount) + parseFloat(
             email_amount));
-        $('#net_amount').val(parseFloat(total) + parseFloat(amount) + parseFloat(order_nature_amount) + parseFloat(email_amount) - parseFloat(discount_amount));
-        $('#outstanding_amount').val(parseFloat(total) + parseFloat(amount) + parseFloat(order_nature_amount) + parseFloat(
+        $('#net_amount').val(parseFloat(bg_amount) + parseFloat(total) + parseFloat(amount) + parseFloat(order_nature_amount) + parseFloat(email_amount) - parseFloat(discount_amount));
+        $('#outstanding_amount').val(parseFloat(bg_amount) + parseFloat(total) + parseFloat(amount) + parseFloat(order_nature_amount) + parseFloat(
             email_amount) - parseFloat(discount_amount));
 
     }
@@ -345,7 +403,7 @@ $(document).ready(function () {
        $.ajax({
             dataType: 'json',
             type: 'GET',
-            url: '{{ route("admin.getSizes") }}',
+            url: '{{ route("admin.sizes") }}',
             data: {
                     "category_id": category_id
             },
@@ -417,6 +475,21 @@ $(document).ready(function () {
                                                     <option value="52">52</option>
                                                     <option value="56">56</option>
                                                     <option value="60">60</option>
+                                                    <option value="64">64</option>
+                                                    <option value="68">68</option>
+                                                    <option value="72">72</option>
+                                                    <option value="76">76</option>
+                                                    <option value="80">80</option>
+                                                    <option value="84">84</option>
+                                                    <option value="88">88</option>
+                                                    <option value="92">92</option>
+                                                    <option value="96">96</option>
+                                                    <option value="100">100</option>
+                                                    <option value="104">104</option>
+                                                    <option value="108">108</option>
+                                                    <option value="112">112</option>
+                                                    <option value="116">116</option>
+                                                    <option value="120">120</option>
                                                 </select>
                                         </div>
                                     </td>
@@ -435,6 +508,27 @@ $(document).ready(function () {
                                     </td>
                                 </tr>`);
 
+    });
+
+
+    $(document).on('change', '#is_background', function() {
+        let bg = $(this).val();
+        if(bg=="Yes") {
+            $('#changeBackground').show();
+        } else {
+            $('#bg_qty').val("0");
+            $('#bg_amount').val(0);
+            calValues();
+            $('#changeBackground').hide();
+        }
+    });
+
+
+    $(document).on('change', '#bg_qty', function() {
+      
+        let qty = $('#bg_qty').val();
+        $('#bg_amount').val(parseFloat(qty) * 100);
+        calValues();
     });
 
     $(document).on('keyup', '#discount_amount', function (e) {
@@ -532,12 +626,12 @@ $(document).ready(function () {
         if($(this).val() == "expose") {
 
             let category_id = $('#category_id').val();
-            var no = $('#no_of_persons').val()
-            if(category_id == 2) {
-                $("#amount").val(0);
-            } else {
+            var no          = $('#no_of_persons').val()
+            // if(category_id == 2) {
+            //     $("#amount").val(0);
+            // } else {
                 $("#amount").val(parseFloat(expose_amount) * no);
-            }
+            // }
             calValues();
             $('#reOrderNumber').hide();
 
