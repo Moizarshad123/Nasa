@@ -99,8 +99,8 @@
                     name: 'orderStatus'
                 },
                 {
-                    data: 'outstanding_amount',
-                    name: 'outstanding_amount'
+                    data: 'assignTo',
+                    name: 'assignTo'
                 },
 
                 {

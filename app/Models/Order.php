@@ -23,7 +23,11 @@ class Order extends Model
         'order_nature_amount', 
         'is_email',
         'email_amount',
-        'emails', 
+        'emails',
+        'is_background',
+        'bg_qty',
+        'bg_color',
+        'bg_amount',
         'order_type',
         "re_order_number",
         'amount',
@@ -37,5 +41,9 @@ class Order extends Model
 
     public function category() {
         return $this->hasOne(Category::class, 'id', 'category_id');
+    }
+
+    public function assignUser() {
+        return $this->hasOne(User::class, 'id', 'assign_to');
     }
 }

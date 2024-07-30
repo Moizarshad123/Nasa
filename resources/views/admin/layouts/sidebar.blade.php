@@ -52,14 +52,7 @@
                     <span>Order Big DC</span>
                 </a>
             </li>
-            <li>
-                <a class="{{ request()->IS('admin/product') ? 'active' : '' }}"  href="{{ route('admin.product.index') }}">
-                    <span class="nav-link-icon">
-                        <i class="bi bi-truck"></i>
-                    </span>
-                    <span>Product Big</span>
-                </a>
-            </li>
+         
             <li>
                 <a class="{{ request()->IS('admin/orderSmallDC') ? 'active' : '' }}"  href="{{ route('admin.orderSmallDC.index') }}">
                     <span class="nav-link-icon">
@@ -78,6 +71,14 @@
                 </a>
             </li>
             <li>
+                <a class="{{ request()->IS('admin/product') ? 'active' : '' }}"  href="{{ route('admin.product.index') }}">
+                    <span class="nav-link-icon">
+                        <i class="bi bi-truck"></i>
+                    </span>
+                    <span>Products Big</span>
+                </a>
+            </li>
+            <li>
                 <a class="{{ request()->IS('admin/settings') ? 'active' : '' }}"  href="{{ route('admin.settings') }}">
                     <span class="nav-link-icon">
                         <i class="bi bi-gear"></i>
@@ -85,7 +86,7 @@
                     <span>Settings</span>
                 </a>
             </li>
-            <li>
+            {{-- <li>
                 <a href="#">
                     <span class="nav-link-icon">
                         <i class="bi bi-receipt"></i>
@@ -150,7 +151,7 @@
                         <a  href="./buyer-wishlist.html">Wishlist</a>
                     </li>
                 </ul>
-            </li>
+            </li> --}}
 
           
             <li>
@@ -161,7 +162,7 @@
                     <span>Logout</span>
                 </a>
             </li>
-            <li>
+            {{-- <li>
                 <a href="#">
                     <span class="nav-link-icon">
                         <i class="bi bi-receipt"></i>
@@ -307,31 +308,7 @@
                     </li>
                 </ul>
             </li>
-            <li>
-                <a  href="#">
-                    <span class="nav-link-icon">
-                        <i class="bi bi-gear"></i>
-                    </span>
-                    <span>Settings</span>
-                </a>
-            </li>
-            <li>
-                <a  href="#">
-                    <span class="nav-link-icon">
-                        <i class="bi bi-wallet2"></i>
-                    </span>
-                    <span>Pricing Table</span>
-                    <span class="badge bg-success ms-auto">New</span>
-                </a>
-            </li>
-            <li>
-                <a  href="#">
-                    <span class="nav-link-icon">
-                        <i class="bi bi-search"></i>
-                    </span>
-                    <span>Search Page</span>
-                </a>
-            </li>
+           
             <li>
                 <a  href="#">
                     <span class="nav-link-icon">
@@ -632,15 +609,8 @@
                         </ul>
                     </li>
                 </ul>
-            </li>
-            <li>
-                <a href="#" class="disabled">
-                    <span class="nav-link-icon">
-                        <i class="bi bi-hand-index-thumb"></i>
-                    </span>
-                    <span>Disabled</span>
-                </a>
-            </li>
+            </li> --}}
+           
         </ul>
     </div>
 </div>

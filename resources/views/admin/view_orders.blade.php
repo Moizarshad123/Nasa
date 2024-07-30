@@ -2,6 +2,11 @@
 @section('title', 'View Order')
 
 @section('css')
+<style>
+    body{
+        font-size: 16px
+    }
+</style>
 @endsection
 
 @section('content')
@@ -28,7 +33,7 @@
                 <div class="card-body">
 
                     <div class="mb-5 d-flex align-items-center justify-content-between">
-                        <span>Order No : <a href="javascript:;">{{ $order->order_number ?? ""}}</a></span>
+                        <span>Order No : <a style="font-size:18px" href="javascript:;"><strong>{{ $order->order_number ?? ""}}</strong></a></span>
                         <span class="badge bg-success">{{ $order->status ?? ""}}</span>
                     </div>
                     <div class="row mb-5 g-4">
@@ -143,7 +148,31 @@
                                     @endif
                                 </tbody>
                             @else
-                                
+                            <thead>
+                                <tr>
+                                    <th>Expose</th>
+                                    <th>Size</th>
+                                    <th>Qty</th>
+                                    <th>Country</th>
+                                    <th>Total</th>
+                                    <th>Remarks</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if(count($detail) > 0)
+                                    @foreach ($detail as $item)
+                                        <tr>
+                                            <td>{{ $item->expose ?? ""}}</td>
+                                            <td>{{ $item->product->title ?? ""}}</td>
+                                            <td>{{ $item->qty ?? ""}}</td>
+                                            <td>{{ $item->country ?? ""}}</td>
+                                            <td>{{ $item->total ?? ""}}</td>
+                                            <td>{{ $item->remarks ?? ""}}</td>
+    
+                                        </tr>
+                                    @endforeach
+                                @endif
+                            </tbody>
                             @endif
                         </table>
                     </div>

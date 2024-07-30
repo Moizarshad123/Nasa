@@ -25,7 +25,7 @@ class BigOrderController extends Controller
         try {
             if (request()->ajax()) {
             
-                $orders = Order::with("category")->orderByDESC('id')->get();
+                $orders = Order::with("category")->where("order_number", "like", "Bb%")->orderByDESC('id')->get();
                 return datatables()->of($orders)
                     ->addColumn('category', function ($data) {
                         return $data->category->title;
@@ -34,9 +34,10 @@ class BigOrderController extends Controller
                         return date('d-m-Y', strtotime($data->delivery_date));
                     })
                     ->addColumn('orderStatus', function ($data) {
-                        if($data->status == "Active") {
-                            return '<span class="badge bg-warning">Active</span>';
-                        }
+                        return '<span class="badge bg-warning">'.$data->status.'</span>';
+                        // if($data->status == "Active") {
+                        //     return '<span class="badge bg-warning">Active</span>';
+                        // }
                     })                    
                     ->addColumn('action', function ($data) {
 
@@ -48,7 +49,7 @@ class BigOrderController extends Controller
                                 </a>
                                 <div class="dropdown-menu dropdown-menu-end">
                                     <a href="'.url('admin/orderBigDC/'.$data->id.'/edit').'" class="dropdown-item">Edit</a>
-                                    <a href="javascript:void(0);" class="dropdown-item" data-id="' . $data->id . '">Delete</a>
+                                    <a href="javascript:void(0);" class="delete dropdown-item" data-id="' . $data->id . '">Delete</a>
                                 </div>
                             </div>
                         </div>';
@@ -69,7 +70,7 @@ class BigOrderController extends Controller
         try {
             if (request()->ajax()) {
             
-                $orders = Order::with("category")->orderByDESC('id')->get();
+                $orders = Order::with("category", "assignUser")->orderByDESC('id')->get();
                 return datatables()->of($orders)
                     ->addColumn('category', function ($data) {
                         return $data->category->title;
@@ -78,10 +79,18 @@ class BigOrderController extends Controller
                         return date('d-m-Y', strtotime($data->delivery_date));
                     })
                     ->addColumn('orderStatus', function ($data) {
-                        if($data->status == "Active") {
-                            return '<span class="badge bg-warning">Active</span>';
+                        // if($data->status == "Active") {
+                            return '<span class="badge bg-warning">'.$data->status.'</span>';
+                        // }
+                    })  
+                    ->addColumn('assignTo', function ($data) {
+                        if(isset($data["assignUser"])) {
+                            return $data["assignUser"]->name;
+                        } else {
+                            return "";
                         }
-                    })                    
+                    })  
+                                      
                     ->addColumn('action', function ($data) {
 
                         return '<div class="d-flex">
@@ -95,7 +104,7 @@ class BigOrderController extends Controller
                                 </div>
                             </div>
                         </div>';
-                    })->rawColumns(['orderStatus', 'del_date', 'category', 'action'])->make(true);
+                    })->rawColumns(['assignTo', 'orderStatus', 'del_date', 'category', 'action'])->make(true);
             }
 
         } catch (\Exception $ex) {
@@ -171,7 +180,8 @@ class BigOrderController extends Controller
                 'remarks'           => $request->main_remarks
             ]);
 
-            if(count($request->person_id) > 0) {
+            if(isset($request->person_id)) {
+                
                 foreach ($request->person_id as $key => $value) {
                    
                    
@@ -191,7 +201,7 @@ class BigOrderController extends Controller
                 }
             }
 
-            return redirect()->back()->with("success", "Order created");
+            return redirect()->back()->with("success", "Order (Big) created");
         } catch (\Exception $e) {
            return redirect()->back()->with("error", $e->getMessage());
         }
@@ -266,7 +276,10 @@ class BigOrderController extends Controller
 
     public function destroy($id)
     {
-      
+        $order = Order::find($id);
+        OrderDetail::where("order_id", $id)->delete();
+        $order->delete();
+        return 1;
     }
 
     public function sizes(Request $request) {

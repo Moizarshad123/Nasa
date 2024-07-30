@@ -1,5 +1,5 @@
 @extends('admin.layouts.app')
-@section('title', 'Create Order Big')
+@section('title', 'Create Order Small')
 
 @section('css')
 <style>
@@ -358,331 +358,306 @@
 </script>
 
 <script>
-$(document).ready(function () {
-
-    
-    const urgent_amount = "{{$setting->urgent_amount_small}}";
-    const media_amount  = "{{$setting->media_amount_small}}";
-    const expose_amount = "{{$setting->expose_amount_small}}";
-
-
-    function calValues() {
-
-        var total = 0;
-        $('.amount').each(function (index, element) {
-            total += parseFloat($(element).val());
-        })
-        total = total.toFixed(2);
-
-        let email_amount        = $('#email_amount').val();
-        var order_nature_amount = $('#order_nature_amount').val();
-        let amount              = $('#amount').val();
-        let discount_amount     = $('#discount_amount').val();
-        let bg_amount           = $('#bg_amount').val();
+    $(document).ready(function () {
+        
+        const urgent_amount = "{{$setting->urgent_amount_small}}";
+        const media_amount  = "{{$setting->media_amount_small}}";
+        const expose_amount = "{{$setting->expose_amount_small}}";
 
 
-        // let total_value = email_amount + order_nature_amount + amount;
+        function calValues() {
 
-        // $('#order_sum').val(parseFloat(total_value));
-        $('#grand_total').val(parseFloat(bg_amount) + parseFloat(total) + parseFloat(amount) + parseFloat(order_nature_amount) + parseFloat(
-            email_amount));
-        $('#net_amount').val(parseFloat(bg_amount) + parseFloat(total) + parseFloat(amount) + parseFloat(order_nature_amount) + parseFloat(email_amount) - parseFloat(discount_amount));
-        $('#outstanding_amount').val(parseFloat(bg_amount) + parseFloat(total) + parseFloat(amount) + parseFloat(order_nature_amount) + parseFloat(
-            email_amount) - parseFloat(discount_amount));
+            var total = 0;
+            $('.amount').each(function (index, element) {
+                total += parseFloat($(element).val());
+            })
+            total = total.toFixed(2);
 
-    }
-    
-    var count = 0; 
-    $(document).on('click', '#addMTCTypeChoiceRow', function (e) {
-        e.preventDefault();
-        ++count;
-    
-       let category_id = $('#category_id').val();
-       let sizes = '';
-       let countries = '';
-       $.ajax({
-            dataType: 'json',
-            type: 'GET',
-            url: '{{ route("admin.sizes") }}',
-            data: {
-                    "category_id": category_id
-            },
-            async: false,
-            beforeSend: function () {
-                $('#loading_image').fadeIn('fast');
-            },
-            complete: function () {
-                $('#loading_image').fadeOut('fast');
-            },
-            success: function (response) {
-                console.log(response);
-                sizes    = response.products;
-                countries = response.countries;
-            }
-        });
-
-        $("#MTCTypetbChoice:last").append(`<tr>
-                                    <td>
-                                        <div class="form-group col-md-6" style=" width: 100%;">
-                                                <select name="person_id[]" class="form-control person_id" required>
-                                                    <option value="Person1">Person 1</option>
-                                                    <option value="Person2">Person 2</option>
-                                                    <option value="Person3">Person 3</option>
-                                                    <option value="Person4">Person 4</option>
-                                                    <option value="Person5">Person 5</option>
-                                                    <option value="Person6">Person 6</option>
-                                                    <option value="Person7">Person 7</option>
-                                                    <option value="Person8">Person 8</option>
-                                                    <option value="Person9">Person 9</option>
-                                                    <option value="Person10">Person 10</option>
-                                                </select>
-                                                
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <select name="sizes[]" class="form-control sizes" required>
-                                                <option value="">Select Size</option>
-                                                `+sizes+`
-                                            </select>
-                                        </div>
-                                    </td>
-
-                                     <td>
-                                        <div class="form-group">
-                                            <select name="country[]" class="form-control country" required>
-                                                <option value="">Select Country</option>
-                                                `+countries+`
-                                               
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-group">
-                                             <select name="qty[]" class="qty form-control">
-                                                    <option value="4">4</option>
-                                                    <option value="8">8</option>
-                                                    <option value="12">12</option>
-                                                    <option value="16">16</option>
-                                                    <option value="20">20</option>
-                                                    <option value="24">24</option>
-                                                    <option value="28">28</option>
-                                                    <option value="32">32</option>
-                                                    <option value="36">36</option>
-                                                    <option value="40">40</option>
-                                                    <option value="44">44</option>
-                                                    <option value="48">48</option>
-                                                    <option value="52">52</option>
-                                                    <option value="56">56</option>
-                                                    <option value="60">60</option>
-                                                    <option value="64">64</option>
-                                                    <option value="68">68</option>
-                                                    <option value="72">72</option>
-                                                    <option value="76">76</option>
-                                                    <option value="80">80</option>
-                                                    <option value="84">84</option>
-                                                    <option value="88">88</option>
-                                                    <option value="92">92</option>
-                                                    <option value="96">96</option>
-                                                    <option value="100">100</option>
-                                                    <option value="104">104</option>
-                                                    <option value="108">108</option>
-                                                    <option value="112">112</option>
-                                                    <option value="116">116</option>
-                                                    <option value="120">120</option>
-                                                </select>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <input type="text" name="amount[]" class="amount form-control">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="form-group">
-                                            <textarea name="remarks[]" cols="18" rows="2"></textarea>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <button class="btnDeleteChoice btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
-                                    </td>
-                                </tr>`);
-
-    });
+            let email_amount        = $('#email_amount').val();
+            var order_nature_amount = $('#order_nature_amount').val();
+            let amount              = $('#amount').val();
+            let discount_amount     = $('#discount_amount').val();
+            let bg_amount           = $('#bg_amount').val();
 
 
-    $(document).on('change', '#is_background', function() {
-        let bg = $(this).val();
-        if(bg=="Yes") {
-            $('#changeBackground').show();
-        } else {
-            $('#bg_qty').val("0");
-            $('#bg_amount').val(0);
-            calValues();
-            $('#changeBackground').hide();
+            // let total_value = email_amount + order_nature_amount + amount;
+
+            // $('#order_sum').val(parseFloat(total_value));
+            $('#grand_total').val(parseFloat(bg_amount) + parseFloat(total) + parseFloat(amount) + parseFloat(order_nature_amount) + parseFloat(
+                email_amount));
+            $('#net_amount').val(parseFloat(bg_amount) + parseFloat(total) + parseFloat(amount) + parseFloat(order_nature_amount) + parseFloat(email_amount) - parseFloat(discount_amount));
+            $('#outstanding_amount').val(parseFloat(bg_amount) + parseFloat(total) + parseFloat(amount) + parseFloat(order_nature_amount) + parseFloat(
+                email_amount) - parseFloat(discount_amount));
+
         }
-    });
-
-
-    $(document).on('change', '#bg_qty', function() {
-      
-        let qty = $('#bg_qty').val();
-        $('#bg_amount').val(parseFloat(qty) * 100);
-        calValues();
-    });
-
-    $(document).on('keyup', '#discount_amount', function (e) {
-        let disount_amt = $(this).val();
-        let grand_total = $('#grand_total').val();
-        if(disount_amt <= grand_total) {
-
-            console.log("yes");
-            let total       = parseFloat(grand_total) - parseFloat(disount_amt);
-    
-            $('#net_amount').val(total);
-            $('#outstanding_amount').val(total);
-        } else {
-            Swal.fire({
-                icon: "error",
-                title: "Error",
-                text: "Discounted amount is not greater than total!",
-            });
-            $('#discount_amount').val(0);
-        }
-
-        calValues();
-    });
-
-    $("#MTCTypetbChoice").on('click', '.btnDeleteChoice', function (e) {
-        e.preventDefault()
-        $(this).closest('tr').remove();
-    });
-
-    $(document).on('change', '.sizes', function (e) {
-        let product_id = $(this).val();
-        let pro_price = 0;
-        $.ajax({
-            dataType: 'json',
-            type: 'GET',
-            url: '{{ route("admin.getSizeAmount") }}',
-            data: {
-                "product_id": product_id
-            },
-            async: false,
-            success: function (response) {
-                pro_price = response;
-            }
-        });
-        let qty =  $(this).closest('tr').find('.qty').val();
-
-
-        let amt   = parseFloat(pro_price)  * qty;
-        $(this).closest('tr').find('.amount').val(amt);
-
-        calValues();
-    });
-
-    $(document).on('change', '.qty', function (e) {
-
-        let qty          = $(this).val();
-        let product_id = $(this).closest('tr').find('.sizes').val();
-        let pro_price  = 0;
-        $.ajax({
-            dataType: 'json',
-            type: 'GET',
-            url: '{{ route("admin.getSizeAmount") }}',
-            data: {
-                "product_id": product_id
-            },
-            async: false,
-            success: function (response) {
-                pro_price = response;
-            }
-        });
-       
-        let studio_lpm_total   =  $(this).closest('tr').find('.studio_lpm_total').val();
-        let media_lpm_total    =  $(this).closest('tr').find('.media_lpm_total').val();
-        let studio_frame_total =  $(this).closest('tr').find('.studio_frame_total').val();
-        let media_frame_total  =  $(this).closest('tr').find('.media_frame_total').val();
-
-        let amt   = parseFloat(pro_price) * qty;
-        $(this).closest('tr').find('.amount').val(amt);
-        calValues();
-    });
-    
-    $('#is_email').change(function() {
-        if ($(this).is(":checked")) {
-            var no = $('#no_of_persons').val()
-            $('#email_amount').val(100 * no)
-            $('#showEmails').show()
-        } else {
-            $('#email_amount').val(0)
-            $('#showEmails').hide()
-        }
-        calValues();
-    });
-
-    $(document).on('change', '#order_type', function (e) {
-        if($(this).val() == "expose") {
-
+        
+        var count = 0; 
+        $(document).on('click', '#addMTCTypeChoiceRow', function (e) {
+            e.preventDefault();
+            ++count;
+        
             let category_id = $('#category_id').val();
-            var no          = $('#no_of_persons').val()
-            // if(category_id == 2) {
-            //     $("#amount").val(0);
-            // } else {
-                $("#amount").val(parseFloat(expose_amount) * no);
-            // }
-            calValues();
-            $('#reOrderNumber').hide();
+            let sizes = '';
+            let countries = '';
+            $.ajax({
+                    dataType: 'json',
+                    type: 'GET',
+                    url: '{{ route("admin.sizes") }}',
+                    data: {
+                            "category_id": category_id
+                    },
+                    async: false,
+                    beforeSend: function () {
+                        $('#loading_image').fadeIn('fast');
+                    },
+                    complete: function () {
+                        $('#loading_image').fadeOut('fast');
+                    },
+                    success: function (response) {
+                        console.log(response);
+                        sizes    = response.products;
+                        countries = response.countries;
+                    }
+            });
 
-        } else if($(this).val() == "reorder") {
-            $("#amount").val(0);
-            calValues();
-            $('#reOrderNumber').show();
-        } else if($(this).val() == "media") {
-            $('#reOrderNumber').hide();
-            $("#amount").val(0);
-            calValues();
+            $("#MTCTypetbChoice:last").append(`<tr>
+                                        <td>
+                                            <div class="form-group col-md-6" style=" width: 100%;">
+                                                    <select name="person_id[]" class="form-control person_id" required>
+                                                        <option value="Person1">Person 1</option>
+                                                        <option value="Person2">Person 2</option>
+                                                        <option value="Person3">Person 3</option>
+                                                        <option value="Person4">Person 4</option>
+                                                        <option value="Person5">Person 5</option>
+                                                        <option value="Person6">Person 6</option>
+                                                        <option value="Person7">Person 7</option>
+                                                        <option value="Person8">Person 8</option>
+                                                        <option value="Person9">Person 9</option>
+                                                        <option value="Person10">Person 10</option>
+                                                    </select>
+                                                    
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <select name="sizes[]" class="form-control sizes" required>
+                                                    <option value="">Select Size</option>
+                                                    `+sizes+`
+                                                </select>
+                                            </div>
+                                        </td>
 
-        }
-    }); 
+                                        <td>
+                                            <div class="form-group">
+                                                <select name="country[]" class="form-control country" required>
+                                                    <option value="">Select Country</option>
+                                                    `+countries+`
+                                                
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <select name="qty[]" class="qty form-control">
+                                                        <option value="0">Select Quantity</option>
+                                                        <option value="4">4</option>
+                                                        <option value="8">8</option>
+                                                        <option value="12">12</option>
+                                                        <option value="16">16</option>
+                                                        <option value="20">20</option>
+                                                        <option value="24">24</option>
+                                                        <option value="28">28</option>
+                                                        <option value="32">32</option>
+                                                        <option value="36">36</option>
+                                                        <option value="40">40</option>
+                                                        <option value="44">44</option>
+                                                        <option value="48">48</option>
+                                                        <option value="52">52</option>
+                                                        <option value="56">56</option>
+                                                        <option value="60">60</option>
+                                                        <option value="64">64</option>
+                                                        <option value="68">68</option>
+                                                        <option value="72">72</option>
+                                                        <option value="76">76</option>
+                                                        <option value="80">80</option>
+                                                        <option value="84">84</option>
+                                                        <option value="88">88</option>
+                                                        <option value="92">92</option>
+                                                        <option value="96">96</option>
+                                                        <option value="100">100</option>
+                                                        <option value="104">104</option>
+                                                        <option value="108">108</option>
+                                                        <option value="112">112</option>
+                                                        <option value="116">116</option>
+                                                        <option value="120">120</option>
+                                                    </select>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <input type="text" name="amount[]" class="amount form-control" value="0" readonly>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="form-group">
+                                                <textarea name="remarks[]" cols="18" rows="2"></textarea>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button class="btnDeleteChoice btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+                                        </td>
+                                    </tr>`);
 
-    $(document).on('change', '#order_nature', function (e) {
-        if($(this).val() == "urgent") {
+        });
 
-            var no = $('#no_of_persons').val()
-            $("#order_nature_amount").val(parseFloat(urgent_amount) * no);
+        $(document).on('change', '#is_background', function() {
+            let bg = $(this).val();
+            if(bg=="Yes") {
+                $('#changeBackground').show();
+            } else {
+                $('#bg_qty').val("0");
+                $('#bg_amount').val(0);
+                calValues();
+                $('#changeBackground').hide();
+            }
+        });
+
+        $(document).on('change', '#bg_qty', function() {
+        
+            let qty = $('#bg_qty').val();
+            $('#bg_amount').val(parseFloat(qty) * 100);
             calValues();
+        });
 
-        } else{
-            $("#order_nature_amount").val(0);
+        $(document).on('keyup', '#discount_amount', function (e) {
+            let disount_amt = $(this).val();
+            let grand_total = $('#grand_total').val();
+            if(disount_amt <= grand_total) {
+
+                console.log("yes");
+                let total       = parseFloat(grand_total) - parseFloat(disount_amt);
+        
+                $('#net_amount').val(total);
+                $('#outstanding_amount').val(total);
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Error",
+                    text: "Discounted amount is not greater than total!",
+                });
+                $('#discount_amount').val(0);
+            }
+
             calValues();
-        }
+        });
+
+        $("#MTCTypetbChoice").on('click', '.btnDeleteChoice', function (e) {
+            e.preventDefault()
+            $(this).closest('tr').remove();
+        });
+
+        $(document).on('change', '.qty', function (e) {
+
+            let qty          = $(this).val();
+            let category_id  = $("#category_id").val();
+            let order_type   = $("#order_type").val();
+            let pro_price    = 0;
+
+            $.ajax({
+                dataType: 'json',
+                type: 'GET',
+                url: '{{ route("admin.getSmallOrderRate") }}',
+                data: {
+                    "qty": qty,
+                    "category_id": category_id,
+                    "order_type": order_type
+                },
+                async: false,
+                success: function (response) {
+                    pro_price = response;
+                }
+            });
+        
+            $(this).closest('tr').find('.amount').val(pro_price);
+        
+            calValues();
+        });
+        
+        $('#is_email').change(function() {
+            if ($(this).is(":checked")) {
+                var no = $('#no_of_persons').val()
+                $('#email_amount').val(100 * no)
+                $('#showEmails').show()
+            } else {
+                $('#email_amount').val(0)
+                $('#showEmails').hide()
+            }
+            calValues();
+        });
+
+        $(document).on('change', '#order_type', function (e) {
+            if($(this).val() == "expose") {
+
+                let category_id = $('#category_id').val();
+                var no          = $('#no_of_persons').val()
+                // if(category_id == 2) {
+                //     $("#amount").val(0);
+                // } else {
+                    $("#amount").val(parseFloat(expose_amount) * no);
+                // }
+               
+                $('#reOrderNumber').hide();
+
+            } else if($(this).val() == "reorder") {
+                $("#amount").val(0);
+                // calValues();
+                $('#reOrderNumber').show();
+            } else if($(this).val() == "media") {
+                $('#reOrderNumber').hide();
+                $("#amount").val(0);
+                // calValues();
+
+            }
+
+            calValues();
+        }); 
+
+        $(document).on('change', '#order_nature', function (e) {
+            if($(this).val() == "urgent") {
+
+                var no = $('#no_of_persons').val()
+                $("#order_nature_amount").val(parseFloat(urgent_amount) * no);
+                calValues();
+
+            } else{
+                $("#order_nature_amount").val(0);
+                calValues();
+            }
+        });
+        
+        $(document).on('change', '#no_of_persons', function (e) {
+
+            let persons = $(this).val();
+
+            let order_nature_amt = $("#order_nature_amount").val();
+            let expose_amt       = $("#amount").val();
+            let email_amount     = $("#email_amount").val();
+
+            if(order_nature_amt > 0) {
+                $("#order_nature_amount").val(parseFloat(urgent_amount) * persons);
+            }
+
+            if(expose_amt > 0) {
+                $("#amount").val(parseFloat(expose_amount) * persons);
+            }
+
+            if(email_amount > 0) {
+                $("#email_amount").val(100 * persons);
+            }
+
+            calValues();
+        });
+        
     });
-    
-    $(document).on('change', '#no_of_persons', function (e) {
-
-        let persons = $(this).val();
-
-        let order_nature_amt = $("#order_nature_amount").val();
-        let expose_amt       = $("#amount").val();
-        let email_amount     = $("#email_amount").val();
-
-        if(order_nature_amt > 0) {
-            $("#order_nature_amount").val(parseFloat(urgent_amount) * persons);
-        }
-
-        if(expose_amt > 0) {
-            $("#amount").val(parseFloat(expose_amount) * persons);
-        }
-
-        if(email_amount > 0) {
-            $("#email_amount").val(100 * persons);
-        }
-
-        calValues();
-    });
-    
-});
 </script>
 @endsection

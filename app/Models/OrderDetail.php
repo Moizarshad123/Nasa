@@ -13,6 +13,7 @@ class OrderDetail extends Model
         "expose",
         "size",
         "qty",
+        "country",
         "print_cost",
         "studio_LPM_total",
         "media_LPM_total",

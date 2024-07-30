@@ -18,6 +18,7 @@ class CreateOrderDetailsTable extends Migration
             $table->Integer("order_id")->nullable();
             $table->String("expose")->nullable();
             $table->String("size")->nullable();
+            $table->String("country")->nullable();
             $table->Integer("qty")->nullable();
             $table->Integer("print_cost")->nullable();
             $table->Integer("studio_LPM_total")->nullable();

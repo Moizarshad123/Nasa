@@ -22,8 +22,6 @@
       
     </div>
 
-   
-
     <div class="table-responsive">
         <table class="table table-custom table-lg mb-0" id="ordersTable">
             <thead>
@@ -47,7 +45,23 @@
         </table>
     </div>
 
-
+    <div id="confirmModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header" style="background-color: #343a40; color: #fff;">
+                    <h2 class="modal-title">Confirmation</h2>
+                    <button type="button" class="close" data-bs-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <h4 align="center" style="margin: 0;">Are you sure you want to delete this ?</h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="ok_delete" name="ok_delete" class="btn btn-danger">Delete</button>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- ./ content -->
 @endsection
@@ -55,106 +69,106 @@
 @section('js')
 <script>
 
-    // $(document).ready(function() {
-    //     var DataTable = $("#ordersTable").DataTable({
-    //         dom: "Bfrtip",
-    //         buttons: [{
-    //             extend: "csv",
-    //             className: "btn-sm"
-    //         }],
-    //         responsive: true,
-    //         processing: true,
-    //         serverSide: true,
-    //         pageLength: 20,
-    //         ajax: {
-    //             url: `{{route('admin.orderBigDC.index')}}`,
-    //         },
-    //         columns: [
+    $(document).ready(function() {
+        var DataTable = $("#ordersTable").DataTable({
+            dom: "Bfrtip",
+            buttons: [{
+                extend: "csv",
+                className: "btn-sm"
+            }],
+            responsive: true,
+            processing: true,
+            serverSide: true,
+            pageLength: 20,
+            ajax: {
+                url: `{{route('admin.orderSmallDC.index')}}`,
+            },
+            columns: [
 
-    //             {
-    //                 data: 'order_number',
-    //                 name: 'order_number'
-    //             },
-    //             {
-    //                 data: 'category',
-    //                 name: 'category'
-    //             },
-    //             {
-    //                 data: 'customer_name',
-    //                 name: 'customer_name'
-    //             },
-    //             {
-    //                 data: 'phone',
-    //                 name: 'phone'
-    //             },
-    //             {
-    //                 data: 'del_date',
-    //                 name: 'del_date'
-    //             },
-    //             {
-    //                 data: 'delivery_time',
-    //                 name: 'delivery_time'
-    //             },
-    //             {
-    //                 data: 'order_nature',
-    //                 name: 'order_nature'
-    //             },
-    //             {
-    //                 data: 'order_type',
-    //                 name: 'order_type'
-    //             },
-    //             {
-    //                 data: 'outstanding_amount',
-    //                 name: 'outstanding_amount'
-    //             },
-    //             {
-    //                 data: 'orderStatus',
-    //                 name: 'orderStatus'
-    //             },
+                {
+                    data: 'order_number',
+                    name: 'order_number'
+                },
+                {
+                    data: 'category',
+                    name: 'category'
+                },
+                {
+                    data: 'customer_name',
+                    name: 'customer_name'
+                },
+                {
+                    data: 'phone',
+                    name: 'phone'
+                },
+                {
+                    data: 'del_date',
+                    name: 'del_date'
+                },
+                {
+                    data: 'delivery_time',
+                    name: 'delivery_time'
+                },
+                {
+                    data: 'order_nature',
+                    name: 'order_nature'
+                },
+                {
+                    data: 'order_type',
+                    name: 'order_type'
+                },
+                {
+                    data: 'outstanding_amount',
+                    name: 'outstanding_amount'
+                },
+                {
+                    data: 'orderStatus',
+                    name: 'orderStatus'
+                },
 
-    //             {
-    //                 data: 'action',
-    //                 name: 'action',
-    //                 orderable: false
-    //             }
-    //         ]
+                {
+                    data: 'action',
+                    name: 'action',
+                    orderable: false
+                }
+            ]
 
-    //     });
+        });
         
-    //     var delete_id;
-    //     $(document, this).on('click', '.delete', function() {
-    //         delete_id = $(this).data('id');
-    //         $('#confirmModal').modal('show');
-    //     });
+        var delete_id;
+        $(document, this).on('click', '.delete', function() {
+            delete_id = $(this).data('id');
+            $('#confirmModal').modal('show');
+        });
 
-    //     $(document).on('click', '#ok_delete', function() {
-    //         $.ajax({
-    //             type: "delete",
-    //             // url: '/admin/brand/' + delete_id,  
-    //             url: "{{url('admin/brand')}}/"+delete_id,
-    //             headers: {
-    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    //             },
-    //             beforeSend: function() {
-    //                 $('#ok_delete').text('Deleting...');
-    //                 $('#ok_delete').attr("disabled", true);
-    //             },
-    //             success: function(data) {
-    //                 DataTable.ajax.reload();
-    //                 $('#ok_delete').text('Delete');
-    //                 $('#ok_delete').attr("disabled", false);
-    //                 $('#confirmModal').modal('hide');
-    //                 //   js_success(data);
-    //                 if (data == 0) {
-    //                     toastr.error("Tag Exist in Products");
-    //                 } else if (data == 2) {
-    //                     toastr.error("Tag Exist in Collections");
-    //                 } else {
-    //                     toastr.success('Record Deleted Successfully');
-    //                 }
-    //             }
-    //         })
-    //     });
-    // });
+        $(document).on('click', '#ok_delete', function() {
+            $.ajax({
+                type: "delete",
+                // url: '/admin/brand/' + delete_id,  
+                url: "{{url('admin/orderSmallDC')}}/"+delete_id,
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                beforeSend: function() {
+                    $('#ok_delete').text('Deleting...');
+                    $('#ok_delete').attr("disabled", true);
+                },
+                success: function(data) {
+                    DataTable.ajax.reload();
+                    $('#ok_delete').text('Delete');
+                    $('#ok_delete').attr("disabled", false);
+                    $('#confirmModal').modal('hide');
+                    //   js_success(data);
+                    if (data == 0) {
+                        toastr.error("Tag Exist in Products");
+                    } else if (data == 2) {
+                        toastr.error("Tag Exist in Collections");
+                    } else {
+                        toastr.success('Record Deleted Successfully');
+                    }
+                }
+            })
+        });
+    });
     </script>
 @endsection
