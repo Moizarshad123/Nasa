@@ -25,7 +25,7 @@ class SmallOrderController extends Controller
         try {
             if (request()->ajax()) {
             
-                $orders = Order::with("category")->where("order_number", "like", "SD%")->orderByDESC('id')->get();
+                $orders = Order::with("category")->where("order_number", "like", "SD%")->where('status', "Active")->orderByDESC('id')->get();
                 return datatables()->of($orders)
                     ->addColumn('category', function ($data) {
                         return $data->category->title;
@@ -37,21 +37,21 @@ class SmallOrderController extends Controller
                        
                         return '<span class="badge bg-warning">'.$data->status.'</span>';
                     })                    
-                    ->addColumn('action', function ($data) {
+                    // ->addColumn('action', function ($data) {
 
-                        return '<div class="d-flex">
-                            <div class="dropdown ms-auto">
-                                <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
-                                    aria-haspopup="true" aria-expanded="false">
-                                    <i class="bi bi-three-dots"></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <a href="'.url('admin/orderSmallDC/'.$data->id.'/edit').'" class="dropdown-item">Edit</a>
-                                    <a href="javascript:void(0);" class="delete dropdown-item" data-id="' . $data->id . '">Delete</a>
-                                </div>
-                            </div>
-                        </div>';
-                    })->rawColumns(['orderStatus', 'del_date', 'category', 'action'])->make(true);
+                    //     return '<div class="d-flex">
+                    //         <div class="dropdown ms-auto">
+                    //             <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
+                    //                 aria-haspopup="true" aria-expanded="false">
+                    //                 <i class="bi bi-three-dots"></i>
+                    //             </a>
+                    //             <div class="dropdown-menu dropdown-menu-end">
+                    //                 <a href="'.url('admin/orderSmallDC/'.$data->id.'/edit').'" class="dropdown-item">Edit</a>
+                    //             </div>
+                    //         </div>
+                    //     </div>';
+                    // })
+                    ->rawColumns(['orderStatus', 'del_date', 'category'])->make(true);
             }
 
         } catch (\Exception $ex) {

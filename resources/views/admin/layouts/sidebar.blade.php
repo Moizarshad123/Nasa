@@ -70,6 +70,24 @@
                     <span>Editing Department</span>
                 </a>
             </li>
+
+            <li>
+                <a class="{{ request()->IS('admin/printing-department') ? 'active' : '' }}"  href="{{ route('admin.printingDepartment') }}">
+                    <span class="nav-link-icon">
+                        <i class="bi bi-receipt"></i>
+                    </span>
+                    <span>Printing Department</span>
+                </a>
+            </li>
+
+            <li>
+                <a class="{{ request()->IS('admin/all-orders') ? 'active' : '' }}"  href="{{ route('admin.allOrders') }}">
+                    <span class="nav-link-icon">
+                        <i class="bi bi-receipt"></i>
+                    </span>
+                    <span>All Orders</span>
+                </a>
+            </li>
             <li>
                 <a class="{{ request()->IS('admin/product') ? 'active' : '' }}"  href="{{ route('admin.product.index') }}">
                     <span class="nav-link-icon">

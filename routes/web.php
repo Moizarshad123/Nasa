@@ -36,6 +36,12 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::GET('getMediaLPMTotal',"getMediaLPMTotal")->name('getMediaLPMTotal');
         Route::GET('getStudioFrameTotal',"getStudioFrameTotal")->name('getStudioFrameTotal');
         Route::GET('editing-department',"editingDepartment")->name('editingDepartment');
+        Route::GET('printing-department',"printingDepartment")->name('printingDepartment');
+        Route::GET('all-orders',"allOrders")->name('allOrders');
+
+
+        
+        
         Route::GET('view-order/{id}',"viewOrder")->name('viewOrder');
         Route::GET('change-order-status/{id}/{status}',"changeOrderStatus")->name('changeOrderStatus');
     });

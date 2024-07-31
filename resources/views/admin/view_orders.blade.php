@@ -181,25 +181,45 @@
         </div>
         <div class="col-lg-4 col-md-12 mt-4 mt-lg-0">
             <div class="card mb-4">
-                <div class="row">
-                    <div class="col">
-                        @if($order->assign_to != auth()->user()->id)
-                            <a href="{{ url('admin/change-order-status/'.$order->id.'/2') }}" class="btn btn-primary">Assign To Me</a>
-                        @endif
-                    </div>
-                    <div class="col">
-                        <a href="{{ url('admin/change-order-status/'.$order->id.'/3') }}" class="btn btn-warning">Move To Printing Department</a>
-                    </div>
-                </div>
                 <div class="card-body">
+                    <form action="">
+                        @csrf
+                        <div class="row">
+                            
+                            <div class="col">
+                                <select name="status" class="form-control" required>
+                                    <option value="">Select Status</option>
+                                    <option value="2">Assign To Me</option>
+                                    <option value="3">Approval</option>
+                                    <option value="4">Move To Printing Dept:</option>
+                                    <option value="5">Job Ready</option>
+                                    <option value="6">Completed</option>
+                                </select>
+                            </div>
+                                {{-- @if($order->assign_to != auth()->user()->id) --}}
+                                    {{-- <a href="{{ url('admin/change-order-status/'.$order->id.'/2') }}" class="btn btn-primary">Assign To Me</a> --}}
+                                {{-- @endif --}}
+
+                                {{-- @if($order->status == "Printing Department") --}}
+                                    {{-- <a href="{{ url('admin/change-order-status/'.$order->id.'/4') }}" class="btn btn-primary">Job Ready</a> --}}
+                                {{-- @endif --}}
+                            {{-- <div class="col"> --}}
+                                {{-- @if($order->status == "Active" || $order->status == "Editing Department") --}}
+                                    {{-- <a href="{{ url('admin/change-order-status/'.$order->id.'/3') }}" class="btn btn-warning">Move To Printing Department</a> --}}
+                                {{-- @endif --}}
+                            {{-- </div> --}}
+                        </div>
+                    </form>
+
+                    <br><br>
                     <h6 class="card-title mb-4">Price</h6>
                     <div class="row justify-content-center mb-3">
-                        <div class="col-4 text-end">Grand Total :</div>
-                        <div class="col-4">{{ $order->grand_total }}</div>
+                        <div class="col text-end">Grand Total :</div>
+                        <div class="col">{{ $order->grand_total }}</div>
                     </div>
                     <div class="row justify-content-center mb-3">
-                        <div class="col-4 text-end">Dis: Amt :</div>
-                        <div class="col-4">{{ $order->discount_amount }}</div>
+                        <div class="col text-end">Dis: Amt :</div>
+                        <div class="col">{{ $order->discount_amount }}</div>
                     </div>
                 
                     <div class="row justify-content-center">

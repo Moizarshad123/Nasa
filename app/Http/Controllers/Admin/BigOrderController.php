@@ -25,7 +25,7 @@ class BigOrderController extends Controller
         try {
             if (request()->ajax()) {
             
-                $orders = Order::with("category")->where("order_number", "like", "Bb%")->orderByDESC('id')->get();
+                $orders = Order::with("category")->where("order_number", "like", "Bb%")->where('status', "Active")->orderByDESC('id')->get();
                 return datatables()->of($orders)
                     ->addColumn('category', function ($data) {
                         return $data->category->title;
@@ -39,21 +39,20 @@ class BigOrderController extends Controller
                         //     return '<span class="badge bg-warning">Active</span>';
                         // }
                     })                    
-                    ->addColumn('action', function ($data) {
+                    ->rawColumns(['orderStatus', 'del_date', 'category'])->make(true);
 
-                        return '<div class="d-flex">
-                            <div class="dropdown ms-auto">
-                                <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
-                                    aria-haspopup="true" aria-expanded="false">
-                                    <i class="bi bi-three-dots"></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <a href="'.url('admin/orderBigDC/'.$data->id.'/edit').'" class="dropdown-item">Edit</a>
-                                    <a href="javascript:void(0);" class="delete dropdown-item" data-id="' . $data->id . '">Delete</a>
-                                </div>
-                            </div>
-                        </div>';
-                    })->rawColumns(['orderStatus', 'del_date', 'category', 'action'])->make(true);
+                    // return '<div class="d-flex">
+                    //         <div class="dropdown ms-auto">
+                    //             <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
+                    //                 aria-haspopup="true" aria-expanded="false">
+                    //                 <i class="bi bi-three-dots"></i>
+                    //                 <div class="dropdown-menu dropdown-menu-end">
+                    //                 <a href="'.url('admin/orderBigDC/'.$data->id.'/edit').'" class="dropdown-item">Edit</a>
+                    //                 <a href="javascript:void(0);" class="delete dropdown-item" data-id="' . $data->id . '">Delete</a>
+                    //                 </div>
+                    //             </a>
+                    //         </div>
+                    //     </div>';
             }
 
         } catch (\Exception $ex) {
@@ -70,7 +69,7 @@ class BigOrderController extends Controller
         try {
             if (request()->ajax()) {
             
-                $orders = Order::with("category", "assignUser")->orderByDESC('id')->get();
+                $orders = Order::with("category", "assignUser")->whereIn("status", ["Active", "Editing Department", "Approval"])->orderByDESC('id')->get();
                 return datatables()->of($orders)
                     ->addColumn('category', function ($data) {
                         return $data->category->title;
@@ -79,9 +78,11 @@ class BigOrderController extends Controller
                         return date('d-m-Y', strtotime($data->delivery_date));
                     })
                     ->addColumn('orderStatus', function ($data) {
-                        // if($data->status == "Active") {
+                        if($data->status == "Active") {
                             return '<span class="badge bg-warning">'.$data->status.'</span>';
-                        // }
+                        } elseif($data->status == "Editing Department") {
+                            return '<span class="badge bg-warning">'.$data->status.'</span>';
+                        }
                     })  
                     ->addColumn('assignTo', function ($data) {
                         if(isset($data["assignUser"])) {
@@ -114,6 +115,106 @@ class BigOrderController extends Controller
         return view('admin.editing_department');
     }
 
+    public function printingDepartment(Request $request) {
+        try {
+            if (request()->ajax()) {
+            
+                $orders = Order::with("category", "assignUser")->where('status', 'Printing Department')->orderByDESC('id')->get();
+                return datatables()->of($orders)
+                    ->addColumn('category', function ($data) {
+                        return $data->category->title;
+                    })
+                    ->addColumn('del_date', function ($data) {
+                        return date('d-m-Y', strtotime($data->delivery_date));
+                    })
+                    ->addColumn('orderStatus', function ($data) {
+                        return '<span class="badge bg-primary" style="background-color: #007bff !important;">'.$data->status.'</span>';
+                    })  
+                    ->addColumn('assignTo', function ($data) {
+                        if(isset($data["assignUser"])) {
+                            return $data["assignUser"]->name;
+                        } else {
+                            return "";
+                        }
+                    })  
+                                      
+                    ->addColumn('action', function ($data) {
+
+                        return '<div class="d-flex">
+                            <div class="dropdown ms-auto">
+                                <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
+                                    aria-haspopup="true" aria-expanded="false">
+                                    <i class="bi bi-three-dots"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a href="'.url('admin/view-order/'.$data->id).'" class="dropdown-item">Edit</a>
+                                </div>
+                            </div>
+                        </div>';
+                    })->rawColumns(['assignTo', 'orderStatus', 'del_date', 'category', 'action'])->make(true);
+            }
+
+        } catch (\Exception $ex) {
+            return redirect('/')->with('error', $ex->getMessage());
+        }
+
+        return view('admin.printing_department');
+    }
+
+    public function allOrders(Request $request) {
+        try {
+            if (request()->ajax()) {
+            
+                $orders = Order::with("category", "assignUser")->orderByDESC('id')->get();
+                return datatables()->of($orders)
+                    ->addColumn('category', function ($data) {
+                        return $data->category->title;
+                    })
+                    ->addColumn('del_date', function ($data) {
+                        return date('d-m-Y', strtotime($data->delivery_date));
+                    })
+                    ->addColumn('orderStatus', function ($data) {
+                        if($data->status == "Active" || $data->status == "Editing Department") {
+                            return '<span class="badge bg-warning">'.$data->status.'</span>';
+                        } elseif($data->status == "Printing Department") { 
+                            return '<span class="badge bg-primary" style="background-color: #007bff !important;">'.$data->status.'</span>';
+                        } elseif($data->status == "Ready" || $data->status == "Completed") { 
+                            return '<span class="badge bg-success">'.$data->status.'</span>';
+                        }
+                    })  
+                    ->addColumn('assignTo', function ($data) {
+                        if(isset($data["assignUser"])) {
+                            return $data["assignUser"]->name;
+                        } else {
+                            return "";
+                        }
+                    })  
+                                      
+                    ->addColumn('action', function ($data) {
+
+                        return '<div class="d-flex">
+                            <div class="dropdown ms-auto">
+                                <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
+                                    aria-haspopup="true" aria-expanded="false">
+                                    <i class="bi bi-three-dots"></i>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a href="'.url('admin/view-order/'.$data->id).'" class="dropdown-item">Edit</a>
+                                </div>
+                            </div>
+                        </div>';
+                    })->rawColumns(['assignTo', 'orderStatus', 'del_date', 'category', 'action'])->make(true);
+            }
+
+        } catch (\Exception $ex) {
+            return redirect('/')->with('error', $ex->getMessage());
+        }
+
+        return view('admin.all_orders');
+    }
+
+    
+
     public function viewOrder($id) {
         $order  = Order::with("category")->find($id);
         $detail = OrderDetail::with('product')->where('order_id', $id)->get();
@@ -127,9 +228,16 @@ class BigOrderController extends Controller
         $order->assign_to = auth()->user()->id;
         if($status == 2) {
             $order->status = "Editing Department";
-        } else {
+        } elseif($status == 3) {
+            $order->status = "Approval";
+        } elseif($status == 4) {
             $order->status = "Printing Department";
+        } elseif($status == 5) {
+            $order->status = "Ready";
+        } elseif($status == 6) {
+            $order->status = "Completed";
         }
+
         $order->save();
 
         return redirect('admin/editing-department')->with('success', "Order status change successfully..!!");

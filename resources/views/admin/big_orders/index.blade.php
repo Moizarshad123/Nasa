@@ -83,7 +83,6 @@
                     <th>Order Type</th>
                     <th>Outstanding Amount</th>
                     <th>Order Status</th>
-                    <th class="text-end">Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -171,12 +170,6 @@
                 {
                     data: 'orderStatus',
                     name: 'orderStatus'
-                },
-
-                {
-                    data: 'action',
-                    name: 'action',
-                    orderable: false
                 }
             ]
 
