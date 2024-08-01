@@ -67,9 +67,21 @@ class BigOrderController extends Controller
 
     public function editingDepartment(Request $request) {
         try {
+
             if (request()->ajax()) {
-            
-                $orders = Order::with("category", "assignUser")->whereIn("status", ["Active", "Editing Department", "Approval"])->orderByDESC('id')->get();
+
+                $orders = Order::with("category", "assignUser")->whereIn("status", ["Active", "Editing Department", "Approval"]);
+
+                if ($request->has('date_range') && $request->filled('date_range')) {
+                    $dates      = explode(' - ', $request->date_range);
+                    $start_date = $dates[0];
+                    $end_date   = $dates[1];
+
+                    $orders->whereBetween('delivery_date', [$start_date, $end_date]);
+                } 
+
+                $orders->orderByDESC('id')->get();
+    
                 return datatables()->of($orders)
                     ->addColumn('category', function ($data) {
                         return $data->category->title;
@@ -119,7 +131,17 @@ class BigOrderController extends Controller
         try {
             if (request()->ajax()) {
             
-                $orders = Order::with("category", "assignUser")->where('status', 'Printing Department')->orderByDESC('id')->get();
+                $orders = Order::with("category")->where('status', 'Printing Department');
+
+                if ($request->has('date_range') && $request->filled('date_range')) {
+                    $dates      = explode(' - ', $request->date_range);
+                    $start_date = $dates[0];
+                    $end_date   = $dates[1];
+
+                    $orders->whereBetween('delivery_date', [$start_date, $end_date]);
+                } 
+
+                $orders->orderByDESC('id')->get();
                 return datatables()->of($orders)
                     ->addColumn('category', function ($data) {
                         return $data->category->title;
@@ -212,8 +234,6 @@ class BigOrderController extends Controller
 
         return view('admin.all_orders');
     }
-
-    
 
     public function viewOrder($id) {
         $order  = Order::with("category")->find($id);

@@ -448,6 +448,16 @@ $(document).ready(function () {
                                                     <option value="Expose8">Expose 8</option>
                                                     <option value="Expose9">Expose 9</option>
                                                     <option value="Expose10">Expose 10</option>
+                                                     <option value="Expose11">Expose 11</option>
+                                                    <option value="Expose12">Expose 12</option>
+                                                    <option value="Expose13">Expose 13</option>
+                                                    <option value="Expose14">Expose 14</option>
+                                                    <option value="Expose15">Expose 15</option>
+                                                    <option value="Expose16">Expose 16</option>
+                                                    <option value="Expose17">Expose 17</option>
+                                                    <option value="Expose18">Expose 18</option>
+                                                    <option value="Expose19">Expose 19</option>
+                                                    <option value="Expose20">Expose 20</option>
                                                 </select>
                                         </div>
                                     </td>

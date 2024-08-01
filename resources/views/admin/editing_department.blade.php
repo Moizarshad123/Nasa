@@ -2,6 +2,7 @@
 @section('title', 'Order (Editing Department)')
 
 @section('css')
+<link rel="stylesheet" href="{{ asset('admin/dist/css/daterangepicker.css') }}">
 @endsection
 
 @section('content')
@@ -11,9 +12,21 @@
     <div class="mb-4">
         <div class="row">
             <div class="col">
-                <h3>Order (Editing Department)</h3>
+                <h3>Order (Editing)</h3>
             </div>
         </div>
+        <form action="{{ route('admin.editingDepartment') }}" id="filter-form" method="GET" >
+            @csrf
+            <div class="row">
+                <div class="col">
+                    <label for="">Order Delivery Date</label>
+                    <input type="text" id="daterange" name="date_range" value="{{ request('date_range') }}" class="form-control">
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-success">Filter</button>
+                </div>
+            </div>
+        </form>
     </div>
 
     <div class="table-responsive">
@@ -44,10 +57,28 @@
 @endsection
 
 @section('js')
-<script>
+<script type="text/javascript" src="{{ asset('admin/dist/js/moment.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('admin/dist/js/daterange_picker.min.js') }}"></script>
 
-    $(document).ready(function() {
-        var DataTable = $("#ordersTable").DataTable({
+<script>
+    $(function() {
+        $('#daterange').daterangepicker({
+            locale: {
+                format: 'YYYY-MM-DD'
+            },
+            autoUpdateInput: false
+        });
+        $('#daterange').on('apply.daterangepicker', function(ev, picker) {
+            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' - ' + picker.endDate.format('YYYY-MM-DD'));
+            // $('#filter-form').submit();
+        });
+
+        $('#daterange').on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+            // $('#filter-form').submit();
+        });
+
+        var table = $("#ordersTable").DataTable({
             dom: "Bfrtip",
             buttons: [{
                 extend: "csv",
@@ -59,7 +90,11 @@
             pageLength: 20,
             ajax: {
                 url: `{{route('admin.editingDepartment')}}`,
+                data: function (d) {
+                    d.date_range = $('#daterange').val();
+                }
             },
+            
             columns: [
 
                 {
@@ -110,6 +145,11 @@
                 }
             ]
 
+        });
+
+        $('#filter-form').on('submit', function(e) {
+            e.preventDefault();
+            table.ajax.reload();
         });
     });
 </script>
