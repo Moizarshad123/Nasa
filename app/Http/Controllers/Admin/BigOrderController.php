@@ -242,10 +242,10 @@ class BigOrderController extends Controller
         return view('admin.view_orders', compact('order', "detail", "firstTwoChars"));
     }
 
-    public function changeOrderStatus($id, $status) {
-
-        $order  = Order::find($id);
+    public function changeStatus(Request $request) {
+        $order  = Order::find($request->order_id);
         $order->assign_to = auth()->user()->id;
+        $status = $request->status;
         if($status == 2) {
             $order->status = "Editing Department";
         } elseif($status == 3) {
@@ -259,11 +259,8 @@ class BigOrderController extends Controller
         }
 
         $order->save();
-
-        return redirect('admin/editing-department')->with('success', "Order status change successfully..!!");
+        return redirect()->back()->with('success', "Order status change successfully..!!");
     }
-
-    
 
     public function create()
     {
@@ -277,6 +274,42 @@ class BigOrderController extends Controller
             $order_number ="Bb2300";
         }
         return view('admin.big_orders.create', compact("categories", "order_number", "setting"));
+    }
+
+    public function outstandingAmount(Request $request) {
+        try {
+            if (request()->ajax()) {
+            
+                $orders = Order::where('outstanding_amount', '!=', 0);
+
+                if ($request->has('date_range') && $request->filled('date_range')) {
+                    $dates      = explode(' - ', $request->date_range);
+                    $start_date = $dates[0];
+                    $end_date   = $dates[1];
+
+                    $orders->whereBetween('delivery_date', [$start_date, $end_date]);
+                } 
+
+                $orders->orderByDESC('id')->get();
+                return datatables()->of($orders)
+                    ->addColumn('category', function ($data) {
+                        return $data->category->title;
+                    })
+                    ->addColumn('del_date', function ($data) {
+                        return date('d-m-Y', strtotime($data->delivery_date));
+                    })
+                    ->addColumn('orderStatus', function ($data) {
+                        return '<span class="badge bg-primary" style="background-color: #007bff !important;">'.$data->status.'</span>';
+                    })  
+                    
+                    ->rawColumns(['orderStatus', 'del_date', 'category'])->make(true);
+            }
+
+        } catch (\Exception $ex) {
+            return redirect('/')->with('error', $ex->getMessage());
+        }
+
+        return view('admin.outstanding_amounts');
     }
 
     public function store(Request $request)
@@ -453,7 +486,6 @@ class BigOrderController extends Controller
         $get_product_price = Product::where('id', $request->product_id)->pluck("premium_standard_cost")->first();
         return response()->json($get_product_price);
     }
-
 
     public function getStudioLPMTotal(Request $request) {
         $studio_lpm_total = Product::where('id', $request->product_id)->pluck("studio_lpm_total")->first();

@@ -3295,7 +3295,7 @@ Author Website :    https://laborasyon.com/
         c = function (t) {
             var e = a(t);
             // return e ? document.querySelector(e) : null
-            return e; 
+            return e
         },
         u = function (t) {
             if (!t) return 0;
@@ -3969,7 +3969,7 @@ Author Website :    https://laborasyon.com/
                         for (var i = 0; i < n; i++) {
                             var o = this._triggerArray[i],
                                 r = c(o);
-                            r && !r.classList.contains("show") && (o.classList.add("collapsed"), o.setAttribute("aria-expanded", !1))
+                            // r && !r.classList.contains("show") && (o.classList.add("collapsed"), o.setAttribute("aria-expanded", !1))
                         }
                     this.setTransitioning(!0);
                     this._element.style[e] = "";

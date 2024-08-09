@@ -97,6 +97,14 @@
                 </a>
             </li>
             <li>
+                <a class="{{ request()->IS('admin/outstanding-amount') ? 'active' : '' }}"  href="{{ route('admin.outstandingAmount') }}">
+                    <span class="nav-link-icon">
+                        <i class="bi bi-truck"></i>
+                    </span>
+                    <span>Outstanding Amount</span>
+                </a>
+            </li>
+            <li>
                 <a class="{{ request()->IS('admin/settings') ? 'active' : '' }}"  href="{{ route('admin.settings') }}">
                     <span class="nav-link-icon">
                         <i class="bi bi-gear"></i>

@@ -182,49 +182,41 @@
         <div class="col-lg-4 col-md-12 mt-4 mt-lg-0">
             <div class="card mb-4">
                 <div class="card-body">
-                    <form action="">
+                    <form action="{{ route('admin.changeStatus') }}">
                         @csrf
+                        <input type="hidden" name="order_id" value="{{ $order->id }}">
                         <div class="row">
                             
                             <div class="col">
                                 <select name="status" class="form-control" required>
                                     <option value="">Select Status</option>
-                                    <option value="2">Assign To Me</option>
-                                    <option value="3">Approval</option>
-                                    <option value="4">Move To Printing Dept:</option>
-                                    <option value="5">Job Ready</option>
-                                    <option value="6">Completed</option>
+                                    <option value="2" {{$order->status == "Editing Department" ? 'selected' : ""}}>Assign To Me</option>
+                                    <option value="3" {{$order->status == "Approval" ? 'selected' : ""}}>Approval</option>
+                                    <option value="4" {{$order->status == "Printing Department" ? 'selected' : ""}}>Move To Printing Dept:</option>
+                                    <option value="5" {{$order->status == "Ready" ? 'selected' : ""}}>Job Ready</option>
+                                    <option value="6" {{$order->status == "Completed" ? 'selected' : ""}}>Completed</option>
                                 </select>
                             </div>
-                                {{-- @if($order->assign_to != auth()->user()->id) --}}
-                                    {{-- <a href="{{ url('admin/change-order-status/'.$order->id.'/2') }}" class="btn btn-primary">Assign To Me</a> --}}
-                                {{-- @endif --}}
-
-                                {{-- @if($order->status == "Printing Department") --}}
-                                    {{-- <a href="{{ url('admin/change-order-status/'.$order->id.'/4') }}" class="btn btn-primary">Job Ready</a> --}}
-                                {{-- @endif --}}
-                            {{-- <div class="col"> --}}
-                                {{-- @if($order->status == "Active" || $order->status == "Editing Department") --}}
-                                    {{-- <a href="{{ url('admin/change-order-status/'.$order->id.'/3') }}" class="btn btn-warning">Move To Printing Department</a> --}}
-                                {{-- @endif --}}
-                            {{-- </div> --}}
+                            <div class="col">
+                                <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                            </div>
                         </div>
                     </form>
 
                     <br><br>
                     <h6 class="card-title mb-4">Price</h6>
-                    <div class="row justify-content-center mb-3">
+                    {{-- <div class="row justify-content-center mb-3">
                         <div class="col text-end">Grand Total :</div>
                         <div class="col">{{ $order->grand_total }}</div>
                     </div>
                     <div class="row justify-content-center mb-3">
                         <div class="col text-end">Dis: Amt :</div>
                         <div class="col">{{ $order->discount_amount }}</div>
-                    </div>
+                    </div> --}}
                 
                     <div class="row justify-content-center">
                         <div class="col-4 text-end">
-                            <strong>Total :</strong>
+                            <strong>Outstanding Amount:</strong>
                         </div>
                         <div class="col-4">
                             <strong>{{ $order->outstanding_amount ?? "" }}</strong>
