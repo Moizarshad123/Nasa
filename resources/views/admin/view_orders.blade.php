@@ -182,16 +182,26 @@
         <div class="col-lg-4 col-md-12 mt-4 mt-lg-0">
             <div class="card mb-4">
                 <div class="card-body">
-                    <form action="{{ route('admin.changeStatus') }}">
+                    <div class="row">
+                        <div class="col">
+                            @if($order->assign_to ==  auth()->user()->id && $order->status == "Editing Department")
+                                <a style="float: right" class="btn btn-danger" href="{{ route('admin.dropJob', $order->id) }}">Drop the Job</a>
+                            @endif
+                        </div>
+                    </div>
+                    <br>
+                    <form action="{{ route('admin.changeStatus') }}" method="POST">
                         @csrf
                         <input type="hidden" name="order_id" value="{{ $order->id }}">
                         <div class="row">
-                            
+                                @php $firstTwoChars = substr($order->order_number, 0, 2); @endphp
                             <div class="col">
                                 <select name="status" class="form-control" required>
                                     <option value="">Select Status</option>
                                     <option value="2" {{$order->status == "Editing Department" ? 'selected' : ""}}>Assign To Me</option>
-                                    <option value="3" {{$order->status == "Approval" ? 'selected' : ""}}>Approval</option>
+                                    @if($firstTwoChars == "Bb")
+                                        <option value="3" {{$order->status == "Approval" ? 'selected' : ""}}>Approval</option>
+                                    @endif
                                     <option value="4" {{$order->status == "Printing Department" ? 'selected' : ""}}>Move To Printing Dept:</option>
                                     <option value="5" {{$order->status == "Ready" ? 'selected' : ""}}>Job Ready</option>
                                     <option value="6" {{$order->status == "Completed" ? 'selected' : ""}}>Completed</option>
@@ -215,12 +225,26 @@
                     </div> --}}
                 
                     <div class="row justify-content-center">
-                        <div class="col-4 text-end">
-                            <strong>Outstanding Amount:</strong>
+                        <div class="col-8 text-end">
+                            <strong style="float: left">Net Amount:</strong>
                         </div>
                         <div class="col-4">
-                            <strong>{{ $order->outstanding_amount ?? "" }}</strong>
+                            <strong>{{ number_format($order->net_amount) ?? "0.00" }}</strong>
                         </div>
+                        <div class="col-8 text-end">
+                            <strong style="float: left">Charged Amount:</strong>
+                        </div>
+                        <div class="col-4">
+                            <strong>{{ number_format($order->amount_charged) ?? "0.00" }}</strong>
+                        </div>
+                        
+                        <div class="col-8 text-end">
+                            <strong style="float: left">Outstanding Amount:</strong>
+                        </div>
+                        <div class="col-4">
+                            <strong>{{ number_format($order->outstanding_amount) ?? "0.00" }}</strong>
+                        </div>
+
                     </div>
                 </div>
             </div>

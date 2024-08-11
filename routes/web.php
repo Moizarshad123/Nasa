@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\BigOrderController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SmallOrderController;
+use App\Http\Controllers\Admin\OrderNumberController;
+
 
 
 Route::match(['get', 'post'], 'login', [AdminController::class, 'login'])->name('login');
@@ -22,9 +24,16 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
     Route::resource('orderBigDC',BigOrderController::class);
     Route::resource('product',ProductController::class);
     Route::resource('orderSmallDC',SmallOrderController::class);
+    Route::resource('orderNumber',OrderNumberController::class);
 
+    
     Route::controller(SmallOrderController::class)->group(function() {
         Route::GET('get-amall-order-rates', "getSmallOrderRate")->name('getSmallOrderRate');
+        Route::get('print-small/{id}', 'printViewSmall')->name('print.view');
+        Route::get('order-history', 'orderHistory')->name('orderHistory');
+
+       
+
     });
 
     
@@ -40,10 +49,9 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::GET('all-orders',"allOrders")->name('allOrders');
         Route::POST('change-order-status',"changeStatus")->name('changeStatus');
         Route::GET('outstanding-amount',"outstandingAmount")->name('outstandingAmount');
-
-        
-
-        
+        Route::GET('drop-job/{id}',"drop_job")->name('dropJob');
+        Route::get('print/{id}', 'printView')->name('print.view');
+        Route::get('/pos-slip', 'generatePdf');
         
         Route::GET('view-order/{id}',"viewOrder")->name('viewOrder');
         // Route::GET('change-order-status/{id}/{status}',"changeOrderStatus")->name('changeOrderStatus');

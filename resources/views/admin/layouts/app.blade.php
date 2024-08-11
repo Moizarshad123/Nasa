@@ -14,6 +14,18 @@
     <!-- Favicon -->
     {{-- <link rel="shortcut icon" href="../../assets/images/fav-ic-n.png" /> --}}
     @include('admin.layouts.styles')
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
 
     @yield('css')
 

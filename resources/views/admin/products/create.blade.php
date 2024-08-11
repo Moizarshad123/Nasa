@@ -8,6 +8,7 @@
 <!-- Content -->
 
 <div class="container-xxl flex-grow-1 container-p-y">
+    <h3>Create Product</h3>
     <form method="POST" action="{{ route('admin.product.store')}}">
         @csrf
         <div class="row">

@@ -104,6 +104,26 @@
                     <span>Outstanding Amount</span>
                 </a>
             </li>
+
+            <li>
+                <a class="{{ request()->IS('admin/orderNumber') ? 'active' : '' }}"  href="{{ route('admin.orderNumber.index') }}">
+                    <span class="nav-link-icon">
+                        <i class="bi bi-truck"></i>
+                    </span>
+                    <span>Order Numbers</span>
+                </a>
+            </li>
+
+            <li>
+                <a class="{{ request()->IS('admin/order-history') ? 'active' : '' }}"  href="{{ route('admin.orderHistory') }}">
+                    <span class="nav-link-icon">
+                        <i class="bi bi-truck"></i>
+                    </span>
+                    <span>Order History</span>
+                </a>
+            </li>
+
+            
             <li>
                 <a class="{{ request()->IS('admin/settings') ? 'active' : '' }}"  href="{{ route('admin.settings') }}">
                     <span class="nav-link-icon">

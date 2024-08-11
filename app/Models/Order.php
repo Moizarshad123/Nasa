@@ -34,7 +34,13 @@ class Order extends Model
         'grand_total',
         'discount_amount',
         'net_amount',
-        'outstanding_amount', 
+        'outstanding_amount',
+        'payment_method',
+        'received_by',
+        'amount_received',
+        'amount_charged',
+        'cash_back',
+        'remaining_amount', 
         'remarks',
         'status'
     ];

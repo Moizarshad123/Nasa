@@ -3,9 +3,15 @@
 
 @section('css')
 <style>
-     #reOrderNumber{
+    .toggle-div {
+        display: none; /* Hide divs by default */
+    }
+    .toggle-div.active {
+        display: block; /* Show the active div */
+    }
+    #reOrderNumber{
         display: none;
-     }
+    }
     #showEmails {
         display: none;
     }
@@ -34,201 +40,49 @@
 <!-- Content -->
 
 <div class="container-xxl flex-grow-1 container-p-y">
+    <h3>Create Order (Small)</h3>
     <form method="POST" action="{{ route('admin.orderSmallDC.store')}}">
         @csrf
-        <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Order Number</label>
-                    <input readonly type="text" name="order_number" class="form-control" id="order_number" value="{{ $order_number ?? ""}}" aria-describedby="emailHelp">
+        <div id="div1" class="toggle-div active">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Order Number</label>
+                        <input readonly type="text" name="order_number" class="form-control" id="order_number" value="{{ $order_number ?? ""}}" aria-describedby="emailHelp">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Category<span style="color: red">*</span></label>
+                        <select name="category_id" class="form-control" id="category_id" required>
+                            <option value="">Select Category</option>
+                            @foreach ($categories as $item)
+                                <option value="{{$item->id}}">{{$item->title}}</option>
+                            @endforeach
+    
+                        </select>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Category<span style="color: red">*</span></label>
-                    <select name="category_id" class="form-control" id="category_id" required>
-                        <option value="">Select Category</option>
-                        @foreach ($categories as $item)
-                            <option value="{{$item->id}}">{{$item->title}}</option>
-                        @endforeach
-
-                    </select>
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Customer Name</label>
-                    <input type="text" name="customer_name" value="{{old('customer_name')}}" class="form-control" id="customer_name" aria-describedby="customer_name">
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Customer Mobile</label>
-                    <input type="text" class="form-control" placeholder="0300-1234567" maxlength="12" id="phone" name="phone" aria-describedby="emailHelp" value="{{old('phone')}}">
-                    <small id="phoneHelp" style="color: red; display: none;">Please enter a valid phone number (0300-1234567).</small>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Number Of Person/Expose</label>
-                    <select name="no_of_persons" id="no_of_persons" class="form-control" >
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                        <option value="6">6</option>
-                        <option value="7">7</option>
-                        <option value="8">8</option>
-                        <option value="9">9</option>
-                        <option value="10">10</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Order Creating Date</label>
-                    <input type="date" readonly value="{{ date('Y-m-d') }}" class="form-control" id="creating_date" name="creating_date" aria-describedby="emailHelp">
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label for="exampleInputEmail1" class="form-label">Order Delivery Date</label>
-                    <input type="date" class="form-control" name="delivery_date" value="{{old('delivery_date')}}">
-                </div>
-            </div>
-            <div class="col-md-4">
-                <label for="order_delivery_time">Order Delivery Time</label>
-                <select name="delivery_time" id="delivery_time" class="form-control" autocomplete="off">
-                    <option value="">Select Time</option>
-                    <option value="12:00am">12:00pm</option>
-                    <option value="08:00am">08:00am</option>
-                    <option value="08:30am">08:30am</option>
-                    <option value="09:00am">09:00am</option>
-                    <option value="09:30am">09:30am</option>
-                    <option value="10:00am">10:00am</option>
-                    <option value="10:30am">10:30am</option>
-                    <option value="11:00am">11:00am</option>
-                    <option value="11:30am">11:30am</option>
-                    <option value="12:00pm">12:00pm</option>
-                    <option value="12:30pm">12:30pm</option>
-                    <option value="01:00pm">01:00pm</option>
-                    <option value="01:30pm">01:30pm</option>
-                    <option value="02:00pm">02:00pm</option>
-                    <option value="02:30pm">02:30pm</option>
-                    <option value="03:00pm">03:00pm</option>
-                    <option value="03:30pm">03:30pm</option>
-                    <option value="04:00pm">04:00pm</option>
-                    <option value="04:30pm">04:30pm</option>
-                    <option value="05:00pm">05:00pm</option>
-                    <option value="05:30pm">05:30pm</option>
-                    <option value="06:00pm">06:00pm</option>
-                    <option value="06:30pm">06:30pm</option>
-                    <option value="07:00pm">07:00pm</option>
-                    <option value="07:30pm">07:30pm</option>
-                    <option value="08:00pm">08:00pm</option>
-                    <option value="08:30pm">08:30pm</option>
-                    <option value="09:00pm">09:00pm</option>
-                    <option value="09:30pm">09:30pm</option>
-                    <option value="10:00pm">10:00pm</option>
-                    <option value="10:30pm">10:30pm</option>
-                    <option value="11:00pm">11:00pm</option>
-                    <option value="11:30pm">11:30pm</option>
-                    <option value="12:00am">12:00am</option>
-                    <option value="12:30am">12:30am</option>
-                </select>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="order_nature">Order Nature</label>
-                    <select name="order_nature" id="order_nature" class="form-control">
-                        <option value="normal">Normal</option>
-                        <option value="urgent">Urgent</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="order_nature_amount">Order Nature Amount</label>
-                    <input type="text" class="form-control" name="order_nature_amount" id="order_nature_amount" value="0" />
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <span class="span2" style="margin-top:23px;margin-left:10px;">Email Requirement
-                        <input type="checkbox"  class="" id="is_email" name="is_email" />
-                    </span>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label for="email_amount">Email Amount</label>
-                    <input type="text" class="form-control" readonly name="email_amount" id="email_amount" value="0" />
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="mb-3" id="showEmails">
-                    <label for="email_list">Emails</label>
-                    <textarea type="text"  class="form-control" name="emails" id="emails" ></textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label for="email_list">Expose/Media/Redorder<span style="color:red">*</span></label>
-                    <select name="order_type" id="order_type" class="form-control">
-                        <option value="">SELECT</option>
-                        <option value="expose">Expose</option>
-                        <option value="reorder">Reorder</option>
-                        <option value="media">Media</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label for="amount">Amount</label>
-                    <input type="text" readonly class="form-control" name="total" id="amount" value="0" />
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="mb-3">
-                    <label for="email_list">Background Change?</label>
-                    <select name="is_background" id="is_background" class="form-control">
-                        <option value="">SELECT</option>
-                        <option value="Yes">Yes</option>
-                        <option value="No">No</option>
-                    </select>
-                </div>
-            </div>
-          
-        </div>
-
-        <div  id="changeBackground">       
+    
             <div class="row">
                 <div class="col-md-4">
                     <div class="mb-3">
-                        <label for="email_list">Color</label>
-                        <input type="text" name="bg_color" id="bg_color" class="form-control">
+                        <label for="exampleInputEmail1" class="form-label">Customer Name</label>
+                        <input type="text" name="customer_name" value="{{old('customer_name')}}" class="form-control" id="customer_name" aria-describedby="customer_name">
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="mb-3">
-                        <label for="amount">How many?</label>
-                        <select name="bg_qty" id="bg_qty" class="form-control" >
-                            <option value="0">Select Qty</option>
+                        <label for="exampleInputEmail1" class="form-label">Customer Mobile</label>
+                        <input type="text" class="form-control" placeholder="0300-1234567" maxlength="12" id="phone" name="phone" aria-describedby="emailHelp" value="{{old('phone')}}">
+                        <small id="phoneHelp" style="color: red; display: none;">Please enter a valid phone number (0300-1234567).</small>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Number Of Person/Expose</label>
+                        <select name="no_of_persons" id="no_of_persons" class="form-control" >
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -242,82 +96,292 @@
                         </select>
                     </div>
                 </div>
+            </div>
+    
+            <div class="row">
                 <div class="col-md-4">
                     <div class="mb-3">
-                        <label for="email_list">Background Change Amount</label>
-                        <input type="text" readonly name="bg_amount" id="bg_amount" class="form-control" value="0">
+                        <label for="exampleInputEmail1" class="form-label">Order Creating Date</label>
+                        <input type="date" readonly value="{{ date('Y-m-d') }}" class="form-control" id="creating_date" name="creating_date" aria-describedby="emailHelp">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Order Delivery Date</label>
+                        <input type="date" class="form-control" name="delivery_date" value="{{old('delivery_date')}}">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <label for="order_delivery_time">Order Delivery Time</label>
+                    <select name="delivery_time" id="delivery_time" class="form-control" autocomplete="off">
+                        <option value="">Select Time</option>
+                        <option value="12:00am">12:00pm</option>
+                        <option value="08:00am">08:00am</option>
+                        <option value="08:30am">08:30am</option>
+                        <option value="09:00am">09:00am</option>
+                        <option value="09:30am">09:30am</option>
+                        <option value="10:00am">10:00am</option>
+                        <option value="10:30am">10:30am</option>
+                        <option value="11:00am">11:00am</option>
+                        <option value="11:30am">11:30am</option>
+                        <option value="12:00pm">12:00pm</option>
+                        <option value="12:30pm">12:30pm</option>
+                        <option value="01:00pm">01:00pm</option>
+                        <option value="01:30pm">01:30pm</option>
+                        <option value="02:00pm">02:00pm</option>
+                        <option value="02:30pm">02:30pm</option>
+                        <option value="03:00pm">03:00pm</option>
+                        <option value="03:30pm">03:30pm</option>
+                        <option value="04:00pm">04:00pm</option>
+                        <option value="04:30pm">04:30pm</option>
+                        <option value="05:00pm">05:00pm</option>
+                        <option value="05:30pm">05:30pm</option>
+                        <option value="06:00pm">06:00pm</option>
+                        <option value="06:30pm">06:30pm</option>
+                        <option value="07:00pm">07:00pm</option>
+                        <option value="07:30pm">07:30pm</option>
+                        <option value="08:00pm">08:00pm</option>
+                        <option value="08:30pm">08:30pm</option>
+                        <option value="09:00pm">09:00pm</option>
+                        <option value="09:30pm">09:30pm</option>
+                        <option value="10:00pm">10:00pm</option>
+                        <option value="10:30pm">10:30pm</option>
+                        <option value="11:00pm">11:00pm</option>
+                        <option value="11:30pm">11:30pm</option>
+                        <option value="12:00am">12:00am</option>
+                        <option value="12:30am">12:30am</option>
+                    </select>
+                </div>
+            </div>
+    
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="order_nature">Order Nature</label>
+                        <select name="order_nature" id="order_nature" class="form-control">
+                            <option value="normal">Normal</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="order_nature_amount">Order Nature Amount</label>
+                        <input type="text" class="form-control" name="order_nature_amount" id="order_nature_amount" value="0" />
                     </div>
                 </div>
             </div>
-        </div>
-
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3" id="reOrderNumber">
-                    <label for="reorder_number">Re Order Number</label>
-                    <input type="text" class="form-control" name="re_order_number" id="re_order_number" value="0" />
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="mb-3" >
-                    <label for="remarks">Remarks</label>
-                    <textarea id="remarks" class="form-control" name="main_remarks" rows="4" cols="50">{{old('main_remarks')}} </textarea>
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <table id="MTCTypetbChoice" class="table" width="90%">
-                <tbody>
-                    <tr>
-                        <th>Expose</th>
-                        <th>Size</th>
-                        <th>Country</th>
-                        <th>Qty</th>
-                        <th>Total</th>
-                        <th>Remarks</th>
-                        <th>
-                            <button class="btn btn-sm btn-primary" id="addMTCTypeChoiceRow">
-                                <i class="fa fa-plus"></i>
-                            </button>
-                        </th>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="row" style="margin-top:50px">
-            <div class="col-md-3">
-                <div class="mb-3">
-                    
-                    <label for="amount">Grand total</label>
-                    <input type="text" readonly class="form-control" name="grand_total" id="grand_total" value="0" />
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="mb-3">
-                    <label for="discount_amount">Discount Amount</label>
-                    <input type="text" class="form-control" name="discount_amount" id="discount_amount" value="0" />
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="mb-3">
-                    <label for="reorder_number">Net Amount</label>
-                    <input type="text" readonly class="form-control" name="net_amount" id="net_amount" value="0" />
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="mb-3">
-                    <label for="remarks">Outstanding Amount</label>
-                    
-                    <input type="text" readonly class="form-control" name="outstanding_amount" id="outstanding_amount" value="0" />
-
-                </div>
-            </div>
-        </div>
     
-        <button type="submit" class="btn btn-primary">Submit</button>
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <span class="span2" style="margin-top:23px;margin-left:10px;">Email Requirement
+                            <input type="checkbox"  class="" id="is_email" name="is_email" />
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="email_amount">Email Amount</label>
+                        <input type="text" class="form-control" readonly name="email_amount" id="email_amount" value="0" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3" id="showEmails">
+                        <label for="email_list">Emails</label>
+                        <textarea type="text"  class="form-control" name="emails" id="emails" ></textarea>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="email_list">Expose/Media/Redorder<span style="color:red">*</span></label>
+                        <select name="order_type" id="order_type" class="form-control">
+                            <option value="">SELECT</option>
+                            <option value="expose">Expose</option>
+                            <option value="reorder">Reorder</option>
+                            <option value="media">Media</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="amount">Amount</label>
+                        <input type="text" readonly class="form-control" name="total" id="amount" value="0" />
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label for="email_list">Background Change?</label>
+                        <select name="is_background" id="is_background" class="form-control">
+                            <option value="">SELECT</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                </div>
+              
+            </div>
+    
+            <div  id="changeBackground">       
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="email_list">Color</label>
+                            <input type="text" name="bg_color" id="bg_color" class="form-control">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="amount">How many?</label>
+                            <select name="bg_qty" id="bg_qty" class="form-control" >
+                                <option value="0">Select Qty</option>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                                <option value="6">6</option>
+                                <option value="7">7</option>
+                                <option value="8">8</option>
+                                <option value="9">9</option>
+                                <option value="10">10</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="mb-3">
+                            <label for="email_list">Background Change Amount</label>
+                            <input type="text" readonly name="bg_amount" id="bg_amount" class="form-control" value="0">
+                        </div>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3" id="reOrderNumber">
+                        <label for="reorder_number">Re Order Number</label>
+                        <input type="text" class="form-control" name="re_order_number" id="re_order_number" value="0" />
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3" >
+                        <label for="remarks">Remarks</label>
+                        <textarea id="remarks" class="form-control" name="main_remarks" rows="4" cols="50">{{old('main_remarks')}} </textarea>
+                    </div>
+                </div>
+            </div>
+    
+            <div class="row">
+                <table id="MTCTypetbChoice" class="table" width="90%">
+                    <tbody>
+                        <tr>
+                            <th>Expose</th>
+                            <th>Size</th>
+                            <th>Country</th>
+                            <th>Qty</th>
+                            <th>Total</th>
+                            <th>Remarks</th>
+                            <th>
+                                <button class="btn btn-sm btn-primary" id="addMTCTypeChoiceRow">
+                                    <i class="fa fa-plus"></i>
+                                </button>
+                            </th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+    
+            <div class="row" style="margin-top:50px">
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        
+                        <label for="amount">Grand total</label>
+                        <input type="text" readonly class="form-control" name="grand_total" id="grand_total" value="0" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="discount_amount">Discount Amount</label>
+                        <input type="text" class="form-control" name="discount_amount" id="discount_amount" value="0" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="reorder_number">Net Amount</label>
+                        <input type="text" readonly class="form-control" name="net_amount" id="net_amount" value="0" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label for="remarks">Outstanding Amount</label>
+                        <input type="text" readonly class="form-control" name="outstanding_amount" id="outstanding_amount" value="0" />
+                    </div>
+                </div>
+            </div>
+            <button id="toggleButton" class="btn btn-sm btn-success" style="float: right">Next</button>
+
+        </div>
+        <div id="div2" class="toggle-div">
+            <div class="mb-4">
+                <h6 class="card-title mb-3">Payment</h6>
+                <div class="text-muted">Choose your payment method.</div>
+            </div>
+            <div class="mb-4">
+                <label for="">Select Payment Method</label>
+                <select name="payment_method" class="form-control">
+                    <option value="Cash">Cash</option>
+                    <option value="Card">Card</option>
+                    <option value="Bank Transfer">Bank Transfer</option>
+                    <option value="Jazz Cash">Jazz Cash</option>
+                    <option value="Easy Paisa">Easy Paisa</option>
+
+                </select>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label for="">Net Total</label>
+                        <input type="text" readonly id="outStandingAmount" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <label for="">Remaining Balance</label>
+                        <input type="text" readonly id="remaining_balance" value="0" name="remaining_amount" class="form-control">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="mb-4">
+                        <label for="">Cash Received</label>
+                        <input type="text" id="amount_received" name="amount_received" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-4">
+                        <label for="">Cash Charged</label>
+                        <input type="text" id="amount_charged" name="amount_charged" class="form-control">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="mb-4">
+                        <label for="">Cash Back</label>
+                        <input type="text" id="cash_back" readonly name="cash_back" class="form-control">
+                    </div>
+                </div>
+            </div>
+          
+            <button id="toggleButtonPrev" class="btn btn-sm btn-warning">Previous</button>
+            <button  type="submit" class="btn btn-sm btn-success">Submit</button>
+
+        </div>    
+        {{-- <button type="submit" class="btn btn-primary">Submit</button> --}}
     </form>
     {{-- <div id="confirmModal" class="modal fade" role="dialog">
         <div class="modal-dialog modal-dialog-centered">
@@ -341,9 +405,60 @@
 @endsection
 
 @section('js')
-<script>
-    $(document).ready(function() {
 
+
+<script>
+    $(document).ready(function () {
+
+        $(document).on('keyup', '#amount_charged', function(){
+            let net_total       = parseInt($('#outStandingAmount').val());
+            let charge          = parseInt($(this).val());
+            let amount_received = parseInt($('#amount_received').val());
+            // 
+            // 
+            // console.log(net_total, charge);
+            if(charge > net_total) {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Charged amount is not greater than Net Total",
+                });
+                $(this).val('');
+            } else {
+                let cashBack = amount_received - charge;
+                let rem = net_total - charge;
+                $('#cash_back').val(cashBack);
+                $('#remaining_balance').val(rem);
+            }
+        });
+
+        document.getElementById('toggleButton').addEventListener('click', function(e) {
+
+            e.preventDefault();
+            var div1 = document.getElementById('div1');
+            var div2 = document.getElementById('div2');
+
+            $('#outStandingAmount').val($('#outstanding_amount').val());
+
+            if (div1.classList.contains('active')) {
+                div1.classList.remove('active');
+                div2.classList.add('active');
+            } else {
+                div1.classList.add('active');
+                div2.classList.remove('active');
+            }
+        });
+
+        document.getElementById('toggleButtonPrev').addEventListener('click', function(e) {
+            e.preventDefault();
+            var div1 = document.getElementById('div1');
+            var div2 = document.getElementById('div2');
+
+            div1.classList.add('active');
+            div2.classList.remove('active');
+            
+        });
+        
         $('#phone').on('keyup', function() {
             let value = $(this).val();
             value = value.replace(/[^0-9]/g, ''); // Remove any non-digit characters
@@ -354,11 +469,6 @@
 
             $(this).val(value);
         });
-    });
-</script>
-
-<script>
-    $(document).ready(function () {
         
         const urgent_amount = "{{$setting->urgent_amount_small}}";
         const media_amount  = "{{$setting->media_amount_small}}";
