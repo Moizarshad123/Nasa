@@ -879,6 +879,23 @@ class BigOrderController extends Controller
                 $order->status = "Ready";
             } elseif($status == 6) {
                 $order->status = "Completed";
+            } elseif($status == 7) {
+                $order->status = "Cancelled";
+
+                $update = OrderNumber::where('order_number', $order->order_number)->first();
+                $update->is_used = 0;
+                $update->save();
+
+                $order->refund_amount      = $order->amount_charged;
+                $order->remaining_amount   = 0;
+                $order->outstanding_amount = 0;
+
+                $order->save();
+
+                $history->to_status = $order->status;
+                $history->save();
+
+                return redirect('admin/sales-return/'.$order->id)->with('success', "Order cancelled successfully..!!");
             }
             $order->save();
 
@@ -893,17 +910,34 @@ class BigOrderController extends Controller
 
     public function drop_job($order_id) {
 
+        $history              = new OrderHistory();
+        $history->order_id    = $order_id;
+        $history->change_by   = auth()->user()->id;
+       
         $order = Order::find($order_id);
-        $order->status    = "Cancelled";
+
+        $history->from_status = $order->status;
+        
+        $order->status    = "Active";        
         $order->assign_to = 0;
         $order->save();
 
-        $update = OrderNumber::where('order_number', $order->order_number)->first();
-        $update->is_used = 0;
-        $update->save();
+        $history->to_status = "Active";
+        $history->save();
 
-        return redirect()->back()->with("success", "Order (Big) created");
+        return redirect('admin/editing-department')->with("success", $order->order_number." Job dropped");
 
+    }
+
+    public function sales_return($order_id) {
+        try {
+
+            $order = Order::find($order_id);
+            return view('admin.sales_returns', compact('order'));
+
+        } catch (\Exception $ex) {
+            return redirect('/')->with('error', $ex->getMessage());
+        }
 
     }
 

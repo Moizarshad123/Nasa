@@ -40,7 +40,8 @@ class Order extends Model
         'amount_received',
         'amount_charged',
         'cash_back',
-        'remaining_amount', 
+        'remaining_amount',
+        'refund_amount', 
         'remarks',
         'status'
     ];

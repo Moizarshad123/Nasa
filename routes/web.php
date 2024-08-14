@@ -50,6 +50,9 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::POST('change-order-status',"changeStatus")->name('changeStatus');
         Route::GET('outstanding-amount',"outstandingAmount")->name('outstandingAmount');
         Route::GET('drop-job/{id}',"drop_job")->name('dropJob');
+        Route::GET('sales-return/{id}',"sales_return")->name('salesReturn');
+
+        
         Route::get('print/{id}', 'printView')->name('print.view');
         Route::get('/pos-slip', 'generatePdf');
         

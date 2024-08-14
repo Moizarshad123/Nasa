@@ -205,6 +205,11 @@
                                     <option value="4" {{$order->status == "Printing Department" ? 'selected' : ""}}>Move To Printing Dept:</option>
                                     <option value="5" {{$order->status == "Ready" ? 'selected' : ""}}>Job Ready</option>
                                     <option value="6" {{$order->status == "Completed" ? 'selected' : ""}}>Completed</option>
+
+                                    @if($order->status != "Printing Department" && $order->status != "Ready" && $order->status != "Completed")
+                                        <option value="7" {{$order->status == "Cancelled" ? 'selected' : ""}}>Sales Return</option>
+                                    @endif
+
                                 </select>
                             </div>
                             <div class="col">
