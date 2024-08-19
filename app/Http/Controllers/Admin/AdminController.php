@@ -27,7 +27,7 @@ class AdminController extends Controller
             if ($validator->fails()){
                 return redirect()->back()->withErrors($validator->errors())->withInput();
             }
-            $user = User::where('email', $request->input('email'))->first();
+            $user = User::where('email', $request->input('email'))->where('status', 1)->first();
            
             if ($user != null) {
 

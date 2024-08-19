@@ -68,21 +68,21 @@
             <div class="row">
                 <div class="col-md-4">
                     <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Customer Name</label>
-                        <input type="text" name="customer_name" value="{{old('customer_name')}}" class="form-control" id="customer_name" aria-describedby="customer_name">
+                        <label for="exampleInputEmail1" class="form-label">Customer Name<span style="color: red">*</span></label>
+                        <input type="text" name="customer_name" value="{{old('customer_name')}}" class="form-control" id="customer_name" aria-describedby="customer_name" required>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Customer Mobile</label>
-                        <input type="text" class="form-control" placeholder="0300-1234567" maxlength="12" id="phone" name="phone" aria-describedby="emailHelp" value="{{old('phone')}}">
+                        <label for="exampleInputEmail1" class="form-label">Customer Mobile<span style="color: red">*</span></label>
+                        <input type="text" class="form-control" placeholder="0300-1234567" maxlength="12" id="phone" name="phone" aria-describedby="emailHelp" value="{{old('phone')}}" required>
                         <small id="phoneHelp" style="color: red; display: none;">Please enter a valid phone number (0300-1234567).</small>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Number Of Person/Expose</label>
-                        <select name="no_of_persons" id="no_of_persons" class="form-control" >
+                        <label for="exampleInputEmail1" class="form-label">Number Of Person/Expose<span style="color: red">*</span></label>
+                        <select name="no_of_persons" id="no_of_persons" class="form-control" required>
                             <option value="1">1</option>
                             <option value="2">2</option>
                             <option value="3">3</option>
@@ -107,13 +107,14 @@
                 </div>
                 <div class="col-md-4">
                     <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Order Delivery Date</label>
+                        <label for="exampleInputEmail1" class="form-label">Order Delivery Date<span style="color: red">*</span></label>
                         <input type="date" class="form-control" name="delivery_date" value="{{old('delivery_date')}}">
                     </div>
                 </div>
                 <div class="col-md-4">
-                    <label for="order_delivery_time">Order Delivery Time</label>
-                    <select name="delivery_time" id="delivery_time" class="form-control" autocomplete="off">
+                    <label for="order_delivery_time">Order Delivery Time<span style="color: red">*</span></label>
+                    <input type="time" name="delivery_time" id="delivery_time" class="form-control" required value="{{$collectionTime}}">
+                    {{-- <select name="delivery_time" id="delivery_time" class="form-control" autocomplete="off" required>
                         <option value="">Select Time</option>
                         <option value="12:00am">12:00pm</option>
                         <option value="08:00am">08:00am</option>
@@ -150,7 +151,7 @@
                         <option value="11:30pm">11:30pm</option>
                         <option value="12:00am">12:00am</option>
                         <option value="12:30am">12:30am</option>
-                    </select>
+                    </select> --}}
                 </div>
             </div>
     
@@ -198,7 +199,7 @@
                 <div class="col-md-4">
                     <div class="mb-3">
                         <label for="email_list">Expose/Media/Redorder<span style="color:red">*</span></label>
-                        <select name="order_type" id="order_type" class="form-control">
+                        <select name="order_type" id="order_type" class="form-control" required>
                             <option value="">SELECT</option>
                             <option value="expose">Expose</option>
                             <option value="reorder">Reorder</option>
@@ -749,7 +750,28 @@
                 $("#order_nature_amount").val(parseFloat(urgent_amount) * no);
                 calValues();
 
-            } else{
+                  // Get the current time
+                var currentTime = new Date();
+
+                // Add 15 minutes to the current time
+                currentTime.setMinutes(currentTime.getMinutes() + 15);
+
+                // Format the time as HH:MM
+                var hours = currentTime.getHours();
+                var minutes = currentTime.getMinutes();
+
+                // Add leading zero to minutes if needed
+                if(minutes < 10) {
+                    minutes = '0' + minutes;
+                }
+
+                // Format the time in 24-hour format
+                var formattedTime = hours + ':' + minutes;
+
+                // Set the formatted time to the input field
+                $('#delivery_time').val(formattedTime);
+
+            } else {
                 $("#order_nature_amount").val(0);
                 calValues();
             }

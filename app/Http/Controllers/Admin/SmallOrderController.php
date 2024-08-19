@@ -15,7 +15,7 @@ use App\Models\Setting;
 use App\Models\OrderSmallRate;
 use App\Models\OrderNumber;
 use App\Models\OrderHistory;
-
+use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 
@@ -65,12 +65,52 @@ class SmallOrderController extends Controller
         return view('admin.small_orders.index');
     }
 
+    function calculateCollectionTime($bookingTime)
+    {
+        // Define collection time slots
+        $collectionSlots = [
+            '11:00',
+            '13:00',
+            '15:00',
+            '17:00',
+            '19:00',
+            '21:00',
+            '22:00',
+        ];
+
+        // Define studio closing time
+        $studioClosingTime = '22:00';
+
+        // Convert booking time to a Carbon instance
+        $bookingTime = Carbon::parse($bookingTime);
+
+        // Iterate over collection slots
+        foreach ($collectionSlots as $slot) {
+            $collectionTime = Carbon::parse($slot);
+            
+            // If booking time is before or equal to (collectionTime - 2 hours)
+            if ($bookingTime->lte($collectionTime->subHours(2))) {
+                return $slot; // Return the matching slot
+            }
+        }
+
+        // If no collection time found, return the last slot if within closing time
+        if ($bookingTime->lt(Carbon::parse($studioClosingTime))) {
+            return end($collectionSlots);
+        }
+
+        // If booking is after closing time, return null or a message
+        return null;
+    }
+
     public function create()
     {
+        $bookingTime = now();
+        $collectionTime =  $this->calculateCollectionTime($bookingTime);
         $categories   = Category::skip(0)->take(2)->get();
         $order_number = OrderNumber::where('order_number', 'LIKE', 'S%')->where('is_used', 0)->pluck('order_number')->first();
         $setting      = Setting::find(1);
-        return view('admin.small_orders.create', compact("order_number", "categories", "setting"));
+        return view('admin.small_orders.create', compact("collectionTime", "order_number", "categories", "setting"));
         
     }
 

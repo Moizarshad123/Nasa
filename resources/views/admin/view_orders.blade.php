@@ -182,14 +182,17 @@
         <div class="col-lg-4 col-md-12 mt-4 mt-lg-0">
             <div class="card mb-4">
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col">
-                            @if($order->assign_to ==  auth()->user()->id && $order->status == "Editing Department")
-                                <a style="float: right" class="btn btn-danger" href="{{ route('admin.dropJob', $order->id) }}">Drop the Job</a>
-                            @endif
+                    @if(auth()->user()->role_id != 4)
+                        <div class="row">
+                            <div class="col">
+                                @if($order->assign_to ==  auth()->user()->id && $order->status == "Editing Department")
+                                    <a style="float: right" class="btn btn-danger" href="{{ route('admin.dropJob', $order->id) }}">Drop the Job</a>
+                                @endif
+                            </div>
                         </div>
-                    </div>
+                    
                     <br>
+
                     <form action="{{ route('admin.changeStatus') }}" method="POST">
                         @csrf
                         <input type="hidden" name="order_id" value="{{ $order->id }}">
@@ -217,6 +220,7 @@
                             </div>
                         </div>
                     </form>
+                    @endif
 
                     <br><br>
                     <h6 class="card-title mb-4">Price</h6>

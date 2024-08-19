@@ -19,21 +19,7 @@
                     <div class="fw-bold">Nasa Studio</div>
                 </div>
             </a>
-            <div class="dropdown-menu dropdown-menu-end">
-                <a href="#" class="dropdown-item d-flex align-items-center">
-                    <i class="bi bi-person dropdown-item-icon"></i> Profile
-                </a>
-                <a href="#" class="dropdown-item d-flex align-items-center">
-                    <i class="bi bi-envelope dropdown-item-icon"></i> Inbox
-                </a>
-                <a href="#" class="dropdown-item d-flex align-items-center" data-sidebar-target="#settings">
-                    <i class="bi bi-gear dropdown-item-icon"></i> Settings
-                </a>
-                <a href="./login.html" class="dropdown-item d-flex align-items-center text-danger"
-                   target="_blank">
-                    <i class="bi bi-box-arrow-right dropdown-item-icon"></i> Logout
-                </a>
-            </div>
+            
         </div>
         <ul>
             <li>
@@ -65,7 +51,7 @@
             <li>
                 <a class="{{ request()->IS('admin/editing-department') ? 'active' : '' }}"  href="{{ route('admin.editingDepartment') }}">
                     <span class="nav-link-icon">
-                        <i class="bi bi-receipt"></i>
+                        <i class="bi bi-paperclip"></i>
                     </span>
                     <span>Editing Department</span>
                 </a>
@@ -74,7 +60,7 @@
             <li>
                 <a class="{{ request()->IS('admin/printing-department') ? 'active' : '' }}"  href="{{ route('admin.printingDepartment') }}">
                     <span class="nav-link-icon">
-                        <i class="bi bi-receipt"></i>
+                        <i class="bi bi-check-circle"></i>
                     </span>
                     <span>Printing Department</span>
                 </a>
@@ -88,50 +74,63 @@
                     <span>All Orders</span>
                 </a>
             </li>
-            <li>
-                <a class="{{ request()->IS('admin/product') ? 'active' : '' }}"  href="{{ route('admin.product.index') }}">
-                    <span class="nav-link-icon">
-                        <i class="bi bi-truck"></i>
-                    </span>
-                    <span>Products Big</span>
-                </a>
-            </li>
-            <li>
-                <a class="{{ request()->IS('admin/outstanding-amount') ? 'active' : '' }}"  href="{{ route('admin.outstandingAmount') }}">
-                    <span class="nav-link-icon">
-                        <i class="bi bi-truck"></i>
-                    </span>
-                    <span>Outstanding Amount</span>
-                </a>
-            </li>
+           
+            @if(auth()->user()->role_id == 1)
 
-            <li>
-                <a class="{{ request()->IS('admin/orderNumber') ? 'active' : '' }}"  href="{{ route('admin.orderNumber.index') }}">
-                    <span class="nav-link-icon">
-                        <i class="bi bi-truck"></i>
-                    </span>
-                    <span>Order Numbers</span>
-                </a>
-            </li>
+                <li>
+                    <a class="{{ request()->IS('admin/product') ? 'active' : '' }}"  href="{{ route('admin.product.index') }}">
+                        <span class="nav-link-icon">
+                            <i class="bi bi-truck"></i>
+                        </span>
+                        <span>Products Big</span>
+                    </a>
+                </li>
 
-            <li>
-                <a class="{{ request()->IS('admin/order-history') ? 'active' : '' }}"  href="{{ route('admin.orderHistory') }}">
-                    <span class="nav-link-icon">
-                        <i class="bi bi-truck"></i>
-                    </span>
-                    <span>Order History</span>
-                </a>
-            </li>
+                <li>
+                    <a class="{{ request()->IS('admin/outstanding-amount') ? 'active' : '' }}"  href="{{ route('admin.outstandingAmount') }}">
+                        <span class="nav-link-icon">
+                            <i class="bi bi-truck"></i>
+                        </span>
+                        <span>Outstanding Amount</span>
+                    </a>
+                </li>
 
-            
-            <li>
-                <a class="{{ request()->IS('admin/settings') ? 'active' : '' }}"  href="{{ route('admin.settings') }}">
-                    <span class="nav-link-icon">
-                        <i class="bi bi-gear"></i>
-                    </span>
-                    <span>Settings</span>
-                </a>
-            </li>
+                <li>
+                    <a class="{{ request()->IS('admin/orderNumber') ? 'active' : '' }}"  href="{{ route('admin.orderNumber.index') }}">
+                        <span class="nav-link-icon">
+                            <i class="bi bi-bar-chart"></i>
+                        </span>
+                        <span>Order Numbers</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a class="{{ request()->IS('admin/order-history') ? 'active' : '' }}"  href="{{ route('admin.orderHistory') }}">
+                        <span class="nav-link-icon">
+                            <i class="bi bi-wallet2"></i>
+                        </span>
+                        <span>Order History</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a class="{{ request()->IS('admin/users') ? 'active' : '' }}"  href="{{ route('admin.users.index') }}">
+                        <span class="nav-link-icon">
+                            <i class="bi bi-person-badge"></i>
+                        </span>
+                        <span>Users</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a class="{{ request()->IS('admin/settings') ? 'active' : '' }}"  href="{{ route('admin.settings') }}">
+                        <span class="nav-link-icon">
+                            <i class="bi bi-gear"></i>
+                        </span>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            @endif
             {{-- <li>
                 <a href="#">
                     <span class="nav-link-icon">
