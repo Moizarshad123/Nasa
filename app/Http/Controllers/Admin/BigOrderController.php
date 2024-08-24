@@ -16,6 +16,7 @@ use App\Models\Country;
 use App\Models\Size;
 use App\Models\OrderNumber;
 use App\Models\OrderHistory;
+use App\Models\OrderPayment;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Auth, Mail, DataTables;
 
@@ -116,6 +117,16 @@ class BigOrderController extends Controller
                 'remarks'           => $request->main_remarks
             ]);
 
+            $orderPayment = OrderPayment::create([
+                "order_id"        => $order->id,
+                "payment_method"  => $request->payment_method,
+                "received_by"     => auth()->user()->id,
+                "amount_received" => $request->amount_received,
+                "amount_charged"  => $request->amount_charged,
+                "cash_back"       => $request->cash_back
+            ]);
+
+
             $orderNumber = OrderNumber::where('order_number', $request->order_number)->first();
             $orderNumber->is_used = 1;
             $orderNumber->save();
@@ -151,8 +162,9 @@ class BigOrderController extends Controller
     }
 
     public function printView($order_id) {
-        $order       = Order::with('category')->find($order_id);
-        $orderDetail = OrderDetail::where('order_id', $order_id)->get();
+        $order        = Order::with('category')->find($order_id);
+        $orderDetail  = OrderDetail::where('order_id', $order_id)->get();
+        $OrderPayment = OrderPayment::where('order_id', $order->id)->sum('amount_charged');
         $content = "";
         if(count($orderDetail) > 0) {
             foreach($orderDetail as $item){
@@ -305,7 +317,7 @@ class BigOrderController extends Controller
 
                         <tr class="align-amounts">
                             <th colspan="4"><span style="margin-left: -65px;">Paid Amount:</span></th>
-                            <td colspan="1"><span style="float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->amount_charged, 2).'</span></td>
+                            <td colspan="1"><span style="float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($OrderPayment, 2).'</span></td>
                          </tr>
                          <tr>
                             <th colspan="4" style="margin-left: -75px;">Outstanding Amount</th>
@@ -614,17 +626,34 @@ class BigOrderController extends Controller
                                       
                     ->addColumn('action', function ($data) {
 
-                        return '<div class="d-flex">
-                            <div class="dropdown ms-auto">
-                                <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
-                                    aria-haspopup="true" aria-expanded="false">
-                                    <i class="bi bi-three-dots"></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <a href="'.url('admin/view-order/'.$data->id).'" class="dropdown-item">Edit</a>
-                                </div>
-                            </div>
-                        </div>';
+                        if($data->status == "Ready") 
+                        {
+                            return '<div class="d-flex">
+                                        <div class="dropdown ms-auto">
+                                            <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
+                                                aria-haspopup="true" aria-expanded="false">
+                                                <i class="bi bi-three-dots"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <a href="'.url('admin/view-order/'.$data->id).'" class="dropdown-item">Edit</a>
+                                                <a href="'.url('admin/payment/'.$data->id).'" class="dropdown-item">Payment</a>
+                                            </div>
+                                        </div>
+                                    </div>';
+                        } else {
+                            return '<div class="d-flex">
+                                        <div class="dropdown ms-auto">
+                                            <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
+                                                aria-haspopup="true" aria-expanded="false">
+                                                <i class="bi bi-three-dots"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-end">
+                                                <a href="'.url('admin/view-order/'.$data->id).'" class="dropdown-item">Edit</a>
+                                            </div>
+                                        </div>
+                                    </div>';
+                        }
+                   
                     })->rawColumns(['assignTo', 'orderStatus', 'del_date', 'category', 'action'])->make(true);
             }
 
@@ -634,6 +663,41 @@ class BigOrderController extends Controller
 
         return view('admin.all_orders');
     }
+
+    public function payment($orderId) {
+        $order  = Order::find($orderId);
+        return view('admin.payment',compact('order'));
+    }
+
+    public function add_payment(Request $request) {
+
+        try {
+
+            $order                     = Order::find($request->order_id);
+            $order->outstanding_amount = $request->remaining_amount; 
+            $order->save();
+
+            $orderPayment = OrderPayment::create([
+                "order_id"        => $order->id,
+                "payment_method"  => $request->payment_method,
+                "received_by"     => auth()->user()->id,
+                "amount_received" => $request->amount_received,
+                "amount_charged"  => $request->amount_charged,
+                "cash_back"       => $request->cash_back
+            ]);
+            if($request->amount_charged != 0) {
+                return redirect('admin/print/'.$order->id)->with("success", "Payment Received");
+            } else {
+                return redirect('admin/all-orders')->with("success", "Order Completed successfully");
+            }
+        } catch (\Exception $e) {
+            return redirect()->back()->with("error", $e->getMessage());
+         }
+
+
+    }
+
+    
 
     public function viewOrder($id) {
         $order  = Order::with("category")->find($id);

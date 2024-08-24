@@ -205,7 +205,7 @@
                                     @if($firstTwoChars == "Bb")
                                         <option value="3" {{$order->status == "Approval" ? 'selected' : ""}}>Approval</option>
                                     @endif
-                                    <option value="4" {{$order->status == "Printing Department" ? 'selected' : ""}}>Move To Printing Dept:</option>
+                                    <option value="4" {{$order->status == "Printing Department" ? 'selected' : ""}}>Printing Department</option>
                                     <option value="5" {{$order->status == "Ready" ? 'selected' : ""}}>Job Ready</option>
                                     <option value="6" {{$order->status == "Completed" ? 'selected' : ""}}>Completed</option>
 

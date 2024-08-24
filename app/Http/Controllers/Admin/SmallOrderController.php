@@ -15,6 +15,8 @@ use App\Models\Setting;
 use App\Models\OrderSmallRate;
 use App\Models\OrderNumber;
 use App\Models\OrderHistory;
+use App\Models\OrderPayment;
+
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -84,12 +86,14 @@ class SmallOrderController extends Controller
         // Convert booking time to a Carbon instance
         $bookingTime = Carbon::parse($bookingTime);
 
+       
+
         // Iterate over collection slots
         foreach ($collectionSlots as $slot) {
             $collectionTime = Carbon::parse($slot);
             
             // If booking time is before or equal to (collectionTime - 2 hours)
-            if ($bookingTime->lte($collectionTime->subHours(2))) {
+            if ($bookingTime->lte($collectionTime->subHours(1))) {
                 return $slot; // Return the matching slot
             }
         }
@@ -144,18 +148,27 @@ class SmallOrderController extends Controller
                 'discount_amount'   => $request->discount_amount,
                 'net_amount'        => $request->net_amount,
                 'outstanding_amount'=> $request->remaining_amount, 
-                'payment_method'    => $request->payment_method,
-                'received_by'       => auth()->user()->id,
-                'amount_received'   => $request->amount_received,
-                'amount_charged'    => $request->amount_charged,
-                'cash_back'         => $request->cash_back,
-                'remaining_amount'  => $request->remaining_amount,
+                // 'payment_method'    => $request->payment_method,
+                // 'received_by'       => auth()->user()->id,
+                // 'amount_received'   => $request->amount_received,
+                // 'amount_charged'    => $request->amount_charged,
+                // 'cash_back'         => $request->cash_back,
+                // 'remaining_amount'  => $request->remaining_amount,
                 'remarks'           => $request->main_remarks
             ]);
 
             $orderNumber = OrderNumber::where('order_number', $request->order_number)->first();
             $orderNumber->is_used = 1;
             $orderNumber->save();
+
+            $orderPayment = OrderPayment::create([
+                "order_id"        => $order->id,
+                "payment_method"  => $request->payment_method,
+                "received_by"     => auth()->user()->id,
+                "amount_received" => $request->amount_received,
+                "amount_charged"  => $request->amount_charged,
+                "cash_back"       => $request->cash_back
+            ]);
 
             if(isset($request->person_id)) {
                 foreach ($request->person_id as $key => $value) {

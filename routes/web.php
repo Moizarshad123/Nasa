@@ -48,12 +48,14 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::GET('outstanding-amount',"outstandingAmount")->name('outstandingAmount');
         Route::GET('drop-job/{id}',"drop_job")->name('dropJob');
         Route::GET('sales-return/{id}',"sales_return")->name('salesReturn');
-
-        
         Route::get('print/{id}', 'printView')->name('print.view');
         Route::get('/pos-slip', 'generatePdf');
-        
         Route::GET('view-order/{id}',"viewOrder")->name('viewOrder');
+        Route::GET('payment/{id}',"payment")->name('payment');
+        Route::POST('add-payment',"add_payment")->name('addPayment');
+
+        
+        
         // Route::GET('change-order-status/{id}/{status}',"changeOrderStatus")->name('changeOrderStatus');
     });
 
