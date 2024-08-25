@@ -41,13 +41,13 @@
         <div class="row">
             <div class="col-md-4">
                 <div class="mb-4">
-                    <label for="">Cash Received</label>
+                    <label for="">Amount Received</label>
                     <input type="text" id="amount_received" name="amount_received" class="form-control">
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="mb-4">
-                    <label for="">Cash Charged</label>
+                    <label for="">Amount Charged</label>
                     <input type="text" id="amount_charged" name="amount_charged" class="form-control">
                 </div>
             </div>

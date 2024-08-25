@@ -19,6 +19,7 @@ class Order extends Model
         'creating_date',
         'delivery_date',
         'delivery_time',
+        'return_date',
         'order_nature',
         'order_nature_amount', 
         'is_email',

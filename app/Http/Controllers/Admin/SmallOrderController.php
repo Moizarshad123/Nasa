@@ -121,6 +121,12 @@ class SmallOrderController extends Controller
     public function store(Request $request)
     {
         try {
+
+            if($request->remaining_amount == 0) {
+                $out_amount = $request->outstanding_amount;
+            } else {
+                $out_amount = $request->remaining_amount;
+            }
             
             $order = Order::create([
                 "order_number"       => $request->order_number,
@@ -147,7 +153,7 @@ class SmallOrderController extends Controller
                 'grand_total'       => $request->grand_total,
                 'discount_amount'   => $request->discount_amount,
                 'net_amount'        => $request->net_amount,
-                'outstanding_amount'=> $request->remaining_amount, 
+                'outstanding_amount'=> $out_amount, 
                 // 'payment_method'    => $request->payment_method,
                 // 'received_by'       => auth()->user()->id,
                 // 'amount_received'   => $request->amount_received,
@@ -156,19 +162,23 @@ class SmallOrderController extends Controller
                 // 'remaining_amount'  => $request->remaining_amount,
                 'remarks'           => $request->main_remarks
             ]);
+            if($request->remaining_amount != 0) {
+                $orderPayment = OrderPayment::create([
+                    "order_id"        => $order->id,
+                    "payment_method"  => $request->payment_method,
+                    "received_by"     => auth()->user()->id,
+                    "amount_received" => $request->amount_received,
+                    "amount_charged"  => $request->amount_charged,
+                    "cash_back"       => $request->cash_back,
+                    "outstanding_amount" => $request->remaining_amount
+                ]);
+            }
+
 
             $orderNumber = OrderNumber::where('order_number', $request->order_number)->first();
             $orderNumber->is_used = 1;
             $orderNumber->save();
 
-            $orderPayment = OrderPayment::create([
-                "order_id"        => $order->id,
-                "payment_method"  => $request->payment_method,
-                "received_by"     => auth()->user()->id,
-                "amount_received" => $request->amount_received,
-                "amount_charged"  => $request->amount_charged,
-                "cash_back"       => $request->cash_back
-            ]);
 
             if(isset($request->person_id)) {
                 foreach ($request->person_id as $key => $value) {
@@ -202,6 +212,7 @@ class SmallOrderController extends Controller
         $order       = Order::with('category')->find($order_id);
         $orderDetail = OrderDetail::where('order_id', $order_id)->get();
         $content = "";
+        $amountCharged = OrderPayment::where('order_id', $order_id)->sum('amount_charged');
         if(count($orderDetail) > 0) {
             foreach($orderDetail as $item){
                 $content .= '<tr class="text-center">
@@ -318,14 +329,20 @@ class SmallOrderController extends Controller
                         <tbody>
                         
                         <tr class="align-amounts">
-                            <th colspan="4"><span style="margin-left: -35px;">Expose Charges:</span></th>
-                            <td colspan="1"><span style="float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->amount, 2).'</span></td>
+                            <th colspan="4"><span style="font-size: 12px; margin-left: -45px;">Expose Charges:</span></th>
+                            <td colspan="1"><span style="font-size: 12px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->amount, 2).'</span></td>
                         </tr>
-                      
-
-                          <tr class="align-amounts">
-                            <th colspan="4"><span style="margin-left: -45px;">Email Charges:</span></th>
-                            <td colspan="1"><span style="float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->email_amount, 2).'</span></td>
+                        <tr class="align-amounts">
+                            <th colspan="4"><span style="font-size: 12px;margin-left: -55px;">Email Charges:</span></th>
+                            <td colspan="1"><span style="font-size: 12px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->email_amount, 2).'</span></td>
+                        </tr>
+                        <tr class="align-amounts">
+                            <th colspan="4"><span style="font-size: 12px;margin-left: -50px;">Urgent Charges:</span></th>
+                            <td colspan="1"><span style="font-size: 12px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->order_nature_amount, 2).'</span></td>
+                        </tr>
+                           <tr class="align-amounts">
+                            <th colspan="4"><span style="font-size: 12px;margin-left: -65px;">BG: Charges:</span></th>
+                            <td colspan="1"><span style="font-size: 12px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->bg_amount, 2).'</span></td>
                         </tr>
                         
                         
@@ -340,22 +357,28 @@ class SmallOrderController extends Controller
                         <tbody>
                         
                         <tr class="align-amounts">
-                            <th colspan="4"><span style="margin-left: -70px;">Grand Total:</span></th>
-                            <td colspan="1"><span style="float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->grand_total,2).'</span></td>
+                            <th colspan="4"><span style="font-size: 13px;margin-left: -80px;">Grand Total:</span></th>
+                            <td colspan="1"><span style="font-size: 13px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->grand_total,2).'</span></td>
+                        </tr>
+
+                         <tr class="align-amounts">
+                            <th colspan="4"><span style="font-size: 13px;margin-left: -45px;">Discount Amount:</span></th>
+                            <td colspan="1"><span style="font-size: 13px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->discount_amount,2).'</span></td>
                         </tr>
                       
                         <tr class="align-amounts">
-                            <th colspan="4"><span style="margin-left: -70px;">Net Amount:</span></th>
-                            <td colspan="1"><span style="float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->net_amount,2).'</span></td>
+                            <th colspan="4"><span style="font-size: 13px;margin-left: -80px;">Net Amount:</span></th>
+                            <td colspan="1"><span style="font-size: 13px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->net_amount,2).'</span></td>
                         </tr>
 
                         <tr class="align-amounts">
-                            <th colspan="4"><span style="margin-left: -65px;">Paid Amount:</span></th>
-                            <td colspan="1"><span style="float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->amount_charged, 2).'</span></td>
+                            <th colspan="4"><span style="font-size: 13px;margin-left: -75px;">Paid Amount:</span></th>
+                            <td colspan="1"><span style="font-size: 13px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($amountCharged, 2).'</span></td>
                          </tr>
-                         <tr>
-                            <th colspan="4" style="margin-left: -75px;">Outstanding Amount</th>
-                            <th colspan="1"><span style="float:right;margin-right: -50px;font-size:20px">&nbsp;&nbsp;'.number_format($order->outstanding_amount, 2).'</span></td>
+                         <tr></tr>
+                         <tr style="margin-top:-80px !important">
+                            <th colspan="4" style="font-size: 16px;margin-left: -200px;">Outstanding Amount</th>
+                            <th colspan="1"><span style="float:right;margin-right: -40px;font-size:20px">&nbsp;&nbsp;'.number_format($order->outstanding_amount, 2).'</span></td>
                          </tr>
                         </tbody>
                     </table>

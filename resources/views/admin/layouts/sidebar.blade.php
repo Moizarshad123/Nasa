@@ -78,9 +78,26 @@
             @if(auth()->user()->role_id == 1)
 
                 <li>
+                    <a class="{{ request()->IS('admin/order-history') ? 'active' : '' }}"  href="{{ route('admin.orderHistory') }}">
+                        <span class="nav-link-icon">
+                            <i class="bi bi-wallet2"></i>
+                        </span>
+                        <span>Order History</span>
+                    </a>
+                </li>
+
+                <li>
+                    <a class="{{ request()->IS('admin/sales-return') ? 'active' : '' }}"  href="{{ route('admin.salesReturnReport') }}">
+                        <span class="nav-link-icon">
+                            <i class="bi bi-list-ul"></i>
+                        </span>
+                        <span>Sales Return</span>
+                    </a>
+                </li>
+                <li>
                     <a class="{{ request()->IS('admin/product') ? 'active' : '' }}"  href="{{ route('admin.product.index') }}">
                         <span class="nav-link-icon">
-                            <i class="bi bi-truck"></i>
+                            <i class="bi bi-app-indicator"></i>
                         </span>
                         <span>Products Big</span>
                     </a>
@@ -105,18 +122,9 @@
                 </li>
 
                 <li>
-                    <a class="{{ request()->IS('admin/order-history') ? 'active' : '' }}"  href="{{ route('admin.orderHistory') }}">
-                        <span class="nav-link-icon">
-                            <i class="bi bi-wallet2"></i>
-                        </span>
-                        <span>Order History</span>
-                    </a>
-                </li>
-
-                <li>
                     <a class="{{ request()->IS('admin/users') ? 'active' : '' }}"  href="{{ route('admin.users.index') }}">
                         <span class="nav-link-icon">
-                            <i class="bi bi-person-badge"></i>
+                            <i class="bi bi-people"></i>
                         </span>
                         <span>Users</span>
                     </a>

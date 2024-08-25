@@ -24,6 +24,7 @@ class CreateOrdersTable extends Migration
             $table->String('no_of_persons')->nullable();
             $table->date('creating_date')->nullable();
             $table->date('delivery_date')->nullable();
+            $table->date('return_date')->nullable();
             $table->String('delivery_time')->nullable();
             $table->String('order_nature')->nullable();
             $table->Integer('order_nature_amount')->nullable(); 

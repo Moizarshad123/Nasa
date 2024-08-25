@@ -14,6 +14,11 @@ class OrderPayment extends Model
         "received_by",
         "amount_received",
         "amount_charged",
-        "cash_back","refund_amount"
+        "cash_back",
+        "outstanding_amount"
     ];
+
+    public function amountReceivedByUer() {
+        return $this->hasOne(User::class, 'id', 'received_by');
+    }
 }

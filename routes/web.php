@@ -53,9 +53,8 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::GET('view-order/{id}',"viewOrder")->name('viewOrder');
         Route::GET('payment/{id}',"payment")->name('payment');
         Route::POST('add-payment',"add_payment")->name('addPayment');
+        Route::GET('sales-return',"sales_return_report")->name('salesReturnReport');
 
-        
-        
         // Route::GET('change-order-status/{id}/{status}',"changeOrderStatus")->name('changeOrderStatus');
     });
 

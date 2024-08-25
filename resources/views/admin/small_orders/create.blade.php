@@ -773,6 +773,8 @@
 
             } else {
                 $("#order_nature_amount").val(0);
+                $('#delivery_time').val('');
+
                 calValues();
             }
         });

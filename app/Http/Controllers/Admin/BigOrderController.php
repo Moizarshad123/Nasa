@@ -86,6 +86,12 @@ class BigOrderController extends Controller
     {
         try {
             
+            if($request->remaining_amount == 0) {
+                $out_amount = $request->outstanding_amount;
+            } else {
+                $out_amount = $request->remaining_amount;
+
+            }
             $order = Order::create([
                 "order_number"       => $request->order_number,
                 "user_id"            => auth()->user()->id,
@@ -107,24 +113,27 @@ class BigOrderController extends Controller
                 'grand_total'       => $request->grand_total,
                 'discount_amount'   => $request->discount_amount,
                 'net_amount'        => $request->net_amount,
-                'outstanding_amount'=> $request->remaining_amount, 
-                'payment_method'    => $request->payment_method,
-                'received_by'       => auth()->user()->id,
-                'amount_received'   => $request->amount_received,
-                'amount_charged'    => $request->amount_charged,
-                'cash_back'         => $request->cash_back,
-                'remaining_amount'  => $request->remaining_amount,
+                'outstanding_amount'=> $out_amount, 
+                // 'payment_method'    => $request->payment_method,
+                // 'received_by'       => auth()->user()->id,
+                // 'amount_received'   => $request->amount_received,
+                // 'amount_charged'    => $request->amount_charged,
+                // 'cash_back'         => $request->cash_back,
+                // 'remaining_amount'  => $request->remaining_amount,
                 'remarks'           => $request->main_remarks
             ]);
 
-            $orderPayment = OrderPayment::create([
-                "order_id"        => $order->id,
-                "payment_method"  => $request->payment_method,
-                "received_by"     => auth()->user()->id,
-                "amount_received" => $request->amount_received,
-                "amount_charged"  => $request->amount_charged,
-                "cash_back"       => $request->cash_back
-            ]);
+            if($request->remaining_amount != 0) {
+                $orderPayment = OrderPayment::create([
+                    "order_id"        => $order->id,
+                    "payment_method"  => $request->payment_method,
+                    "received_by"     => auth()->user()->id,
+                    "amount_received" => $request->amount_received,
+                    "amount_charged"  => $request->amount_charged,
+                    "cash_back"       => $request->cash_back,
+                    "outstanding_amount" => $request->remaining_amount
+                ]);
+            }
 
 
             $orderNumber = OrderNumber::where('order_number', $request->order_number)->first();
@@ -282,18 +291,22 @@ class BigOrderController extends Controller
                     <table class="table_data" style="margin-left:-20px;width: 100%; border-collapse: collapse;font-size:14px;">
                         <tbody>
                         
-                        <tr class="align-amounts">
-                            <th colspan="4"><span style="margin-left: -35px;">Expose Charges:</span></th>
-                            <td colspan="1"><span style="float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->amount, 2).'</span></td>
-                        </tr>
-                      
-
-                          <tr class="align-amounts">
-                            <th colspan="4"><span style="margin-left: -45px;">Email Charges:</span></th>
-                            <td colspan="1"><span style="float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->email_amount, 2).'</span></td>
-                        </tr>
-                        
-                        
+                            <tr class="align-amounts">
+                                <th colspan="4"><span style="font-size: 12px;margin-left: -35px;">Expose Charges:</span></th>
+                                <td colspan="1"><span style="font-size: 12px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->amount, 2).'</span></td>
+                            </tr>
+                            <tr class="align-amounts">
+                                <th colspan="4"><span style="font-size: 12px;margin-left: -45px;">Email Charges:</span></th>
+                                <td colspan="1"><span style="font-size: 12px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->email_amount, 2).'</span></td>
+                            </tr>
+                            <tr class="align-amounts">
+                                <th colspan="4"><span style="font-size: 12px;margin-left: -40px;">Urgent Charges:</span></th>
+                                <td colspan="1"><span style="font-size: 12px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->order_nature_amount, 2).'</span></td>
+                            </tr>
+                            <tr class="align-amounts">
+                                <th colspan="4"><span style="font-size: 12px;margin-left: -55px;">BG: Charges:</span></th>
+                                <td colspan="1"><span style="font-size: 12px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->bg_amount, 2).'</span></td>
+                            </tr>
                         </tbody>
                     </table>
                     <span class="dotted-line"></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -304,25 +317,29 @@ class BigOrderController extends Controller
                     <table class="table_data" style="margin-left:-20px;width: 100%; border-collapse: collapse;font-size:14px;">
                         <tbody>
                         
-                        <tr class="align-amounts">
-                            <th colspan="4"><span style="margin-left: -70px;">Grand Total:</span></th>
-                            <td colspan="1"><span style="float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->grand_total,2).'</span></td>
-                        </tr>
-                      
+                            <tr class="align-amounts" >
+                                <th colspan="4" style="padding-top: 2px;padding-bottom: 2px;"><span style="font-size: 13px;margin-left: -80px;">Grand Total:</span></th>
+                                <td colspan="1" style="padding-top: 2px;padding-bottom: 2px;"><span style="font-size: 13px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->grand_total,2).'</span></td>
+                            </tr>
 
-                        <tr class="align-amounts">
-                            <th colspan="4"><span style="margin-left: -70px;">Net Amount:</span></th>
-                            <td colspan="1"><span style="float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->net_amount,2).'</span></td>
-                        </tr>
+                            <tr class="align-amounts">
+                                <th colspan="4" style="padding-top: 2px;padding-bottom: 2px;"><span style="font-size: 13px;margin-left: -45px;">Discount Amount:</span></th>
+                                <td colspan="1" style="padding-top: 2px;padding-bottom: 2px;"><span style="font-size: 13px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->discount_amount,2).'</span></td>
+                            </tr>
 
-                        <tr class="align-amounts">
-                            <th colspan="4"><span style="margin-left: -65px;">Paid Amount:</span></th>
-                            <td colspan="1"><span style="float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($OrderPayment, 2).'</span></td>
-                         </tr>
-                         <tr>
-                            <th colspan="4" style="margin-left: -75px;">Outstanding Amount</th>
-                            <th colspan="1"><span style="float:right;margin-right: -50px;font-size:20px">&nbsp;&nbsp;'.number_format($order->outstanding_amount, 2).'</span></td>
-                         </tr>
+                            <tr class="align-amounts">
+                                <th colspan="4" style="padding-top: 2px;padding-bottom: 2px;"><span style="font-size: 13px;margin-left: -80px;">Net Amount:</span></th>
+                                <td colspan="1" style="padding-top: 2px;padding-bottom: 2px;"><span style="font-size: 13px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($order->net_amount,2).'</span></td>
+                            </tr>
+
+                            <tr class="align-amounts">
+                                <th colspan="4"><span style="font-size: 13px;margin-left: -75px;">Paid Amount:</span></th>
+                                <td colspan="1"><span style="font-size: 13px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'.number_format($OrderPayment, 2).'</span></td>
+                            </tr>
+                            <tr style="margin-top:-80px !important">
+                                <th colspan="4" style="font-size: 16px;margin-left: -75px;">Outstanding Amount</th>
+                                <th colspan="1"><span style="float:right;margin-right: -40px;font-size:20px">&nbsp;&nbsp;'.number_format($order->outstanding_amount, 2).'</span></td>
+                            </tr>
                         </tbody>
                     </table>
                 </div>
@@ -599,8 +616,8 @@ class BigOrderController extends Controller
         try {
             if (request()->ajax()) {
             
-                $orders = Order::with("category", "assignUser")->where('status', '!=', "Cancelled")->orderByDESC('id')->get();
-                return datatables()->of($orders)
+                $orders = Order::with("category", "assignUser")->where('status', '!=', "Cancelled")->orderByDESC('id');
+                return datatables()->eloquent($orders)
                     ->addColumn('category', function ($data) {
                         return $data->category->title;
                     })
@@ -686,24 +703,30 @@ class BigOrderController extends Controller
                 "cash_back"       => $request->cash_back
             ]);
             if($request->amount_charged != 0) {
-                return redirect('admin/print/'.$order->id)->with("success", "Payment Received");
+                $firstTwoChars = substr($order->order_number, 0, 2);
+                if($firstTwoChars == "Bb") {
+                    return redirect('admin/print/'.$order->id)->with("success", "Payment Received");
+                } else {
+                    return redirect('admin/print-small/'.$order->id)->with("success", "Payment Received");   
+                }
+
             } else {
                 return redirect('admin/all-orders')->with("success", "Order Completed successfully");
             }
         } catch (\Exception $e) {
             return redirect()->back()->with("error", $e->getMessage());
-         }
-
-
+        }
     }
 
-    
-
     public function viewOrder($id) {
-        $order  = Order::with("category")->find($id);
-        $detail = OrderDetail::with('product')->where('order_id', $id)->get();
+
+        $order         = Order::with("category")->find($id);
+        $detail        = OrderDetail::with('product')->where('order_id', $id)->get();
+        $amountCharged = OrderPayment::where('order_id', $id)->sum('amount_charged');
+        $payments      = OrderPayment::with('amountReceivedByUer')->where('order_id', $id)->get();
+
         $firstTwoChars = substr($order->order_number, 0, 2);
-        return view('admin.view_orders', compact('order', "detail", "firstTwoChars"));
+        return view('admin.view_orders', compact('amountCharged', 'payments', 'order', "detail", "firstTwoChars"));
     }
 
     public function generatePdf()
@@ -953,7 +976,7 @@ class BigOrderController extends Controller
                 $order->refund_amount      = $order->amount_charged;
                 $order->remaining_amount   = 0;
                 $order->outstanding_amount = 0;
-
+                $order->return_date        = date('Y-m-d');
                 $order->save();
 
                 $history->to_status = $order->status;
@@ -1040,4 +1063,10 @@ class BigOrderController extends Controller
 
         return view('admin.outstanding_amounts');
     }
+
+    public function sales_return_report() {
+        $orders = Order::where("status", "Cancelled")->orderByDESC('id')->get();
+        return view('admin.sales_return_report', compact('orders'));
+    }
+
 }

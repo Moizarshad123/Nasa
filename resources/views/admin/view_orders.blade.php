@@ -107,6 +107,91 @@
                    
                 </div>
             </div>
+        </div>
+        <div class="col-lg-4 col-md-12 mt-4 mt-lg-0">
+            <div class="card mb-4">
+                <div class="card-body">
+                    @if(auth()->user()->role_id != 4)
+                        <div class="row">
+                            <div class="col">
+                                @if($order->assign_to ==  auth()->user()->id && $order->status == "Editing Department")
+                                    <a style="float: right" class="btn btn-danger" href="{{ route('admin.dropJob', $order->id) }}">Drop the Job</a>
+                                @endif
+                            </div>
+                        </div>
+                    
+                    <br>
+
+                    <form action="{{ route('admin.changeStatus') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="order_id" value="{{ $order->id }}">
+                        <div class="row">
+                                @php $firstTwoChars = substr($order->order_number, 0, 2); @endphp
+                            <div class="col">
+                                <select name="status" class="form-control" required>
+                                    <option value="">Select Status</option>
+                                    <option value="2" {{$order->status == "Editing Department" ? 'selected' : ""}}>Assign To Me</option>
+                                    @if($firstTwoChars == "Bb")
+                                        <option value="3" {{$order->status == "Approval" ? 'selected' : ""}}>Approval</option>
+                                    @endif
+                                    <option value="4" {{$order->status == "Printing Department" ? 'selected' : ""}}>Printing Department</option>
+                                    <option value="5" {{$order->status == "Ready" ? 'selected' : ""}}>Job Ready</option>
+                                    <option value="6" {{$order->status == "Completed" ? 'selected' : ""}}>Completed</option>
+
+                                    @if($order->status != "Printing Department" && $order->status != "Ready" && $order->status != "Completed")
+                                        <option value="7" {{$order->status == "Cancelled" ? 'selected' : ""}}>Sales Return</option>
+                                    @endif
+
+                                </select>
+                            </div>
+                            <div class="col">
+                                <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                            </div>
+                        </div>
+                    </form>
+                    @endif
+
+                    <br><br>
+                    <h6 class="card-title mb-4">Price</h6>
+                    {{-- <div class="row justify-content-center mb-3">
+                        <div class="col text-end">Grand Total :</div>
+                        <div class="col">{{ $order->grand_total }}</div>
+                    </div>
+                    <div class="row justify-content-center mb-3">
+                        <div class="col text-end">Dis: Amt :</div>
+                        <div class="col">{{ $order->discount_amount }}</div>
+                    </div> --}}
+                
+                    <div class="row justify-content-center">
+                        <div class="col-8 text-end">
+                            <strong style="float: left">Net Amount:</strong>
+                        </div>
+                        <div class="col-4">
+                            <strong>{{ number_format($order->net_amount) ?? "0.00" }}</strong>
+                        </div>
+                        <div class="col-8 text-end">
+                            <strong style="float: left">Charged Amount:</strong>
+                        </div>
+                        <div class="col-4">
+                            <strong>{{ number_format($amountCharged) ?? "0.00" }}</strong>
+                        </div>
+                        
+                        <div class="col-8 text-end">
+                            <strong style="float: left">Outstanding Amount:</strong>
+                        </div>
+                        <div class="col-4">
+                            <strong>{{ number_format($order->outstanding_amount) ?? "0.00" }}</strong>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            
             <div class="card widget">
                 <h5 class="card-header">Order Items</h5>
                 <div class="card-body">
@@ -178,86 +263,46 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="col-lg-4 col-md-12 mt-4 mt-lg-0">
-            <div class="card mb-4">
+
+            <div class="card widget">
+                <h5 class="card-header">Payment History</h5>
                 <div class="card-body">
-                    @if(auth()->user()->role_id != 4)
-                        <div class="row">
-                            <div class="col">
-                                @if($order->assign_to ==  auth()->user()->id && $order->status == "Editing Department")
-                                    <a style="float: right" class="btn btn-danger" href="{{ route('admin.dropJob', $order->id) }}">Drop the Job</a>
+                    <div class="table-responsive">
+                        <table class="table table-custom mb-0">
+                     
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Payment Method</th>
+                                    <th>Amount Received By</th>
+                                    <th>Amount Received</th>
+                                    <th>Amount Charged</th>
+                                    <th>Cash Back</th>
+                                    <th>Total Amount</th>
+                                    <th>Outstanding Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if(count($payments) > 0)
+                                    @foreach ($payments as $item)
+                                        <tr>
+                                            <td>{{ date('d-m-Y h:i A', strtotime($item->created_at)) ?? ""}}</td>
+                                            <td>{{ $item->payment_method ?? ""}}</td>
+                                            <td>{{ isset($item->amountReceivedByUer) ? $item->amountReceivedByUer->name : "" }}</td>
+                                            <td>{{ $item->amount_received ?? ""}}</td>
+                                            <td>{{ $item->amount_charged ?? ""}}</td>
+                                            <td>{{ $item->cash_back ?? ""}}</td>
+                                            <td>{{ $order->net_amount }}</td>
+                                            <td>{{ $item->outstanding_amount }}</td>
+                                        </tr>
+                                    @endforeach
                                 @endif
-                            </div>
-                        </div>
-                    
-                    <br>
-
-                    <form action="{{ route('admin.changeStatus') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="order_id" value="{{ $order->id }}">
-                        <div class="row">
-                                @php $firstTwoChars = substr($order->order_number, 0, 2); @endphp
-                            <div class="col">
-                                <select name="status" class="form-control" required>
-                                    <option value="">Select Status</option>
-                                    <option value="2" {{$order->status == "Editing Department" ? 'selected' : ""}}>Assign To Me</option>
-                                    @if($firstTwoChars == "Bb")
-                                        <option value="3" {{$order->status == "Approval" ? 'selected' : ""}}>Approval</option>
-                                    @endif
-                                    <option value="4" {{$order->status == "Printing Department" ? 'selected' : ""}}>Printing Department</option>
-                                    <option value="5" {{$order->status == "Ready" ? 'selected' : ""}}>Job Ready</option>
-                                    <option value="6" {{$order->status == "Completed" ? 'selected' : ""}}>Completed</option>
-
-                                    @if($order->status != "Printing Department" && $order->status != "Ready" && $order->status != "Completed")
-                                        <option value="7" {{$order->status == "Cancelled" ? 'selected' : ""}}>Sales Return</option>
-                                    @endif
-
-                                </select>
-                            </div>
-                            <div class="col">
-                                <button type="submit" class="btn btn-sm btn-primary">Update</button>
-                            </div>
-                        </div>
-                    </form>
-                    @endif
-
-                    <br><br>
-                    <h6 class="card-title mb-4">Price</h6>
-                    {{-- <div class="row justify-content-center mb-3">
-                        <div class="col text-end">Grand Total :</div>
-                        <div class="col">{{ $order->grand_total }}</div>
-                    </div>
-                    <div class="row justify-content-center mb-3">
-                        <div class="col text-end">Dis: Amt :</div>
-                        <div class="col">{{ $order->discount_amount }}</div>
-                    </div> --}}
-                
-                    <div class="row justify-content-center">
-                        <div class="col-8 text-end">
-                            <strong style="float: left">Net Amount:</strong>
-                        </div>
-                        <div class="col-4">
-                            <strong>{{ number_format($order->net_amount) ?? "0.00" }}</strong>
-                        </div>
-                        <div class="col-8 text-end">
-                            <strong style="float: left">Charged Amount:</strong>
-                        </div>
-                        <div class="col-4">
-                            <strong>{{ number_format($order->amount_charged) ?? "0.00" }}</strong>
-                        </div>
-                        
-                        <div class="col-8 text-end">
-                            <strong style="float: left">Outstanding Amount:</strong>
-                        </div>
-                        <div class="col-4">
-                            <strong>{{ number_format($order->outstanding_amount) ?? "0.00" }}</strong>
-                        </div>
-
+                            </tbody>
+                           
+                        </table>
                     </div>
                 </div>
             </div>
-            
         </div>
     </div>
 
