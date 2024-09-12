@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Setting;
+use App\Models\TillOpen;
+
+
 use Auth, Mail;
 
 class AdminController extends Controller
@@ -15,6 +18,61 @@ class AdminController extends Controller
     public function dashboard() {
 
         return view('admin.dashboard');
+    }
+
+    public function open_till(Request $request) {
+
+        try {
+            //code...
+            TillOpen::create([
+                "user_id" => auth()->user()->id,
+                "type"    => "till_open",
+                "amount"  => $request->amount,
+                "date"    => date('Y-m-d'),
+                "five_thousand" => $request->five_thousand,
+                "one_thousand"  => $request->one_thousand,
+                "five_hundred"  => $request->five_hundred,
+                "one_hundred"   => $request->one_hundred,
+                "fifty"  => $request->fifty,
+                "twenty" => $request->twenty,
+                "ten"    => $request->ten,
+                "five"   => $request->five,
+                "two"    => $request->two,
+                "one"    => $request->aoneadfl,
+                "notes"  => $request->notes,
+            ]);
+            return redirect()->back()->with("success", "Till open created");
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with("error", $e->getMessage());
+        }
+    }
+
+    public function close_till(Request $request) {
+        try {
+
+            TillOpen::create([
+                "user_id"       => auth()->user()->id,
+                "type"          => "till_close",
+                "amount"        => $request->amount,
+                "date"          => date('Y-m-d'),
+                "five_thousand" => $request->five_thousand,
+                "one_thousand"  => $request->one_thousand,
+                "five_hundred"  => $request->five_hundred,
+                "one_hundred"   => $request->one_hundred,
+                "fifty"         => $request->fifty,
+                "twenty"        => $request->twenty,
+                "ten"           => $request->ten,
+                "five"          => $request->five,
+                "two"           => $request->two,
+                "one"           => $request->aoneadfl,
+                "notes"         => $request->notes,
+            ]);
+            return redirect()->back()->with("success", "Till close created");
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with("error", $e->getMessage());
+        }
     }
     
     public function login(Request $request) {

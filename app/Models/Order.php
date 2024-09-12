@@ -54,4 +54,8 @@ class Order extends Model
     public function assignUser() {
         return $this->hasOne(User::class, 'id', 'assign_to');
     }
+
+    public function payments() {
+        return $this->hasMany(OrderPayment::class);
+    }
 }

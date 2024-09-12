@@ -6,635 +6,296 @@
 
 @section('content')
     <div class="row row-cols-1 row-cols-md-3 g-4">
-        {{-- <div class="col-lg-7 col-md-12">
-            <div class="card widget h-100">
-                <div class="card-header d-flex">
-                    <h6 class="card-title">
-                        Sales Chart
-                        <a href="#" class="bi bi-question-circle ms-1 small" data-bs-toggle="tooltip"
-                            title="Daily orders and sales"></a>
-                    </h6>
-                    <div class="d-flex gap-3 align-items-center ms-auto">
-                        <div class="dropdown">
-                            <a href="#" data-bs-toggle="dropdown" class="btn btn-sm" aria-haspopup="true"
-                                aria-expanded="false">
-                                <i class="bi bi-three-dots"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end">
-                                <a href="#" class="dropdown-item">View Detail</a>
-                                <a href="#" class="dropdown-item">Download</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="d-md-flex align-items-center mb-3">
-                        <div class="d-flex align-items-center">
-                            <div class="display-7 me-3">
-                                <i class="bi bi-bag-check me-2 text-success"></i> $10.552,40
-                            </div>
-                            <span class="text-success">
-                                <i class="bi bi-arrow-up me-1 small"></i>8.30%
-                            </span>
-                        </div>
-                        <div class="d-flex gap-4 align-items-center ms-auto mt-3 mt-lg-0">
-                            <select class="form-select">
-                                <optgroup label="2020">
-                                    <option value="October">October</option>
-                                    <option value="November">November</option>
-                                    <option value="December">December</option>
-                                </optgroup>
-                                <optgroup label="2021">
-                                    <option value="January">January</option>
-                                    <option value="February">February</option>
-                                    <option value="March">March</option>
-                                    <option value="April">April</option>
-                                    <option value="May" selected>May</option>
-                                    <option value="June">June</option>
-                                    <option value="July">July</option>
-                                    <option value="August">August</option>
-                                    <option value="September">September</option>
-                                    <option value="October">October</option>
-                                    <option value="November">November</option>
-                                    <option value="December">December</option>
-                                </optgroup>
-                            </select>
-                        </div>
-                    </div>
-                    <div id="sales-chart"></div>
-                    <div class="d-flex justify-content-center gap-4 align-items-center ms-auto mt-3 mt-lg-0">
-                        <div>
-                            <i class="bi bi-circle-fill mr-2 text-primary me-1 small"></i>
-                            <span>Sales</span>
-                        </div>
-                        <div>
-                            <i class="bi bi-circle-fill mr-2 text-success me-1 small"></i>
-                            <span>Order</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="col-md-6">
+            <button class="btn btn-primary" id="tillOpenButton">Till Open</button>
         </div>
-        <div class="col-lg-5 col-md-12">
-            <div class="card widget h-100">
-                <div class="card-header d-flex">
-                    <h6 class="card-title">
-                        Channels
-                        <a href="#" class="bi bi-question-circle ms-1 small" data-bs-toggle="tooltip"
-                            title="Channels where your products are sold"></a>
-                    </h6>
-                    <div class="d-flex gap-3 align-items-center ms-auto">
-                        <div class="dropdown">
-                            <a href="#" data-bs-toggle="dropdown" class="btn btn-sm" aria-haspopup="true"
-                                aria-expanded="false">
-                                <i class="bi bi-three-dots"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end">
-                                <a href="#" class="dropdown-item">View Detail</a>
-                                <a href="#" class="dropdown-item">Download</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div id="sales-channels"></div>
-                    <div class="row text-center mb-5 mt-4">
-                        <div class="col-4">
-                            <div class="display-7">48%</div>
-                            <div class="text-success my-2 small">
-                                <i class="bi bi-arrow-up me-1 small"></i>30.50%
-                            </div>
-                            <div class="d-flex align-items-center justify-content-center">
-                                <i class="bi bi-circle-fill text-orange me-2 small"></i>
-                                <span class="text-muted">Social Media</span>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="display-7">30%</div>
-                            <div class="text-danger my-2 small">
-                                <i class="bi bi-arrow-down me-1 small"></i>15.20%
-                            </div>
-                            <div class="d-flex align-items-center justify-content-center">
-                                <i class="bi bi-circle-fill text-cyan me-2 small"></i>
-                                <span class="text-muted">Google</span>
-                            </div>
-                        </div>
-                        <div class="col-4">
-                            <div class="display-7">22%</div>
-                            <div class="text-success my-2 small">
-                                <i class="bi bi-arrow-up me-1 small"></i>1.80%
-                            </div>
-                            <div class="d-flex align-items-center justify-content-center">
-                                <i class="bi bi-circle-fill text-indigo me-2 small"></i>
-                                <span class="text-muted">Email</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        <button class="btn btn-outline-primary btn-icon">
-                            <i class="bi bi-download"></i> Download Report
-                        </button>
-                    </div>
-                </div>
-            </div>
+        <div class="col-md-6">
+            @php $checkTillOpen = App\Models\TillOpen::where('date',date('Y-m-d'))->where('user_id', auth()->user()->id)->where('type', 'till_open')->first(); @endphp
+            @if($checkTillOpen != null)
+                <button class="btn btn-primary " id="tillCloseButton">Till Close</button>
+            @endif                
         </div>
-        <div class="col-lg-4 col-md-12">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="d-flex mb-3">
-                        <div class="display-7">
-                            <i class="bi bi-basket"></i>
-                        </div>
-                        <div class="dropdown ms-auto">
-                            <a href="#" data-bs-toggle="dropdown" class="btn btn-sm" aria-haspopup="true"
-                                aria-expanded="false">
-                                <i class="bi bi-three-dots"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end">
-                                <a href="#" class="dropdown-item">View Detail</a>
-                                <a href="#" class="dropdown-item">Download</a>
-                            </div>
-                        </div>
-                    </div>
-                    <h4 class="mb-3">Orders</h4>
-                    <div class="d-flex mb-3">
-                        <div class="display-7">310</div>
-                        <div class="ms-auto" id="total-orders"></div>
-                    </div>
-                    <div class="text-success">
-                        Over last month 1.4% <i class="small bi bi-arrow-up"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-12">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="d-flex mb-3">
-                        <div class="display-7">
-                            <i class="bi bi-credit-card-2-front"></i>
-                        </div>
-                        <div class="dropdown ms-auto">
-                            <a href="#" data-bs-toggle="dropdown" class="btn btn-sm" aria-haspopup="true"
-                                aria-expanded="false">
-                                <i class="bi bi-three-dots"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end">
-                                <a href="#" class="dropdown-item">View Detail</a>
-                                <a href="#" class="dropdown-item">Download</a>
-                            </div>
-                        </div>
-                    </div>
-                    <h4 class="mb-3">Sales</h4>
-                    <div class="d-flex mb-3">
-                        <div class="display-7">$3.759,00</div>
-                        <div class="ms-auto" id="total-sales"></div>
-                    </div>
-                    <div class="text-danger">
-                        Over last month 2.4% <i class="small bi bi-arrow-down"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-12">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center mb-4">
-                        <h6 class="card-title">Recent Reviews</h6>
-                        <div class="dropdown ms-auto">
-                            <a href="#">View All</a>
-                        </div>
-                    </div>
-                    <div class="summary-cards">
-                        <div>
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="avatar me-3">
-                                    <img src="../../assets/images/user/women_avatar5.jpg" class="rounded-circle"
-                                        alt="image">
-                                </div>
-                                <div>
-                                    <h5 class="mb-1">Amara Keel</h5>
-                                    <ul class="list-inline ms-auto mb-0">
-                                        <li class="list-inline-item mb-0">
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                        </li>
-                                        <li class="list-inline-item mb-0">
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                        </li>
-                                        <li class="list-inline-item mb-0">
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                        </li>
-                                        <li class="list-inline-item mb-0">
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                        </li>
-                                        <li class="list-inline-item mb-0">
-                                            <i class="bi bi-star-fill text-muted"></i>
-                                        </li>
-                                        <li class="list-inline-item mb-0">(4)</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div>I love your products. It is very easy and fun to use this panel.</div>
-                        </div>
-                        <div>
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="avatar me-3">
-                                    <span class="avatar-text bg-indigo rounded-circle">J</span>
-                                </div>
-                                <div>
-                                    <h5 class="mb-1">Johnath Siddeley</h5>
-                                    <ul class="list-inline ms-auto mb-0">
-                                        <li class="list-inline-item mb-0">
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                        </li>
-                                        <li class="list-inline-item mb-0">
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                        </li>
-                                        <li class="list-inline-item mb-0">
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                        </li>
-                                        <li class="list-inline-item mb-0">
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                        </li>
-                                        <li class="list-inline-item mb-0">
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                        </li>
-                                        <li class="list-inline-item mb-0">(5)</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div>Very nice glasses. I ordered for my friend.</div>
-                        </div>
-                        <div>
-                            <div class="d-flex align-items-center mb-3">
-                                <div class="avatar me-3">
-                                    <span class="avatar-text bg-yellow rounded-circle">D</span>
-                                </div>
-                                <div>
-                                    <h5 class="mb-1">David Berks</h5>
-                                    <ul class="list-inline ms-auto mb-0">
-                                        <li class="list-inline-item mb-0">
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                        </li>
-                                        <li class="list-inline-item mb-0">
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                        </li>
-                                        <li class="list-inline-item mb-0">
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                        </li>
-                                        <li class="list-inline-item mb-0">
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                        </li>
-                                        <li class="list-inline-item mb-0">
-                                            <i class="bi bi-star-fill text-warning"></i>
-                                        </li>
-                                        <li class="list-inline-item mb-0">(5)</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div>I am very satisfied with this product.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-12">
-            <div class="card h-100">
-                <div class="card-body">
-                    <div class="d-flex mb-4">
-                        <h6 class="card-title mb-0">Customer Rating</h6>
-                        <div class="dropdown ms-auto">
-                            <a href="#" data-bs-toggle="dropdown" class="btn btn-sm" aria-haspopup="true"
-                                aria-expanded="false">
-                                <i class="bi bi-three-dots"></i>
-                            </a>
-                            <div class="dropdown-menu dropdown-menu-end">
-                                <a href="#" class="dropdown-item">View Detail</a>
-                                <a href="#" class="dropdown-item">Download</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        <div class="display-6">3.0</div>
-                        <div class="d-flex justify-content-center gap-3 my-3">
-                            <i class="bi bi-star-fill icon-lg text-warning"></i>
-                            <i class="bi bi-star-fill icon-lg text-warning"></i>
-                            <i class="bi bi-star-fill icon-lg text-warning"></i>
-                            <i class="bi bi-star-fill icon-lg text-muted"></i>
-                            <i class="bi bi-star-fill icon-lg text-muted"></i>
-                            <span>(318)</span>
-                        </div>
-                    </div>
-                    <div class="text-muted d-flex align-items-center justify-content-center">
-                        <span class="text-success me-3 d-block">
-                            <i class="bi bi-arrow-up me-1 small"></i>+35
-                        </span> Point from last month
-                    </div>
-                    <div class="row my-4">
-                        <div class="col-md-6 m-auto">
-                            <div id="customer-rating"></div>
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        <button class="btn btn-outline-primary btn-icon">
-                            <i class="bi bi-download"></i> Download Report
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-6">
-            <div class="card h-100 bg-purple">
-                <div class="card-body text-center">
-                    <div class="text-white-50">
-                        <div class="bi bi-box-seam display-6 mb-3"></div>
-                        <div class="display-8 mb-2">Products Sold</div>
-                        <h5>89 Sold</h5>
-                    </div>
-                    <div id="products-sold"></div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-4 col-md-6">
-            <div class="card widget h-100">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="card-title">
-                        Your Top Countries
-                        <a href="#" class="bi bi-question-circle ms-1 small" data-bs-toggle="tooltip"
-                            title="Sales performance revenue based by country"></a>
-                    </h5>
-                    <a href="#">View All</a>
-                </div>
-                <div class="card-body">
-                    <div class="list-group list-group-flush">
-                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
-                            <div class="d-flex flex-grow-1 align-items-center">
-                                <img width="45" class="me-3"
-                                    src="../../assets/flags/united-states-of-america.svg" alt="...">
-                                <span>United States</span>
-                            </div>
-                            <span>$1.671,10</span>
-                        </div>
-                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
-                            <div class="d-flex flex-grow-1 align-items-center">
-                                <img width="45" class="me-3" src="../../assets/flags/venezuela.svg" alt="...">
-                                <span>Venezuela</span>
-                            </div>
-                            <span>$1.064,75</span>
-                        </div>
-                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
-                            <div class="d-flex flex-grow-1 align-items-center">
-                                <img width="45" class="me-3" src="../../assets/flags/salvador.svg" alt="...">
-                                <span>Salvador</span>
-                            </div>
-                            <span>$1.055,98</span>
-                        </div>
-                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
-                            <div class="d-flex flex-grow-1 align-items-center">
-                                <img width="45" class="me-3" src="../../assets/flags/russia.svg" alt="...">
-                                <span>Russia</span>
-                            </div>
-                            <span>$1.042,00</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-5 col-md-12">
-            <div class="card widget">
-                <div class="card-header">
-                    <h5 class="card-title">Activity Overview</h5>
-                </div>
-                <div class="row g-4">
-                    <div class="col-md-6">
-                        <div class="card border-0">
-                            <div class="card-body text-center">
-                                <div class="display-5">
-                                    <i class="bi bi-truck text-secondary"></i>
-                                </div>
-                                <h5 class="my-3">Delivered</h5>
-                                <div class="text-muted">15 New Packages</div>
-                                <div class="progress mt-3" style="height: 5px">
-                                    <div class="progress-bar bg-secondary" role="progressbar" style="width: 25%"
-                                        aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card border-0">
-                            <div class="card-body text-center">
-                                <div class="display-5">
-                                    <i class="bi bi-receipt text-warning"></i>
-                                </div>
-                                <h5 class="my-3">Ordered</h5>
-                                <div class="text-muted">72 New Items</div>
-                                <div class="progress mt-3" style="height: 5px">
-                                    <div class="progress-bar bg-warning" role="progressbar" style="width: 67%"
-                                        aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card border-0">
-                            <div class="card-body text-center">
-                                <div class="display-5">
-                                    <i class="bi bi-bar-chart text-info"></i>
-                                </div>
-                                <h5 class="my-3">Reported</h5>
-                                <div class="text-muted">50 Support New Cases</div>
-                                <div class="progress mt-3" style="height: 5px">
-                                    <div class="progress-bar bg-info" role="progressbar" style="width: 80%"
-                                        aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="card border-0">
-                            <div class="card-body text-center">
-                                <div class="display-5">
-                                    <i class="bi bi-cursor text-success"></i>
-                                </div>
-                                <h5 class="my-3">Arrived</h5>
-                                <div class="text-muted">34 Upgraded Boxed</div>
-                                <div class="progress mt-3" style="height: 5px">
-                                    <div class="progress-bar bg-success" role="progressbar" style="width: 55%"
-                                        aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-lg-7 col-md-12">
-            <div class="card widget">
-                <div class="card-header d-flex align-items-center justify-content-between">
-                    <h5 class="card-title">Recent Products</h5>
-                    <div class="dropdown ms-auto">
-                        <a href="#" data-bs-toggle="dropdown" class="btn btn-sm btn-floating"
-                            aria-haspopup="true" aria-expanded="false">
-                            <i class="bi bi-three-dots"></i>
-                        </a>
-                        <div class="dropdown-menu dropdown-menu-end">
-                            <a href="#" class="dropdown-item">Action</a>
-                            <a href="#" class="dropdown-item">Another action</a>
-                            <a href="#" class="dropdown-item">Something else here</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <p class="text-muted">Products added today. Click <a href="#">here</a> for more details</p>
-                    <div class="table-responsive">
-                        <table class="table table-custom mb-0" id="recent-products">
-                            <thead>
-                                <tr>
-                                    <th>
-                                        <input class="form-check-input select-all" type="checkbox"
-                                            data-select-all-target="#recent-products" id="defaultCheck1">
-                                    </th>
-                                    <th>Photo</th>
-                                    <th>Name</th>
-                                    <th>Stock</th>
-                                    <th>Price</th>
-                                    <th class="text-end">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <input class="form-check-input" type="checkbox">
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <img src="../../assets/images/products/10.jpg" class="rounded"
-                                                width="40" alt="...">
-                                        </a>
-                                    </td>
-                                    <td>Cookie</td>
-                                    <td>
-                                        <span class="text-danger">Out of Stock</span>
-                                    </td>
-                                    <td>$10,50</td>
-                                    <td class="text-end">
-                                        <div class="d-flex">
-                                            <div class="dropdown ms-auto">
-                                                <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
-                                                    aria-haspopup="true" aria-expanded="false">
-                                                    <i class="bi bi-three-dots"></i>
-                                                </a>
-                                                <div class="dropdown-menu dropdown-menu-end">
-                                                    <a href="#" class="dropdown-item">Action</a>
-                                                    <a href="#" class="dropdown-item">Another action</a>
-                                                    <a href="#" class="dropdown-item">Something else here</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input class="form-check-input" type="checkbox">
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <img src="../../assets/images/products/7.jpg" class="rounded"
-                                                width="40" alt="...">
-                                        </a>
-                                    </td>
-                                    <td>Glass</td>
-                                    <td>
-                                        <span class="text-success">In Stock</span>
-                                    </td>
-                                    <td>$70,20</td>
-                                    <td class="text-end">
-                                        <div class="d-flex">
-                                            <div class="dropdown ms-auto">
-                                                <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
-                                                    aria-haspopup="true" aria-expanded="false">
-                                                    <i class="bi bi-three-dots"></i>
-                                                </a>
-                                                <div class="dropdown-menu dropdown-menu-end">
-                                                    <a href="#" class="dropdown-item">Action</a>
-                                                    <a href="#" class="dropdown-item">Another action</a>
-                                                    <a href="#" class="dropdown-item">Something else here</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input class="form-check-input" type="checkbox">
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <img src="../../assets/images/products/8.jpg" class="rounded"
-                                                width="40" alt="...">
-                                        </a>
-                                    </td>
-                                    <td>Headphone</td>
-                                    <td>
-                                        <span class="text-success">In Stock</span>
-                                    </td>
-                                    <td>$870,50</td>
-                                    <td class="text-end">
-                                        <div class="d-flex">
-                                            <div class="dropdown ms-auto">
-                                                <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
-                                                    aria-haspopup="true" aria-expanded="false">
-                                                    <i class="bi bi-three-dots"></i>
-                                                </a>
-                                                <div class="dropdown-menu dropdown-menu-end">
-                                                    <a href="#" class="dropdown-item">Action</a>
-                                                    <a href="#" class="dropdown-item">Another action</a>
-                                                    <a href="#" class="dropdown-item">Something else here</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <input class="form-check-input" type="checkbox">
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <img src="../../assets/images/products/9.jpg" class="rounded"
-                                                width="40" alt="...">
-                                        </a>
-                                    </td>
-                                    <td>Perfume</td>
-                                    <td>
-                                        <span class="text-success">In Stock</span>
-                                    </td>
-                                    <td>$170,50</td>
-                                    <td class="text-end">
-                                        <div class="d-flex">
-                                            <div class="dropdown ms-auto">
-                                                <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
-                                                    aria-haspopup="true" aria-expanded="false">
-                                                    <i class="bi bi-three-dots"></i>
-                                                </a>
-                                                <div class="dropdown-menu dropdown-menu-end">
-                                                    <a href="#" class="dropdown-item">Action</a>
-                                                    <a href="#" class="dropdown-item">Another action</a>
-                                                    <a href="#" class="dropdown-item">Something else here</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div> --}}
     </div>
+    
+  
+    <!-- Modal -->
+    <div class="modal fade" id="tillOpenModal" tabindex="-1" role="dialog" aria-labelledby="tillOpenModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content" style="width: 170%;">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Till Open</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <form action="" method="POST" id="tillForm">
+                    @csrf
+                    <div class="form-group">
+                        <label for="">User</label>
+                        <input type="text" class="form-control" readonly value="{{ auth()->user()->name }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Amount</label>
+                        <input type="number" class="form-control" name="amount" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Notes</label>
+                        <textarea name="notes" id="" class="form-control" cols="30" rows="10"></textarea>
+                    </div>
+                    <table class="table">
+                        <tr>
+                            <td><input class="form-control" type="text" value="5000" readonly></td>
+                            <td>x</td>
+                            <td><input class="form-control" id="five_thousand" name="five_thousand" type="number" min="1" placeholder="0"></td>
+                            <td>=</td>
+                            <td><input class="form-control" type="text" id="five_thousand_result" value="0" readonly></td>
+                        </tr>
+                        <tr>
+                            <td><input class="form-control" type="text" value="1000" readonly></td>
+                            <td>x</td>
+                            <td><input class="form-control" id="one_thousand" name="one_thousand" type="number" min="1" placeholder="0"></td>
+                            <td>=</td>
+                            <td><input class="form-control" type="text" id="one_thousand_result" value="0" readonly></td>
+                        </tr>
+                        <tr>
+                            <td><input class="form-control" type="text" value="500" readonly></td>
+                            <td>x</td>
+                            <td><input class="form-control" id="five_hundred" name="five_hundred" type="number" min="1" placeholder="0"></td>
+                            <td>=</td>
+                            <td><input class="form-control" type="text" id="five_hundred_result" value="0" readonly></td>
+                        </tr>
+                        <tr>
+                            <td><input class="form-control" type="text" value="100" readonly></td>
+                            <td>x</td>
+                            <td><input class="form-control" id="one_hundred" name="one_hundred" type="number" min="1" placeholder="0"></td>
+                            <td>=</td>
+                            <td><input class="form-control" type="text" id="one_hundred_result" value="0" readonly></td>
+                        </tr>
+                        <tr>
+                            <td><input class="form-control" type="text" value="50" readonly></td>
+                            <td>x</td>
+                            <td><input class="form-control" id="fifty" name="fifty" type="number" min="1" placeholder="0"></td>
+                            <td>=</td>
+                            <td><input class="form-control" type="text" id="fifty_result" value="0" readonly></td>
+                        </tr>
+                        <tr>
+                            <td><input class="form-control" type="text" value="20" readonly></td>
+                            <td>x</td>
+                            <td><input class="form-control" id="twenty" name="twenty" type="number" min="1" placeholder="0"></td>
+                            <td>=</td>
+                            <td><input class="form-control" type="text" id="twenty_result" value="0" readonly></td>
+                        </tr>
+                        <tr>
+                            <td><input class="form-control" type="text" value="10" readonly></td>
+                            <td>x</td>
+                            <td><input class="form-control" id="ten" name="ten" type="number" min="1" placeholder="0"></td>
+                            <td>=</td>
+                            <td><input class="form-control" type="text" id="ten_result" value="0" readonly></td>
+                        </tr>
+                        <tr>
+                            <td><input class="form-control" type="text" value="5" readonly></td>
+                            <td>x</td>
+                            <td><input class="form-control" id="five" name="five" type="number" min="1" placeholder="0"></td>
+                            <td>=</td>
+                            <td><input class="form-control" type="text" id="five_result" value="0" readonly></td>
+                        </tr>
+                        <tr>
+                            <td><input class="form-control" type="text" value="2" readonly></td>
+                            <td>x</td>
+                            <td><input class="form-control" id="two" name="two" type="number" min="1" placeholder="0"></td>
+                            <td>=</td>
+                            <td><input class="form-control" type="text" id="two_result" value="0" readonly></td>
+                        </tr>
+                        <tr>
+                            <td><input class="form-control" type="text" value="1" readonly></td>
+                            <td>x</td>
+                            <td><input class="form-control" id="one" name="one" type="number" min="1" placeholder="0"></td>
+                            <td>=</td>
+                            <td><input class="form-control" type="text" id="one_result" value="0" readonly></td>
+                        </tr>
+                    </table>
+                    <div class="form-group">
+                        <button class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+                
+            </div>
+            
+        </div>
+        </div>
+    </div>
+    {{-- <div class="modal fade" id="tillCloseModal" tabindex="-1" role="dialog" aria-labelledby="tillCloseModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content" style="    width: 170%;">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">Till Close</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <form action="{{ route('admin.closeTill') }}" method="POST" >
+                    @csrf
+                    <input type="hidden" name="type" value="till_open">
+                    <div class="form-group">
+                        <label for="">User</label>
+                        <input type="text" class="form-control" readonly value="{{ auth()->user()->name }}">
+                    </div>
+                    <div class="form-group">
+                        <label for="">Closing Amount</label>
+                        <input type="number" class="form-control" name="amount" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Notes</label>
+                        <textarea name="notes" id="" class="form-control" cols="30" rows="10"></textarea>
+                    </div>
+                    <table class="table">
+                        <tr>
+                            <td><input class="form-control" type="text" value="5000" readonly></td>
+                            <td>x</td>
+                            <td><input class="form-control" id="five_thousand" name="five_thousand" type="number" min="1" placeholder="0"></td>
+                            <td>=</td>
+                            <td><input class="form-control" type="text" id="five_thousand_result" value="0" readonly></td>
+                        </tr>
+                        <tr>
+                            <td><input class="form-control" type="text" value="1000" readonly></td>
+                            <td>x</td>
+                            <td><input class="form-control" id="one_thousand" name="one_thousand" type="number" min="1" placeholder="0"></td>
+                            <td>=</td>
+                            <td><input class="form-control" type="text" id="one_thousand_result" value="0" readonly></td>
+                        </tr>
+                        <tr>
+                            <td><input class="form-control" type="text" value="500" readonly></td>
+                            <td>x</td>
+                            <td><input class="form-control" id="five_hundred" name="five_hundred" type="number" min="1" placeholder="0"></td>
+                            <td>=</td>
+                            <td><input class="form-control" type="text" id="five_hundred_result" value="0" readonly></td>
+                        </tr>
+                        <tr>
+                            <td><input class="form-control" type="text" value="100" readonly></td>
+                            <td>x</td>
+                            <td><input class="form-control" id="one_hundred" name="one_hundred" type="number" min="1" placeholder="0"></td>
+                            <td>=</td>
+                            <td><input class="form-control" type="text" id="one_hundred_result" value="0" readonly></td>
+                        </tr>
+                        <tr>
+                            <td><input class="form-control" type="text" value="50" readonly></td>
+                            <td>x</td>
+                            <td><input class="form-control" id="fifty" name="fifty" type="number" min="1" placeholder="0"></td>
+                            <td>=</td>
+                            <td><input class="form-control" type="text" id="fifty_result" value="0" readonly></td>
+                        </tr>
+                        <tr>
+                            <td><input class="form-control" type="text" value="20" readonly></td>
+                            <td>x</td>
+                            <td><input class="form-control" id="twenty" name="twenty" type="number" min="1" placeholder="0"></td>
+                            <td>=</td>
+                            <td><input class="form-control" type="text" id="twenty_result" value="0" readonly></td>
+                        </tr>
+                        <tr>
+                            <td><input class="form-control" type="text" value="10" readonly></td>
+                            <td>x</td>
+                            <td><input class="form-control" id="ten" name="ten" type="number" min="1" placeholder="0"></td>
+                            <td>=</td>
+                            <td><input class="form-control" type="text" id="ten_result" value="0" readonly></td>
+                        </tr>
+                        <tr>
+                            <td><input class="form-control" type="text" value="5" readonly></td>
+                            <td>x</td>
+                            <td><input class="form-control" id="five" name="five" type="number" min="1" placeholder="0"></td>
+                            <td>=</td>
+                            <td><input class="form-control" type="text" id="five_result" value="0" readonly></td>
+                        </tr>
+                        <tr>
+                            <td><input class="form-control" type="text" value="2" readonly></td>
+                            <td>x</td>
+                            <td><input class="form-control" id="two" name="two" type="number" min="1" placeholder="0"></td>
+                            <td>=</td>
+                            <td><input class="form-control" type="text" id="two_result" value="0" readonly></td>
+                        </tr>
+                        <tr>
+                            <td><input class="form-control" type="text" value="1" readonly></td>
+                            <td>x</td>
+                            <td><input class="form-control" id="one" name="one" type="number" min="1" placeholder="0"></td>
+                            <td>=</td>
+                            <td><input class="form-control" type="text" id="one_result" value="0" readonly></td>
+                        </tr>
+                    </table>
+                    <div class="form-group">
+                        <button class="btn btn-primary">Close Till</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        </div>
+    </div> --}}
 @endsection
 
 @section('js')
+<script src="{{ asset('admin/dist/js/popper.min.js') }}"  crossorigin="anonymous"></script>
+<script src="{{ asset('admin/dist/js/bootstrap.min.js') }}" crossorigin="anonymous"></script>
+<script>
+    $(document).on('click', '#tillOpenButton', function() {
+        var tillForm = document.getElementById('tillForm');
+        tillForm.action = "{{ route('admin.openTill') }}"; 
+        $('#tillOpenModal').modal('show'); 
+    });
+    $(document).on('click', '#tillCloseButton', function() {
+        var tillForm = document.getElementById('tillForm');
+        tillForm.action = "{{ route('admin.closeTill') }}"; 
+        $('#tillOpenModal').modal('show'); 
+    });
+    $(document).on('keyup', '#five_thousand', function() {
+        let amount = $(this).val();
+        let result = parseFloat(amount * 5000);
+        $('#five_thousand_result').val(result);
+    });
+    $(document).on('keyup', '#one_thousand', function() {
+        let amount = $(this).val();
+        let result = parseFloat(amount * 1000);
+        $('#one_thousand_result').val(result);
+    });
+    $(document).on('keyup', '#five_hundred', function() {
+        let amount = $(this).val();
+        let result = parseFloat(amount * 500);
+        $('#five_hundred_result').val(result);
+    });
+    $(document).on('keyup', '#one_hundred', function() {
+        let amount = $(this).val();
+        let result = parseFloat(amount * 100);
+        $('#one_hundred_result').val(result);
+    });
+    $(document).on('keyup', '#fifty', function() {
+        let amount = $(this).val();
+        let result = parseFloat(amount * 50);
+        $('#fifty_result').val(result);
+    });
+    $(document).on('keyup', '#twenty', function() {
+        let amount = $(this).val();
+        let result = parseFloat(amount * 20);
+        $('#twenty_result').val(result);
+    });
+    $(document).on('keyup', '#ten', function() {
+        let amount = $(this).val();
+        let result = parseFloat(amount * 10);
+        $('#ten_result').val(result);
+    });
+    $(document).on('keyup', '#five', function() {
+        let amount = $(this).val();
+        let result = parseFloat(amount * 5);
+        $('#five_result').val(result);
+    });
+    $(document).on('keyup', '#two', function() {
+        let amount = $(this).val();
+        let result = parseFloat(amount * 2);
+        $('#two_result').val(result);
+    });
+    $(document).on('keyup', '#one', function() {
+        let amount = $(this).val();
+        let result = parseFloat(amount * 1);
+        $('#one_result').val(result);
+    });
+    
+</script>
 @endsection

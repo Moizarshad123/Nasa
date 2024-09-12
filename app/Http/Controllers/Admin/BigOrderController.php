@@ -17,6 +17,7 @@ use App\Models\Size;
 use App\Models\OrderNumber;
 use App\Models\OrderHistory;
 use App\Models\OrderPayment;
+use App\Models\TillOpen;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Auth, Mail, DataTables;
 
@@ -347,13 +348,312 @@ class BigOrderController extends Controller
         </body>
         </html>';
 
-        $pdf = Pdf::loadHTML($htmlContent)
-                  ->setPaper([0, 0, 226.77, 841.89], 'portrait');
+        $pdf = Pdf::loadHTML($htmlContent)->setPaper([0, 0, 226.77, 841.89], 'portrait');
         // $pdf = PDF::loadView('penjualan.nota_besar', compact('setting', 'penjualan', 'detail'));
         // $pdf->setPaper(0,0,609,440, 'potrait');
 
         return $pdf->stream('pos_slip.pdf');
         // return view('admin.slip', compact('order', 'orderDetail'));
+    }
+
+    public function tillCloseReceipt() {
+     
+        $content      = "";
+        $opening_cash = TillOpen::where('user_id', auth()->user()->id)->where('date', date('Y-m-d'))->where('type', 'till_open')->pluck('amount')->first();
+        $gross_sales  = Order::with('payments')->where('user_id', auth()->user()->id)->where('creating_date', date('Y-m-d'))->get();
+        $tot_discounts = Order::where('user_id', auth()->user()->id)->where('creating_date', date('Y-m-d'))->sum('discount_amount');
+        $sales_return  = Order::where('user_id', auth()->user()->id)->where('creating_date', date('Y-m-d'))->where('status', 'Cancelled')->sum('refund_amount');
+
+      
+        
+        // if(count($orderDetail) > 0) {
+        //     foreach($orderDetail as $item){
+        //         $content .= '<tr class="text-center">
+        //         <td>
+        //             <span>'.$item->expose.'</span>
+        //         </td>
+        //         <td>'.$item->size.'</td>
+        //         <td>'.$item->qty.'</td>
+        //         <td>'.$item->print_cost.'</td>
+        //         <td>'.$item->total.'</td>
+        //         </tr>';   
+        //     }
+        // }
+        // <hr style="margin-left:-20px;border: none; width: 250px;border-bottom: 1px solid #000; text-align: center;">
+        $htmlContent = '
+        <html>
+        <head>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                }
+                h1 {
+                    color: #333;
+                }
+                .text-center{
+                    text-align:center
+                }
+                .customer-details .detail {
+                    display: flex;
+                    margin-bottom: 6px; 
+                    margin-left:-13px;
+                }
+
+                .customer-details .label {
+                    width: 115px; 
+                    font-weight: bold;
+                    font-size:12px
+                }
+                .detail {
+                    
+                    font-size:12px
+                }
+                @media print {
+                    @page {
+                        size: 80mm auto;
+                        margin: 0;
+                    }
+                    body {
+                        width: 80mm;
+                        margin: 0;
+                    }
+                }
+                .dotted-line::after {
+                    content: "";
+                    display: inline-block;
+                    border-bottom: 2px dotted #000;
+                    width: 50%;
+                    margin-left: -18px;
+            
+                }
+                .dotted-line2::after {
+                    content: "";
+                    display: inline-block;
+                    border-bottom: 2px dotted #000;
+                    width: 30%;
+                    margin-left:180px
+                }
+            </style>
+        </head>
+        <body>
+            <div id="invoice-POS">
+                <div class="info">
+                    <div style="margin-top:-15px">
+                        <p style="font-size:11px"><strong>Nasa Studios Pharmacy & Photography</strong></p>
+                    </div>
+                    
+                    <p class="text-center" style="margin-top:10px; font-size:11px; margin-left:-20px;">
+                        <span>Shop 58, Al-Haidery Memorial Market, <br></span>
+                        <span>North Nazimabad Karachi.<br></span>
+                        <span>021-36636242<br></span>
+                        <span>pharmacynasa@gmail.com<br></span>
+
+                    </p>
+
+                        <h3 class="text-center" style="margin-top: 18px;">Till Close Receipt</h3>
+
+                       <p class="customer-details">
+                            <span class="detail"><span class="label">Opening Date:</span> <span style="float:right">'. date('d-m-Y h:i A').'</span></span>
+                            <span class="detail"><span class="label">Closing Date:</span><span style="float:right">'.date('d-m-Y').' '.date('h:i A').'</span></span>
+                            <span class="detail"><span class="label">User:</span> <span style="float:right">ABDULLAH</span></span>
+                            <span class="detail"><span class="label">[OP] Opening Cash:</span><span style="float:right">'.number_format($opening_cash, 2).'</span></span>
+                        </p>
+                    <hr style="margin-left:-20px;border: none; width: 250px; border-bottom: 2px solid #000; text-align: center;">
+                    <table class="table_data" style="margin-left:-20px; width: 100%; border-collapse: collapse;font-size:12px; ">
+                        <thead>
+                        <tr>
+                            <th style="text-align:left">Description</th>
+                            <th style="text-align:right">Amount</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                          
+                        
+                        </tbody>
+                    </table>
+                    <hr style="margin-left:-20px;border: none; width: 250px; border-bottom: 2px solid #000; text-align: center;">
+                    <table class="table_data" style="margin-left:-20px;width: 100%; border-collapse: collapse;font-size:14px;">
+                        <tbody>
+                            
+
+                            <tr style="font-size:11px">
+                                <th style="text-align:left">Gross Sale:</th>
+                                <th style="text-align:right">87,804.83</th>
+                            </tr>
+                            <tr style="font-size:11px">
+                                <td style="text-align:left">Total Discount:(-)</th>
+                                <td style="text-align:right">'.number_format($tot_discounts, 2).'</th>
+                            </tr>
+                            <tr style="font-size:11px">
+                                <td style="text-align:left">Misc Charges:(+)</td>
+                                <td style="text-align:right">0.00</td>
+                            </tr>
+                            <tr style="font-size:11px">
+                                <td style="text-align:left">Item Level Gst:(+)</td>
+                                <td style="text-align:right">0.00</td>
+                            </tr>
+                            <tr style="font-size:11px">
+                                <td style="text-align:left">Sales Return:(-)</td>
+                                <td style="text-align:right">'.number_format($sales_return, 2).'</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">  <hr style="border: none; width: 250px; border-bottom: 1px solid #000; text-align: center;"></td>
+                            </tr>
+                             <tr style="font-size:11px">
+                                <td style="text-align:left">AP% Net Sale:</th>
+                                <td style="text-align:right">3,859.21</th>
+                            </tr>
+                            <tr style="font-size:11px">
+                                <td style="text-align:left">Credit Inv Total:(-)</td>
+                                <td style="text-align:right">26,380.00</td>
+                            </tr>
+                            <tr style="font-size:11px">
+                                <td style="text-align:left">Rounding Diff:(+)</td>
+                                <td style="text-align:right">3.38</td>
+                            </tr>
+                            <tr style="font-size:11px">
+                                <td style="text-align:left">[CS] Cash Sale:</td>
+                                <td style="text-align:right">57,299.00</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">  <hr style="border: none; width: 250px; border-bottom: 1px solid #000; text-align: center;"></td>
+                            </tr>
+                            <tr style="font-size:11px">
+                                <td style="text-align:left">Net Total (OP + CS)</td>
+                                <td style="text-align:right">64,799.00</td>
+                            </tr>
+                            <tr style="font-size:11px">
+                                <td style="text-align:left">Cash In (+)</td>
+                                <td style="text-align:right">0.00</td>
+                            </tr>
+                            <tr style="font-size:11px">
+                                <td style="text-align:left">Cash Out (-)</td>
+                                <td style="text-align:right">37,020.00</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">  <hr style="border: none; width: 250px; border-bottom: 1px solid #000; text-align: center;"></td>
+                            </tr>
+                            <tr style="font-size:11px">
+                                <th style="text-align:left">Closing Total:</th>
+                                <th style="text-align:right">27,779.00</th>
+                            </tr>
+                            <tr>
+                                <td colspan="2">  <hr style="border: none; width: 250px; border-bottom: 1px solid #000; text-align: center;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+            
+                    <br>
+                    <table border="1" class="table_data" style="text-align:center;margin-left:-20px;width: 120%; border-collapse: collapse;font-size:14px;">
+                        <tr>
+                            <td>5000</td>
+                            <td>x</td>
+                            <td>3</td>
+                            <td>=</td>
+                            <td>15000</td>
+                        </tr>
+                        <tr>
+                            <td>1000</td>
+                            <td>x</td>
+                            <td>3</td>
+                            <td>=</td>
+                            <td>4000</td>
+                        </tr>
+                        <tr>
+                            <td>500</td>
+                            <td>x</td>
+                            <td>3</td>
+                            <td>=</td>
+                            <td>2500</td>
+                        </tr>
+                        <tr>
+                            <td>100</td>
+                            <td>x</td>
+                            <td>3</td>
+                            <td>=</td>
+                            <td>3000</td>
+                        </tr>
+                        <tr>
+                            <td>50</td>
+                            <td>x</td>
+                            <td>3</td>
+                            <td>=</td>
+                            <td>2500</td>
+                        </tr>
+                        <tr>
+                            <td>20</td>
+                            <td>x</td>
+                            <td>3</td>
+                            <td>=</td>
+                            <td>2000</td>
+                        </tr>
+                        <tr>
+                            <td>10</td>
+                            <td>x</td>
+                            <td>3</td>
+                            <td>=</td>
+                            <td>740</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>x</td>
+                            <td>3</td>
+                            <td>=</td>
+                            <td>30</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>x</td>
+                            <td>3</td>
+                            <td>=</td>
+                            <td>20</td>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>x</td>
+                            <td>3</td>
+                            <td>=</td>
+                            <td>1</td>
+                        </tr>
+                       
+                    </table>
+
+
+                    <table class="table_data" style="margin-left:-20px;width: 100%; border-collapse: collapse;font-size:14px;">
+                        <tbody>
+                        
+                            <tr class="align-amounts" >
+                                <th colspan="4" style="padding-top: 2px;padding-bottom: 2px;"><span style="font-size: 13px;margin-left: -80px;">Grand Total:</span></th>
+                                <td colspan="1" style="padding-top: 2px;padding-bottom: 2px;"><span style="font-size: 13px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;500</span></td>
+                            </tr>
+
+                            <tr class="align-amounts">
+                                <th colspan="4" style="padding-top: 2px;padding-bottom: 2px;"><span style="font-size: 13px;margin-left: -45px;">Discount Amount:</span></th>
+                                <td colspan="1" style="padding-top: 2px;padding-bottom: 2px;"><span style="font-size: 13px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;500</span></td>
+                            </tr>
+
+                            <tr class="align-amounts">
+                                <th colspan="4" style="padding-top: 2px;padding-bottom: 2px;"><span style="font-size: 13px;margin-left: -80px;">Net Amount:</span></th>
+                                <td colspan="1" style="padding-top: 2px;padding-bottom: 2px;"><span style="font-size: 13px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;500</span></td>
+                            </tr>
+
+                            <tr class="align-amounts">
+                                <th colspan="4"><span style="font-size: 13px;margin-left: -75px;">Paid Amount:</span></th>
+                                <td colspan="1"><span style="font-size: 13px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;200</span></td>
+                            </tr>
+                            <tr style="margin-top:-80px !important">
+                                <th colspan="4" style="font-size: 16px;margin-left: -75px;">Outstanding Amount</th>
+                                <th colspan="1"><span style="float:right;margin-right: -40px;font-size:20px">&nbsp;&nbsp;25.36</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </body>
+        </html>';
+
+        $pdf = Pdf::loadHTML($htmlContent)->setPaper([0, 0, 226.77, 841.89], 'portrait');
+        return $pdf->stream('till_close_receipt.pdf');
     }
 
     public function show($id)
