@@ -19,17 +19,17 @@ class CreateTillOpensTable extends Migration
             $table->String("type")->nullable();
             $table->double("amount")->nullable();
             $table->date("date")->nullable();
-            $table->double("five_thousand")->nullable();
-            $table->double("one_thousand")->nullable();
-            $table->double("five_hundred")->nullable();
-            $table->double("one_hundred")->nullable();
-            $table->double("fifty")->nullable();
-            $table->double("twenty")->nullable();
-            $table->double("ten")->nullable();
-            $table->double("five")->nullable();
-            $table->double("two")->nullable();
-            $table->double("one")->nullable();
-            $table->text("notes")->nullable();
+            $table->double("five_thousand")->default(0);
+            $table->double("one_thousand")->default(0);
+            $table->double("five_hundred")->default(0);
+            $table->double("one_hundred")->default(0);
+            $table->double("fifty")->default(0);
+            $table->double("twenty")->default(0);
+            $table->double("ten")->default(0);
+            $table->double("five")->default(0);
+            $table->double("two")->default(0);
+            $table->double("one")->default(0);
+            $table->text("notes")->default(0);
             $table->timestamps();
         });
     }

@@ -17,13 +17,16 @@ class AdminController extends Controller
 {
     public function dashboard() {
 
-        return view('admin.dashboard');
+        $checkTillOpen  = TillOpen::where('date',date('Y-m-d'))->where('user_id', auth()->user()->id)->where('type', 'till_open')->first();
+        $checkTillClose = TillOpen::where('date',date('Y-m-d'))->where('user_id', auth()->user()->id)->where('type', 'till_close')->first();
+
+        return view('admin.dashboard', compact('checkTillOpen', 'checkTillClose'));
     }
 
     public function open_till(Request $request) {
 
         try {
-            //code...
+
             TillOpen::create([
                 "user_id" => auth()->user()->id,
                 "type"    => "till_open",
@@ -74,6 +77,29 @@ class AdminController extends Controller
             return redirect()->back()->with("error", $e->getMessage());
         }
     }
+
+    public function cashIn(Request $request) {
+        try {
+
+            TillOpen::create([
+                "user_id"       => auth()->user()->id,
+                "type"          => $request->type,
+                "amount"        => $request->amount,
+                "date"          => date('Y-m-d'),
+                "notes"         => $request->notes,
+            ]);
+            if($request->type == "cash_in") {
+                return redirect()->back()->with("success", "Cash In added");
+            } else {
+                return redirect()->back()->with("success", "Cash Out added");
+            }
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with("error", $e->getMessage());
+        }
+    }
+
+    
     
     public function login(Request $request) {
 

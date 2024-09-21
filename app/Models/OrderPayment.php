@@ -21,4 +21,8 @@ class OrderPayment extends Model
     public function amountReceivedByUer() {
         return $this->hasOne(User::class, 'id', 'received_by');
     }
+
+    public function order() {
+        return $this->hasOne(Order::class, 'id', 'order_id');
+    }
 }

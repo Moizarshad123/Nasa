@@ -358,14 +358,30 @@ class BigOrderController extends Controller
 
     public function tillCloseReceipt() {
      
-        $content      = "";
-        $opening_cash = TillOpen::where('user_id', auth()->user()->id)->where('date', date('Y-m-d'))->where('type', 'till_open')->pluck('amount')->first();
-        $gross_sales  = Order::with('payments')->where('user_id', auth()->user()->id)->where('creating_date', date('Y-m-d'))->get();
-        $tot_discounts = Order::where('user_id', auth()->user()->id)->where('creating_date', date('Y-m-d'))->sum('discount_amount');
-        $sales_return  = Order::where('user_id', auth()->user()->id)->where('creating_date', date('Y-m-d'))->where('status', 'Cancelled')->sum('refund_amount');
+        $content        = "";
+        $opening_cash   = TillOpen::where('user_id', auth()->user()->id)->where('date', date('Y-m-d'))->where('type', 'till_open')->pluck('amount')->first();
+        $gross_sales    = Order::with('payments')->where('user_id', auth()->user()->id)->where('creating_date', date('Y-m-d'))->get();
+        $tot_discounts  = Order::where('user_id', auth()->user()->id)->where('creating_date', date('Y-m-d'))->sum('discount_amount');
+        $sales_return   = Order::where('user_id', auth()->user()->id)->where('creating_date', date('Y-m-d'))->where('status', 'Cancelled')->sum('refund_amount');
+        $gross_salesAmt =  OrderPayment::whereDate('created_at', date('Y-m-d'))->where('received_by', auth()->user()->id)->sum('amount_received');
+        $cardSales      =  OrderPayment::where('payment_method', "Card")->where('received_by', auth()->user()->id)->whereDate('created_at', date('Y-m-d'))->sum('amount_received');
+        $closing_cash   = TillOpen::where('user_id', auth()->user()->id)->where('date', date('Y-m-d'))->where('type', 'till_close')->first();
+        $cash_in        = TillOpen::where('user_id', auth()->user()->id)->where('date', date('Y-m-d'))->where('type', 'cash_in')->sum('amount');
+        $cash_out       = TillOpen::where('user_id', auth()->user()->id)->where('date', date('Y-m-d'))->where('type', 'cash_out')->sum('amount');
 
-      
-        
+
+        $cash_ins    = TillOpen::where('user_id', auth()->user()->id)->where('date', date('Y-m-d'))->where('type', 'cash_in')->get();
+        $cash_outs   = TillOpen::where('user_id', auth()->user()->id)->where('date', date('Y-m-d'))->where('type', 'cash_out')->get();
+        $cardKiSales = OrderPayment::with("amountReceivedByUer", "order")->where('payment_method', "Card")->where('received_by', auth()->user()->id)->whereDate('created_at', date('Y-m-d'))->get();
+
+        $getNetSales  = $gross_salesAmt - ($tot_discounts + $sales_return);
+        $getCashSales = $getNetSales - $cardSales;
+
+        $roundOff = $getNetSales - ($getCashSales + $cardSales); 
+        $netTotal = $opening_cash + $getCashSales;
+
+
+        $closingTotal = ($netTotal + $cash_in) - $cash_out;
         // if(count($orderDetail) > 0) {
         //     foreach($orderDetail as $item){
         //         $content .= '<tr class="text-center">
@@ -380,6 +396,37 @@ class BigOrderController extends Controller
         //     }
         // }
         // <hr style="margin-left:-20px;border: none; width: 250px;border-bottom: 1px solid #000; text-align: center;">
+        $cardData = "";
+        foreach($cardKiSales as $item) {
+            $cardData .= "<tr>
+                            <td>".$item["order"]->order_number."</td>
+                            <td style='text-align:right'>".$item["amountReceivedByUer"]->name."</td>
+                            <td style='text-align:right'>80,7580</td>
+                            <td style='text-align:right'>5V</td>
+                            <td style='text-align:right'>".number_format($item->amount_charged, 2)."</td>
+                        </tr>";
+       
+        }
+
+        $cashInData = "";
+        foreach($cash_ins as $cash) {
+            $cashInData .= "<tr>
+
+                            <td style='text-align:left'>".$cash->notes."</td>
+                            <td style='text-align:right'>".number_format($cash->amount, 2)."</td>
+                        </tr>";
+       
+        }
+
+        $cashOutData = "";
+        foreach($cash_outs as $cashOut) {
+            $cashOutData .= "<tr>
+                            <td style='text-align:left'>".$cashOut->notes."</td>
+                            <td style='text-align:right'>".number_format($cashOut->amount, 2)."</td>
+                        </tr>";
+       
+        }
+
         $htmlContent = '
         <html>
         <head>
@@ -441,7 +488,6 @@ class BigOrderController extends Controller
                     <div style="margin-top:-15px">
                         <p style="font-size:11px"><strong>Nasa Studios Pharmacy & Photography</strong></p>
                     </div>
-                    
                     <p class="text-center" style="margin-top:10px; font-size:11px; margin-left:-20px;">
                         <span>Shop 58, Al-Haidery Memorial Market, <br></span>
                         <span>North Nazimabad Karachi.<br></span>
@@ -449,13 +495,11 @@ class BigOrderController extends Controller
                         <span>pharmacynasa@gmail.com<br></span>
 
                     </p>
-
                         <h3 class="text-center" style="margin-top: 18px;">Till Close Receipt</h3>
-
                        <p class="customer-details">
                             <span class="detail"><span class="label">Opening Date:</span> <span style="float:right">'. date('d-m-Y h:i A').'</span></span>
                             <span class="detail"><span class="label">Closing Date:</span><span style="float:right">'.date('d-m-Y').' '.date('h:i A').'</span></span>
-                            <span class="detail"><span class="label">User:</span> <span style="float:right">ABDULLAH</span></span>
+                            <span class="detail"><span class="label">User:</span> <span style="float:right">'.auth()->user()->name.'</span></span>
                             <span class="detail"><span class="label">[OP] Opening Cash:</span><span style="float:right">'.number_format($opening_cash, 2).'</span></span>
                         </p>
                     <hr style="margin-left:-20px;border: none; width: 250px; border-bottom: 2px solid #000; text-align: center;">
@@ -474,11 +518,9 @@ class BigOrderController extends Controller
                     <hr style="margin-left:-20px;border: none; width: 250px; border-bottom: 2px solid #000; text-align: center;">
                     <table class="table_data" style="margin-left:-20px;width: 100%; border-collapse: collapse;font-size:14px;">
                         <tbody>
-                            
-
                             <tr style="font-size:11px">
                                 <th style="text-align:left">Gross Sale:</th>
-                                <th style="text-align:right">87,804.83</th>
+                                <th style="text-align:right">'.number_format($gross_salesAmt, 2).'</th>
                             </tr>
                             <tr style="font-size:11px">
                                 <td style="text-align:left">Total Discount:(-)</th>
@@ -501,158 +543,258 @@ class BigOrderController extends Controller
                             </tr>
                              <tr style="font-size:11px">
                                 <td style="text-align:left">AP% Net Sale:</th>
-                                <td style="text-align:right">3,859.21</th>
+                                <td style="text-align:right">'.number_format($getNetSales, 2).'</th>
                             </tr>
                             <tr style="font-size:11px">
                                 <td style="text-align:left">Credit Inv Total:(-)</td>
-                                <td style="text-align:right">26,380.00</td>
+                                <td style="text-align:right">'.number_format($cardSales, 2).'</td>
                             </tr>
                             <tr style="font-size:11px">
                                 <td style="text-align:left">Rounding Diff:(+)</td>
-                                <td style="text-align:right">3.38</td>
+                                <td style="text-align:right">'.number_format($roundOff, 2).'</td>
                             </tr>
                             <tr style="font-size:11px">
                                 <td style="text-align:left">[CS] Cash Sale:</td>
-                                <td style="text-align:right">57,299.00</td>
+                                <td style="text-align:right">'.number_format($getCashSales, 2).'</td>
                             </tr>
                             <tr>
                                 <td colspan="2">  <hr style="border: none; width: 250px; border-bottom: 1px solid #000; text-align: center;"></td>
                             </tr>
                             <tr style="font-size:11px">
                                 <td style="text-align:left">Net Total (OP + CS)</td>
-                                <td style="text-align:right">64,799.00</td>
+                                <td style="text-align:right">'.number_format($netTotal, 2).'</td>
                             </tr>
                             <tr style="font-size:11px">
                                 <td style="text-align:left">Cash In (+)</td>
-                                <td style="text-align:right">0.00</td>
+                                <td style="text-align:right">'.number_format($cash_in, 2).'</td>
                             </tr>
                             <tr style="font-size:11px">
                                 <td style="text-align:left">Cash Out (-)</td>
-                                <td style="text-align:right">37,020.00</td>
+                                <td style="text-align:right">'.number_format($cash_out, 2).'</td>
                             </tr>
                             <tr>
                                 <td colspan="2">  <hr style="border: none; width: 250px; border-bottom: 1px solid #000; text-align: center;"></td>
                             </tr>
                             <tr style="font-size:11px">
                                 <th style="text-align:left">Closing Total:</th>
-                                <th style="text-align:right">27,779.00</th>
+                                <th style="text-align:right">'.number_format($closingTotal, 2).'</th>
                             </tr>
                             <tr>
                                 <td colspan="2">  <hr style="border: none; width: 250px; border-bottom: 1px solid #000; text-align: center;"></td>
                             </tr>
                         </tbody>
                     </table>
-            
                     <br>
-                    <table border="1" class="table_data" style="text-align:center;margin-left:-20px;width: 120%; border-collapse: collapse;font-size:14px;">
+                    <table border="1" class="table_data" style="text-align:center;margin-left:-20px;width: 120%; border-collapse: collapse;font-size:12px;">
                         <tr>
                             <td>5000</td>
                             <td>x</td>
-                            <td>3</td>
+                            <td>'. $closing_cash->five_thousand .'</td>
                             <td>=</td>
-                            <td>15000</td>
-                        </tr>
+                            <td>'. 5000 * $closing_cash->five_thousand.'</td>
+                        </tr> 
                         <tr>
                             <td>1000</td>
                             <td>x</td>
-                            <td>3</td>
+                            <td>'. $closing_cash->one_thousand .'</td>
                             <td>=</td>
-                            <td>4000</td>
+                            <td>'. 1000 * $closing_cash->one_thousand.'</td>
                         </tr>
                         <tr>
                             <td>500</td>
                             <td>x</td>
-                            <td>3</td>
+                            <td>'. $closing_cash->five_hundred .'</td>
                             <td>=</td>
-                            <td>2500</td>
+                            <td>'. $closing_cash->five_hundred * 500 .'</td>
                         </tr>
                         <tr>
                             <td>100</td>
                             <td>x</td>
-                            <td>3</td>
+                            <td>'. $closing_cash->one_hundred .'</td>
                             <td>=</td>
-                            <td>3000</td>
+                            <td>'. $closing_cash->one_hundred * 100 .'</td>
                         </tr>
                         <tr>
                             <td>50</td>
                             <td>x</td>
-                            <td>3</td>
+                            <td>'. $closing_cash->fifty .'</td>
                             <td>=</td>
-                            <td>2500</td>
+                            <td>'. $closing_cash->fifty * 50 .'</td>
                         </tr>
                         <tr>
                             <td>20</td>
                             <td>x</td>
-                            <td>3</td>
+                            <td>'. $closing_cash->twenty .'</td>
                             <td>=</td>
-                            <td>2000</td>
+                            <td>'. $closing_cash->twenty * 20 .'</td>
                         </tr>
                         <tr>
                             <td>10</td>
                             <td>x</td>
-                            <td>3</td>
+                            <td>'. $closing_cash->ten .'</td>
                             <td>=</td>
-                            <td>740</td>
+                            <td>'. $closing_cash->ten * 10 .'</td>
                         </tr>
                         <tr>
                             <td>5</td>
                             <td>x</td>
-                            <td>3</td>
+                            <td>'. $closing_cash->five .'</td>
                             <td>=</td>
-                            <td>30</td>
+                            <td>'. $closing_cash->five * 5 .'</td>
                         </tr>
                         <tr>
                             <td>2</td>
                             <td>x</td>
-                            <td>3</td>
+                            <td>'. $closing_cash->two .'</td>
                             <td>=</td>
-                            <td>20</td>
+                            <td>'. $closing_cash->two * 2 .'</td>
                         </tr>
                         <tr>
                             <td>1</td>
                             <td>x</td>
-                            <td>3</td>
+                            <td>'. $closing_cash->one .'</td>
                             <td>=</td>
-                            <td>1</td>
+                            <td>'. $closing_cash->one * 1 .'</td>
                         </tr>
                        
                     </table>
 
+                    <table class="table_data" style="margin-left:-20px;width: 100%; border-collapse: collapse;font-size:14px; margin-top: 15px">
+                        <tbody style="margin-top:-15px">
 
-                    <table class="table_data" style="margin-left:-20px;width: 100%; border-collapse: collapse;font-size:14px;">
-                        <tbody>
+                            <tr style="font-size:11px">
+                                <th style="text-align:left">Closing Cash:</th>
+                                <th style="text-align:right">'.number_format($closingTotal, 2).'</th>
+                            </tr>
+                            <tr>
+                                <td colspan="2">  <hr style="border: none; width: 250px; border-bottom: 1px solid #000; text-align: center;"></td>
+                            </tr>
+
+                            <tr style="font-size:11px">
+                                <td style="text-align:left">Excess</td>
+                                <td style="text-align:right">'.number_format(18, 2).'</td>
+                            </tr>
                         
-                            <tr class="align-amounts" >
-                                <th colspan="4" style="padding-top: 2px;padding-bottom: 2px;"><span style="font-size: 13px;margin-left: -80px;">Grand Total:</span></th>
-                                <td colspan="1" style="padding-top: 2px;padding-bottom: 2px;"><span style="font-size: 13px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;500</span></td>
+                           
+                        </tbody>
+                    </table>
+                    <h4 style="margin-left:-20px;margin-top: 14px;font-size:12px">Credit Summary:</h4>
+                    <table class="table_data" style="margin-left:-20px; width: 100%; border-collapse: collapse;font-size:10px; ">
+                        <thead>
+                            <tr>
+                                <td colspan="5">  <hr style="border: none; width: 250px; border-bottom: 1px dotted #000; text-align: center;"></td>
                             </tr>
+                            <tr>
+                                <th style="text-align:left">Code</th>
+                                <th style="text-align:right">Name</th>
+                                <th style="text-align:right">Inv</th>
+                                <th style="text-align:right">Type</th>
+                                <th style="text-align:right">Amount</th>
+                            </tr>
+                            <tr>
+                                <td colspan="5">  <hr style="border: none; width: 250px; border-bottom: 1px dotted #000; text-align: center;"></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           '.$cardData.'
+                           <tr>
+                                <td colspan="5">  <hr style="border: none; width: 250px; border-bottom: 1px dotted #000; text-align: center;"></td>
+                            </tr>
+                            <tr>
+        
+                                <th colspan="3" style="text-align:right;">Total</th>
+                                <th></th>
+                                <td style="text-align:right">'.number_format($cardSales, 2).'</td>
 
-                            <tr class="align-amounts">
-                                <th colspan="4" style="padding-top: 2px;padding-bottom: 2px;"><span style="font-size: 13px;margin-left: -45px;">Discount Amount:</span></th>
-                                <td colspan="1" style="padding-top: 2px;padding-bottom: 2px;"><span style="font-size: 13px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;500</span></td>
                             </tr>
-
-                            <tr class="align-amounts">
-                                <th colspan="4" style="padding-top: 2px;padding-bottom: 2px;"><span style="font-size: 13px;margin-left: -80px;">Net Amount:</span></th>
-                                <td colspan="1" style="padding-top: 2px;padding-bottom: 2px;"><span style="font-size: 13px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;500</span></td>
-                            </tr>
-
-                            <tr class="align-amounts">
-                                <th colspan="4"><span style="font-size: 13px;margin-left: -75px;">Paid Amount:</span></th>
-                                <td colspan="1"><span style="font-size: 13px;float:right;margin-right: -40px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;200</span></td>
-                            </tr>
-                            <tr style="margin-top:-80px !important">
-                                <th colspan="4" style="font-size: 16px;margin-left: -75px;">Outstanding Amount</th>
-                                <th colspan="1"><span style="float:right;margin-right: -40px;font-size:20px">&nbsp;&nbsp;25.36</span></td>
+                             <tr>
+                                <td colspan="5">  <hr style="border: none; width: 250px; border-bottom: 1px dotted #000; text-align: center;"></td>
                             </tr>
                         </tbody>
                     </table>
+
+                     <h4 style="margin-left:-20px;margin-top: 14px;font-size:12px">Cash In:</h4>
+                    <table class="table_data" style="margin-left:-20px; width: 100%; border-collapse: collapse;font-size:10px; ">
+                        <thead>
+                            <tr>
+                                <td colspan="2">  <hr style="border: none; width: 250px; border-bottom: 1px dotted #000; text-align: center;"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align:left">Remarks</th>
+                                <th style="text-align:right">Amount</th>
+                            </tr>
+                            <tr>
+                                <td colspan="2">  <hr style="border: none; width: 250px; border-bottom: 1px dotted #000; text-align: center;"></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           '.$cashInData.'
+                           <tr>
+                                <td colspan="2">  <hr style="border: none; width: 250px; border-bottom: 1px dotted #000; text-align: center;"></td>
+                            </tr>
+                            <tr>
+
+                                <th style="text-align:right;">Total</th>
+                                <td style="text-align:right">'.number_format($cash_in, 2).'</td>
+
+                            </tr>
+                             <tr>
+                                <td colspan="3">  <hr style="border: none; width: 250px; border-bottom: 1px dotted #000; text-align: center;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <h4 style="margin-left:-20px;margin-top: 14px;font-size:12px">Cash Out</h4>
+                    <table class="table_data" style="margin-left:-20px; width: 100%; border-collapse: collapse;font-size:10px; ">
+                        <thead>
+                            <tr>
+                                <td colspan="2">  <hr style="border: none; width: 250px; border-bottom: 1px dotted #000; text-align: center;"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align:left">Remarks</th>
+                                <th style="text-align:right">Amount</th>
+                            </tr>
+                            <tr>
+                                <td colspan="2">  <hr style="border: none; width: 250px; border-bottom: 1px dotted #000; text-align: center;"></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           '.$cashOutData.'
+                           <tr>
+                                <td colspan="3">  <hr style="border: none; width: 250px; border-bottom: 1px dotted #000; text-align: center;"></td>
+                            </tr>
+                            <tr>
+                                <th style="text-align:right;">Total</th>
+                                <td style="text-align:right">'.number_format($cash_out, 2).'</td>
+
+                            </tr>
+                             <tr>
+                                <td colspan="2">  <hr style="border: none; width: 250px; border-bottom: 1px dotted #000; text-align: center;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table class="table_data" style="margin-left:-18px;margin-top:60px; width: 100%; border-collapse: collapse;font-size:10px; ">
+                       
+                        <tr>
+                            <td>  <hr style="border: none; width: 100px; border-bottom: 1px solid #000; text-align:right;margin-right:15px "></td>
+                            <td>  <hr style="border: none; width: 100px; border-bottom: 1px solid #000; text-align: right;margin-right:-40px"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:left;">Checked By</td>
+                            <td style="text-align:right;">Approved By</td>
+                        </tr>
+                      
+                    </table>
+
                 </div>
             </div>
         </body>
         </html>';
 
-        $pdf = Pdf::loadHTML($htmlContent)->setPaper([0, 0, 226.77, 841.89], 'portrait');
+        
+
+        $pdf = Pdf::loadHTML($htmlContent)->setPaper([0, 0, 226.77, 1700], 'portrait');
         return $pdf->stream('till_close_receipt.pdf');
     }
 

@@ -50,7 +50,7 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::GET('sales-return/{id}',"sales_return")->name('salesReturn');
         Route::get('print/{id}', 'printView')->name('print.view');
         Route::get('/pos-slip', 'generatePdf');
-        Route::get('/till-close', 'tillCloseReceipt');
+        Route::get('/till-close', 'tillCloseReceipt')->name('tillCloseReceipt');
 
 
         Route::GET('view-order/{id}',"viewOrder")->name('viewOrder');
@@ -66,6 +66,8 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::get('dashboard', 'dashboard')->name('dashboard');
         Route::post('open-till', 'open_till')->name('openTill');
         Route::post('close-till', 'close_till')->name('closeTill');
+        Route::post('cash-in', 'cashIn')->name('cashIn');
+
 
 
         Route::match(['get', 'post'], '/settings', 'site_setting')->name('settings');
