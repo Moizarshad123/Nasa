@@ -248,7 +248,7 @@ class BigOrderController extends Controller
             <div id="invoice-POS">
                 <div class="info">
                     <div>
-                        <img src="D:\Projects\Nasa\public\admin\logo.jpg" width="220" height="80" />
+                        <img src="/admin/logo.jpg" width="220" height="80" />
                     </div>
                     
                     <p class="text-center" style="margin-top:20px; font-size:12px; margin-left:-20px;">
@@ -977,17 +977,19 @@ class BigOrderController extends Controller
                                       
                     ->addColumn('action', function ($data) {
 
-                        return '<div class="d-flex">
-                            <div class="dropdown ms-auto">
-                                <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
-                                    aria-haspopup="true" aria-expanded="false">
-                                    <i class="bi bi-three-dots"></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <a href="'.url('admin/view-order/'.$data->id).'" class="dropdown-item">Edit</a>
-                                </div>
-                            </div>
-                        </div>';
+                        // return '<div class="d-flex">
+                        //     <div class="dropdown ms-auto">
+                        //         <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
+                        //             aria-haspopup="true" aria-expanded="false">
+                        //             <i class="bi bi-three-dots"></i>
+                        //         </a>
+                        //         <div class="dropdown-menu dropdown-menu-end">
+                        //             <a href="'.url('admin/view-order/'.$data->id).'" class="dropdown-item">Edit</a>
+                        //         </div>
+                        //     </div>
+                        // </div>';
+
+                        return '<a href="'.url('admin/view-order/'.$data->id).'" class="dropdown-item"><i style="color:#689d3d" class="fa fa-eye"></i></a>';
                     })->rawColumns(['assignTo', 'orderStatus', 'del_date', 'category', 'action'])->make(true);
             }
 
@@ -1033,17 +1035,19 @@ class BigOrderController extends Controller
                                       
                     ->addColumn('action', function ($data) {
 
-                        return '<div class="d-flex">
-                            <div class="dropdown ms-auto">
-                                <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
-                                    aria-haspopup="true" aria-expanded="false">
-                                    <i class="bi bi-three-dots"></i>
-                                </a>
-                                <div class="dropdown-menu dropdown-menu-end">
-                                    <a href="'.url('admin/view-order/'.$data->id).'" class="dropdown-item">Edit</a>
-                                </div>
-                            </div>
-                        </div>';
+                        // return '<div class="d-flex">
+                        //     <div class="dropdown ms-auto">
+                        //         <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
+                        //             aria-haspopup="true" aria-expanded="false">
+                        //             <i class="bi bi-three-dots"></i>
+                        //         </a>
+                        //         <div class="dropdown-menu dropdown-menu-end">
+                        //             <a href="'.url('admin/view-order/'.$data->id).'" class="dropdown-item">Edit</a>
+                        //         </div>
+                        //     </div>
+                        // </div>';
+                        return '<a href="'.url('admin/view-order/'.$data->id).'" class="dropdown-item"><i style="color:#689d3d" class="fa fa-eye"></i></a>';
+
                     })->rawColumns(['assignTo', 'orderStatus', 'del_date', 'category', 'action'])->make(true);
             }
 
@@ -1088,29 +1092,15 @@ class BigOrderController extends Controller
                         if($data->status == "Ready") 
                         {
                             return '<div class="d-flex">
-                                        <div class="dropdown ms-auto">
-                                            <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
-                                                aria-haspopup="true" aria-expanded="false">
-                                                <i class="bi bi-three-dots"></i>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                <a href="'.url('admin/view-order/'.$data->id).'" class="dropdown-item">Edit</a>
-                                                <a href="'.url('admin/payment/'.$data->id).'" class="dropdown-item">Payment</a>
-                                            </div>
-                                        </div>
+                                        <a href="'.url('admin/view-order/'.$data->id).'" class="dropdown-item"><i style="color:#689d3d" class="fa fa-eye"></i></a> |
+                                        <a href="'.url('admin/payment/'.$data->id).'" class="dropdown-item"><i class="fa-regular fa-money-bill-1"></i></a> | 
+                                        <a target="blank" href="'.url('admin/print/'.$data->id).'" class="dropdown-item"><i class="fa-solid fa-print"></i></a>
                                     </div>';
                         } else {
                             return '<div class="d-flex">
-                                        <div class="dropdown ms-auto">
-                                            <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
-                                                aria-haspopup="true" aria-expanded="false">
-                                                <i class="bi bi-three-dots"></i>
-                                            </a>
-                                            <div class="dropdown-menu dropdown-menu-end">
-                                                <a href="'.url('admin/view-order/'.$data->id).'" class="dropdown-item">Edit</a>
-                                            </div>
-                                        </div>
-                                    </div>';
+                            <a href="'.url('admin/view-order/'.$data->id).'" class="dropdown-item"><i style="color:#689d3d" class="fa fa-eye"></i></a> | 
+                            <a target="blank" href="'.url('admin/print/'.$data->id).'" class="dropdown-item"><i class="fa-solid fa-print"></i></a>
+                            </div>';
                         }
                    
                     })->rawColumns(['assignTo', 'orderStatus', 'del_date', 'category', 'action'])->make(true);

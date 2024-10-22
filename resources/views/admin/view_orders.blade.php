@@ -130,17 +130,27 @@
                             <div class="col">
                                 <select name="status" class="form-control" required>
                                     <option value="">Select Status</option>
-                                    <option value="2" {{$order->status == "Editing Department" ? 'selected' : ""}}>Assign To Me</option>
-                                    @if($firstTwoChars == "Bb")
-                                        <option value="3" {{$order->status == "Approval" ? 'selected' : ""}}>Approval</option>
+                                    @if($order->status != "Ready")
+                                        @if(auth()->user()->role_id == 3 || auth()->user()->role_id == 1)
+                                            <option value="2" {{$order->status == "Editing Department" ? 'selected' : ""}}>Assign To Me</option>
+                                        @endif
+                                        @if($firstTwoChars == "Bb" && auth()->user()->role_id != 3 || auth()->user()->role_id == 1)
+                                            <option value="3" {{$order->status == "Approval" ? 'selected' : ""}}>Approval</option>
+                                        @endif
+                                        @if(auth()->user()->role_id == 2 || auth()->user()->role_id == 1)
+                                            <option value="4" {{$order->status == "Printing Department" ? 'selected' : ""}}>Printing Department</option>
+                                            <option value="5" {{$order->status == "Ready" ? 'selected' : ""}}>Job Ready</option>
+                                        @endif
+                                        @if($order->status != "Printing Department" && $order->status != "Ready" && $order->status != "Completed")
+                                            <option value="7" {{$order->status == "Cancelled" ? 'selected' : ""}}>Sales Return</option>
+                                        @endif
                                     @endif
-                                    <option value="4" {{$order->status == "Printing Department" ? 'selected' : ""}}>Printing Department</option>
-                                    <option value="5" {{$order->status == "Ready" ? 'selected' : ""}}>Job Ready</option>
-                                    <option value="6" {{$order->status == "Completed" ? 'selected' : ""}}>Completed</option>
 
-                                    @if($order->status != "Printing Department" && $order->status != "Ready" && $order->status != "Completed")
-                                        <option value="7" {{$order->status == "Cancelled" ? 'selected' : ""}}>Sales Return</option>
+                                    @if(auth()->user()->role_id == 1 && $order->outstanding_amount == 0)
+                                        <option value="6" {{$order->status == "Completed" ? 'selected' : ""}}>Completed</option>
                                     @endif
+
+                                   
 
                                 </select>
                             </div>
@@ -176,10 +186,10 @@
                             <strong>{{ number_format($amountCharged) ?? "0.00" }}</strong>
                         </div>
                         
-                        <div class="col-8 text-end">
+                        <div class="col-8 text-end" style="font-size: 18px; background: rgb(253 136 136); color: #fff">
                             <strong style="float: left">Outstanding Amount:</strong>
                         </div>
-                        <div class="col-4">
+                        <div class="col-4" style="font-size: 18px; background: rgb(253 136 136); color: #fff">
                             <strong>{{ number_format($order->outstanding_amount) ?? "0.00" }}</strong>
                         </div>
 

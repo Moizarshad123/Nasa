@@ -100,6 +100,16 @@
                                                 <option value="8">8</option>
                                                 <option value="9">9</option>
                                                 <option value="10">10</option>
+                                                <option value="11">11</option>
+                                                <option value="12">12</option>
+                                                <option value="13">13</option>
+                                                <option value="14">14</option>
+                                                <option value="15">15</option>
+                                                <option value="16">16</option>
+                                                <option value="17">17</option>
+                                                <option value="18">18</option>
+                                                <option value="19">19</option>
+                                                <option value="20">20</option>
                                             </select>
                                         </div>
                                     </div>
@@ -267,6 +277,16 @@
                                                                 <option value="Expose8">Expose 8</option>
                                                                 <option value="Expose9">Expose 9</option>
                                                                 <option value="Expose10">Expose 10</option>
+                                                                <option value="Expose11">Expose 11</option>
+                                                                <option value="Expose12">Expose 12</option>
+                                                                <option value="Expose13">Expose 13</option>
+                                                                <option value="Expose14">Expose 14</option>
+                                                                <option value="Expose15">Expose 15</option>
+                                                                <option value="Expose16">Expose 16</option>
+                                                                <option value="Expose17">Expose 17</option>
+                                                                <option value="Expose18">Expose 18</option>
+                                                                <option value="Expose19">Expose 19</option>
+                                                                <option value="Expose20">Expose 20</option>
                                                             </select>
                                                     </div>
                                                 </td>
@@ -337,7 +357,7 @@
                                     <div class="col-md-3">
                                         <div class="mb-3">
                                             <label for="discount_amount">Discount Amount</label>
-                                            <input type="text" class="form-control" name="discount_amount" id="discount_amount" value="0" />
+                                            <input type="number" class="form-control" name="discount_amount" id="discount_amount" min="0" value="0" />
                                         </div>
                                     </div>
                                     <div class="col-md-3">
@@ -375,13 +395,19 @@
                                     </select>
                                 </div>
                                 <div class="row">
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <div class="mb-4">
                                             <label for="">Net Total</label>
                                             <input type="text" readonly id="outStandingAmount" class="form-control">
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
+                                        <div class="mb-4">
+                                            <label for="">Amount Charged</label>
+                                            <input type="text" id="amount_charged" name="amount_charged" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
                                         <div class="mb-4">
                                             <label for="">Remaining Balance</label>
                                             <input type="text" readonly id="remaining_balance" value="0" name="remaining_amount" class="form-control">
@@ -389,26 +415,21 @@
                                     </div>
                                 </div>
 
-                                <div class="row">
+                                {{-- <div class="row">
                                     <div class="col-md-4">
                                         <div class="mb-4">
                                             <label for="">Cash Received</label>
                                             <input type="text" id="amount_received" name="amount_received" class="form-control">
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
-                                        <div class="mb-4">
-                                            <label for="">Cash Charged</label>
-                                            <input type="text" id="amount_charged" name="amount_charged" class="form-control">
-                                        </div>
-                                    </div>
+                                  
                                     <div class="col-md-4">
                                         <div class="mb-4">
                                             <label for="">Cash Back</label>
                                             <input type="text" id="cash_back" readonly name="cash_back" class="form-control">
                                         </div>
                                     </div>
-                                </div>
+                                </div> --}}
                               
                                 <button id="toggleButtonPrev" class="btn btn-sm btn-warning">Previous</button>
                                 <button  type="submit" class="btn btn-sm btn-success">Submit</button>
@@ -452,7 +473,7 @@
         $(document).on('keyup', '#amount_charged', function(){
             let net_total       = parseInt($('#outStandingAmount').val());
             let charge          = parseInt($(this).val());
-            let amount_received = parseInt($('#amount_received').val());
+            // let amount_received = parseInt($('#amount_received').val());
         
             if(charge > net_total) {
                 Swal.fire({
@@ -462,10 +483,12 @@
                 });
                 $(this).val('');
             } else {
-                let cashBack = amount_received - charge;
-                let rem = net_total - charge;
-                $('#cash_back').val(cashBack);
-                $('#remaining_balance').val(rem);
+                if(isNaN(charge)) {
+                    $('#remaining_balance').val('0');
+                } else {
+                    let rem = net_total - charge;
+                    $('#remaining_balance').val(rem);
+                }
             }
         });
 

@@ -28,7 +28,8 @@
                     <th>Delivery Time</th>
                     <th>Order Nature</th>
                     <th>Order Status</th>
-                    <th class="text-end">Action</th>
+                    <th>Outstanding Amount</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -91,6 +92,10 @@
                 {
                     data: 'orderStatus',
                     name: 'orderStatus'
+                },
+                {
+                    data: 'outstanding_amount',
+                    name: 'outstanding_amount'
                 },
                 {
                     data: 'action',
