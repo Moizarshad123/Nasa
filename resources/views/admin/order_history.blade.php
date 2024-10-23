@@ -20,6 +20,7 @@
         <table class="table table-custom table-lg mb-0" id="ordersTable">
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>Order Number#</th>
                     <th>Change By</th>
                     <th>From Status</th>
@@ -77,7 +78,10 @@
             },
             
             columns: [
-
+                {
+                    data: 'id',
+                    name: 'id'
+                },
                 {
                     data: 'order_number',
                     name: 'order_number'
@@ -98,7 +102,8 @@
                     data: 'dateTime',
                     name: 'dateTime'
                 }
-            ]
+            ],
+            order: [[0, 'desc']]
 
         });
 

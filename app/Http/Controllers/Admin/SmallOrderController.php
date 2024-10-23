@@ -122,11 +122,11 @@ class SmallOrderController extends Controller
     {
         try {
 
-            if($request->remaining_amount == 0) {
-                $out_amount = $request->outstanding_amount;
-            } else {
+            // if($request->remaining_amount == 0) {
+            //     $out_amount = $request->outstanding_amount;
+            // } else {
                 $out_amount = $request->remaining_amount;
-            }
+            // }
             
             $order = Order::create([
                 "order_number"       => $request->order_number,
@@ -167,10 +167,10 @@ class SmallOrderController extends Controller
                     "order_id"        => $order->id,
                     "payment_method"  => $request->payment_method,
                     "received_by"     => auth()->user()->id,
-                    "amount_received" => $request->amount_received,
                     "amount_charged"  => $request->amount_charged,
-                    "cash_back"       => $request->cash_back,
                     "outstanding_amount" => $request->remaining_amount
+                    // "amount_received" => $request->amount_received,
+                    // "cash_back"       => $request->cash_back,
                 ]);
             }
 
@@ -403,7 +403,7 @@ class SmallOrderController extends Controller
 
             if (request()->ajax()) {
 
-                $orders = OrderHistory::with("order", "assignUser")->orderByDESC('id')->get();
+                $orders = OrderHistory::with("order", "assignUser")->get();
     
                 return datatables()->of($orders)
                     ->addColumn('order_number', function ($data) {

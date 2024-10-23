@@ -102,7 +102,17 @@
                     name: 'action',
                     orderable: false
                 }
-            ]
+            ],
+            createdRow: function(row, data, dataIndex) {
+                // Check if order_nature is 'urgent'
+                if (data.order_nature == 'urgent' && data.outstanding_amount == 0) {
+                    $(row).css('background-color', 'rgb(253 136 136)');
+                } if(data.order_nature == 'normal' && data.outstanding_amount != 0) {
+                    $(row).css('background-color', 'rgb(191 204 181)');
+                } else if(data.order_nature == 'urgent' && data.outstanding_amount != 0) {
+                    $(row).css('background-color', 'rgb(241 240 129)');
+                }
+            }
 
         });
     });

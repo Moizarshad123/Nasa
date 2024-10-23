@@ -428,9 +428,8 @@
                
                 // $('#cash_back').val(cashBack);
                 if(isNaN(charge)) {
-                    console.log("yahn");
-
-                    $('#remaining_balance').val('0');
+                    // $(this).val(0);
+                    $('#remaining_balance').val(net_total);
                 } else {
                     let rem = net_total - charge;
                     $('#remaining_balance').val(rem);
@@ -441,17 +440,45 @@
         document.getElementById('toggleButton').addEventListener('click', function(e) {
 
             e.preventDefault();
-            var div1 = document.getElementById('div1');
-            var div2 = document.getElementById('div2');
+            var noOfPersons          = parseInt($('#no_of_persons').val());
+            var selectedPersonsCount = 0;
+            var selectedSizeCount    = 0;
 
-            $('#outStandingAmount').val($('#outstanding_amount').val());
+            // Check each appended row if the person_id is selected
+            $('select[name="person_id[]"]').each(function() {
+                if ($(this).val()) {
+                    selectedPersonsCount++;
+                }
+            });
 
-            if (div1.classList.contains('active')) {
-                div1.classList.remove('active');
-                div2.classList.add('active');
+            $('select[name="sizes[]"]').each(function() {
+                console.log("Size", $(this).val());
+                
+                if ($(this).val() != "") {
+                    selectedSizeCount++;
+                }
+            });
+            if (selectedPersonsCount != noOfPersons && selectedSizeCount != noOfPersons) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please fill all the rows to continue',
+                });
             } else {
-                div1.classList.add('active');
-                div2.classList.remove('active');
+                var div1 = document.getElementById('div1');
+                var div2 = document.getElementById('div2');
+    
+                $('#outStandingAmount').val($('#outstanding_amount').val());
+                $('#remaining_balance').val($('#outstanding_amount').val());
+    
+    
+                if (div1.classList.contains('active')) {
+                    div1.classList.remove('active');
+                    div2.classList.add('active');
+                } else {
+                    div1.classList.add('active');
+                    div2.classList.remove('active');
+                }
             }
         });
 

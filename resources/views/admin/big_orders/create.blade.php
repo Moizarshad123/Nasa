@@ -484,7 +484,9 @@
                 $(this).val('');
             } else {
                 if(isNaN(charge)) {
-                    $('#remaining_balance').val('0');
+                    // $(this).val(0);
+                    $('#remaining_balance').val(net_total);
+
                 } else {
                     let rem = net_total - charge;
                     $('#remaining_balance').val(rem);
@@ -498,15 +500,45 @@
             var div1 = document.getElementById('div1');
             var div2 = document.getElementById('div2');
 
-            $('#outStandingAmount').val($('#outstanding_amount').val());
+            var noOfPersons          = parseInt($('#no_of_persons').val());
+            var selectedPersonsCount = 0;
+            var selectedSizeCount    = 0;
 
-            if (div1.classList.contains('active')) {
-                div1.classList.remove('active');
-                div2.classList.add('active');
+            // Check each appended row if the person_id is selected
+            $('select[name="person_id[]"]').each(function() {
+                if ($(this).val()) {
+                    selectedPersonsCount++;
+                }
+            });
+
+            $('select[name="sizes[]"]').each(function() {
+                console.log("Size", $(this).val());
+                
+                if ($(this).val() != "") {
+                    selectedSizeCount++;
+                }
+            });
+            if (selectedPersonsCount != noOfPersons && selectedSizeCount != noOfPersons) {
+            Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please fill all the rows to continue',
+                });
             } else {
-                div1.classList.add('active');
-                div2.classList.remove('active');
+          
+                $('#outStandingAmount').val($('#outstanding_amount').val());
+                $('#remaining_balance').val($('#outstanding_amount').val());
+    
+                
+                if (div1.classList.contains('active')) {
+                    div1.classList.remove('active');
+                    div2.classList.add('active');
+                } else {
+                    div1.classList.add('active');
+                    div2.classList.remove('active');
+                }
             }
+
         });
 
         document.getElementById('toggleButtonPrev').addEventListener('click', function(e) {
@@ -563,9 +595,9 @@
             e.preventDefault();
             ++count;
         
-        let category_id = $('#category_id').val();
-        let sizes = '';
-        $.ajax({
+            let category_id = $('#category_id').val();
+            let sizes = '';
+            $.ajax({
                 dataType: 'json',
                 type: 'GET',
                 url: '{{ route("admin.getSizes") }}',
