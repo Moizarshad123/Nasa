@@ -42,7 +42,10 @@ class SmallOrderController extends Controller
                     ->addColumn('orderStatus', function ($data) {
                        
                         return '<span class="badge bg-warning">'.$data->status.'</span>';
-                    })                    
+                    })
+                    ->addColumn('action', function ($data) {
+                        return '<a target="blank" href="'.url('admin/print-small/'.$data->id).'" class="dropdown-item"><i class="fa-solid fa-print"></i></a>';
+                    })                        
                     // ->addColumn('action', function ($data) {
 
                     //     return '<div class="d-flex">
@@ -57,7 +60,7 @@ class SmallOrderController extends Controller
                     //         </div>
                     //     </div>';
                     // })
-                    ->rawColumns(['orderStatus', 'del_date', 'category'])->make(true);
+                    ->rawColumns(['action', 'orderStatus', 'del_date', 'category'])->make(true);
             }
 
         } catch (\Exception $ex) {
@@ -125,7 +128,7 @@ class SmallOrderController extends Controller
             // if($request->remaining_amount == 0) {
             //     $out_amount = $request->outstanding_amount;
             // } else {
-                $out_amount = $request->remaining_amount;
+                $out_amount = $request->net_amount - $request->amount_charged;
             // }
             
             $order = Order::create([
@@ -195,13 +198,13 @@ class SmallOrderController extends Controller
                 }
             }
 
-            if($request->amount_charged != 0) {
+            // if($request->amount_charged != 0) {
              
-                return redirect('admin/print-small/'.$order->id)->with("success", "Order (Small) created");
-            } else {
-                return redirect('admin/orderSmallDC')->with("success", "Order (Small) created");
-            }
-
+            //     return redirect('admin/print-small/'.$order->id)->with("success", "Order (Small) created");
+            // } else {
+            // }
+            
+            return redirect('admin/orderSmallDC')->with("success", "Order (Small) created");
             // return redirect("admin/orderSmallDC")->with("success", "Order (Small) created");
         } catch (\Exception $e) {
            return redirect()->back()->with("error", $e->getMessage());

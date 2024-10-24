@@ -41,8 +41,12 @@ class BigOrderController extends Controller
                         // if($data->status == "Active") {
                         //     return '<span class="badge bg-warning">Active</span>';
                         // }
-                    })                    
-                    ->rawColumns(['orderStatus', 'del_date', 'category'])->make(true);
+                    })   
+                    ->addColumn('action', function ($data) {
+                        return '<a target="blank" href="'.url('admin/print/'.$data->id).'" class="dropdown-item"><i class="fa-solid fa-print"></i></a>';
+                    })    
+                    
+                    ->rawColumns(['action', 'orderStatus', 'del_date', 'category'])->make(true);
 
                     // return '<div class="d-flex">
                     //         <div class="dropdown ms-auto">
@@ -159,11 +163,11 @@ class BigOrderController extends Controller
                     ]);
                 }
             }
-            if($request->amount_charged != 0) {
-                return redirect('admin/print/'.$order->id)->with("success", "Order (Big) created");
-            } else {
-                return redirect('admin/orderBigDC')->with("success", "Order (Big) created");
-            }
+            // if($request->amount_charged != 0) {
+            //     return redirect('admin/print/'.$order->id)->with("success", "Order (Big) created");
+            // } else {
+            // }
+            return redirect('admin/orderBigDC')->with("success", "Order (Big) created");
         } catch (\Exception $e) {
            return redirect()->back()->with("error", $e->getMessage());
         }

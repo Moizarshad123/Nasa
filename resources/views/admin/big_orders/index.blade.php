@@ -79,10 +79,11 @@
                     <th>Mobile</th>
                     <th>Delivery Date</th>
                     <th>Delivery Time</th>
-                    <th>Order Nature</th>
+                    {{-- <th>Order Nature</th> --}}
                     <th>Order Type</th>
                     <th>Outstanding Amount</th>
                     <th>Order Status</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -159,10 +160,10 @@
                     data: 'order_nature',
                     name: 'order_nature'
                 },
-                {
-                    data: 'order_type',
-                    name: 'order_type'
-                },
+                // {
+                //     data: 'order_type',
+                //     name: 'order_type'
+                // },
                 {
                     data: 'outstanding_amount',
                     name: 'outstanding_amount'
@@ -170,8 +171,14 @@
                 {
                     data: 'orderStatus',
                     name: 'orderStatus'
+                },
+                {
+                    data: 'action',
+                    name: 'action'
                 }
             ],
+            order: [[0, 'desc']],
+
             createdRow: function(row, data, dataIndex) {
                 // Check if order_nature is 'urgent'
                 if (data.order_nature == 'urgent' && data.outstanding_amount == 0) {
