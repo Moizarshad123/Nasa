@@ -8,15 +8,19 @@ use App\Models\Product;
 use App\Models\Size;
 use App\Models\Category;
 
-
-
-
 class ProductController extends Controller
 {
-    public function index()
+
+    public function orderBigProducts()
     {
-        $products = Product::with('category')->orderByDESC('id')->get();
-        return view('admin.products.index', compact('products'));
+        $products = Product::with('category')->whereIn('product_category_id', [14,15])->orderByDESC('id')->get();
+        return view('admin.products.products_big', compact('products'));
+    }
+
+    public function orderSmallProducts()
+    {
+        $products = Product::with('category')->whereIn('product_category_id', [12,13])->orderByDESC('id')->get();
+        return view('admin.products.products_small', compact('products'));
     }
 
     public function create()
@@ -38,7 +42,11 @@ class ProductController extends Controller
             "media_frame_total"     => $request->media_frame_total
         ]);
 
-        return redirect('admin/product')->with('success', "Product added");
+        if($request->category_id == 11 || $request->category_id == 12) {
+            return redirect('admin/products/order-samll')->with('success', "Product(Small) added");
+        } else {
+            return redirect('admin/products/order-big')->with('success', "Product(Big) added");
+        }
     }
 
     public function show($id)
@@ -66,7 +74,13 @@ class ProductController extends Controller
         $product->media_frame_total     = $request->media_frame_total;
         $product->save();
 
-        return redirect()->back()->with('success', "Product added");
+        if($request->category_id == 11 || $request->category_id == 12) {
+            return redirect('admin/products/order-samll')->with('success', "Product(Small) updated");
+        } else {
+            return redirect('admin/products/order-big')->with('success', "Product(Big) updated");
+        }
+
+        // return redirect()->back()->with('success', "Product added");
     }
 
     public function destroy($id)

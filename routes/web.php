@@ -23,6 +23,9 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
 
     Route::resource('orderBigDC',BigOrderController::class);
     Route::resource('product',ProductController::class);
+    Route::GET('products/order-big', [ProductController::class,"orderBigProducts"])->name('orderBigProducts');
+    Route::GET('products/order-samll', [ProductController::class,"orderSmallProducts"])->name('orderSmallProducts');
+
     Route::resource('orderSmallDC',SmallOrderController::class);
     Route::resource('orderNumber',OrderNumberController::class);
     Route::resource('users',UserController::class);

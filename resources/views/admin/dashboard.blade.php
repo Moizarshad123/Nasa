@@ -5,7 +5,7 @@
 @endsection
 
 @section('content')
-    <div class="row row-cols-1 g-4">
+    {{-- <div class="row row-cols-1 g-4">
         <div class="col-md-3">
             <button class="btn btn-primary" id="tillOpenButton">Till Open</button>
         </div>
@@ -25,7 +25,7 @@
                 <a class="btn btn-warning" target="blank" href="{{ route('admin.tillCloseReceipt') }}">Print Slip</a>
             @endif
         </div>
-    </div>
+    </div> --}}
     
   
     <!-- Till open and Close Modal -->

@@ -30,6 +30,30 @@
                     <span>Dashboard</span>
                 </a>
             </li>
+
+            <li>
+                <a href="javascript:;">
+                    <span class="nav-link-icon">
+                        <i class="bi bi-receipt"></i>
+                    </span>
+                    <span>Tills</span>
+                </a>
+                <ul>
+                    <li>
+                        <a href="javascript:;" id="tillOpenButton">Till Open</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" id="tillCloseButton">Till Close</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" id="tillCashIn">Cash In</a>
+                    </li>
+                    <li>
+                        <a href="javascript:;" id="tillCashOut">Cash Out</a>
+                    </li>
+                </ul>
+            </li>
+
             <li>
                 <a class="{{ request()->IS('admin/orderBigDC') ? 'active' : '' }}"  href="{{ route('admin.orderBigDC.index') }}">
                     <span class="nav-link-icon">
@@ -94,13 +118,30 @@
                         <span>Sales Return</span>
                     </a>
                 </li>
-                <li>
+                {{-- <li>
                     <a class="{{ request()->IS('admin/product') ? 'active' : '' }}"  href="{{ route('admin.product.index') }}">
                         <span class="nav-link-icon">
                             <i class="bi bi-app-indicator"></i>
                         </span>
                         <span>Products Big</span>
                     </a>
+                </li> --}}
+
+                <li>
+                    <a href="javascript:;">
+                        <span class="nav-link-icon">
+                            <i class="bi bi-receipt"></i>
+                        </span>
+                        <span>Products</span>
+                    </a>
+                    <ul>
+                        <li>
+                            <a href="{{ route('admin.orderBigProducts') }}">Products (Big DC)</a>
+                        </li>
+                        <li>
+                            <a href="{{ route('admin.orderSmallProducts') }}" id="tillCloseButton">Products (Small DC)</a>
+                        </li>
+                    </ul>
                 </li>
 
                 <li>

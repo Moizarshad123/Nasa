@@ -54,13 +54,14 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Category<span style="color: red">*</span></label>
-                        <select name="category_id" class="form-control" id="category_id" required>
+                        <select name="category_id" class="form-control" id="category_id">
                             <option value="">Select Category</option>
                             @foreach ($categories as $item)
                                 <option value="{{$item->id}}">{{$item->title}}</option>
                             @endforeach
     
                         </select>
+                        <small class="error-message" style="color: red; display: none;"></small>
                     </div>
                 </div>
             </div>
@@ -69,14 +70,18 @@
                 <div class="col-md-4">
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Customer Name<span style="color: red">*</span></label>
-                        <input type="text" name="customer_name" value="{{old('customer_name')}}" class="form-control" id="customer_name" aria-describedby="customer_name" required>
+                        <input type="text" name="customer_name" value="{{old('customer_name')}}" class="form-control" id="customer_name" aria-describedby="customer_name">
+                        <small class="error-message" style="color: red; display: none;"></small>
+                        
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Customer Mobile<span style="color: red">*</span></label>
-                        <input type="text" class="form-control" placeholder="0300-1234567" maxlength="12" id="phone" name="phone" aria-describedby="emailHelp" value="{{old('phone')}}" required>
-                        <small id="phoneHelp" style="color: red; display: none;">Please enter a valid phone number (0300-1234567).</small>
+                        <input type="text" class="form-control" placeholder="0300-1234567" maxlength="12" id="phone" name="phone" aria-describedby="emailHelp" value="{{old('phone')}}">
+                        {{-- <small id="phoneHelp" style="color: red; display: none;">Please enter a valid phone number (0300-1234567).</small> --}}
+                        <small class="error-message" style="color: red; display: none;"></small>
+
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -104,6 +109,8 @@
                             <option value="19">19</option>
                             <option value="20">20</option>
                         </select>
+                        <small class="error-message" style="color: red; display: none;"></small>
+
                     </div>
                 </div>
             </div>
@@ -118,12 +125,16 @@
                 <div class="col-md-4">
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Order Delivery Date<span style="color: red">*</span></label>
-                        <input type="date" class="form-control" name="delivery_date" value="{{old('delivery_date')}}">
+                        <input type="date" class="form-control" name="delivery_date" id="delivery_date" value="{{old('delivery_date')}}">
+                        <small class="error-message" style="color: red; display: none;"></small>
+
                     </div>
                 </div>
                 <div class="col-md-4">
                     <label for="order_delivery_time">Order Delivery Time<span style="color: red">*</span></label>
-                    <input type="time" name="delivery_time" id="delivery_time" class="form-control" required value="{{$collectionTime}}">
+                    <input type="time" name="delivery_time" id="delivery_time" class="form-control" value="{{$collectionTime}}">
+                    <small class="error-message" style="color: red; display: none;"></small>
+
                     {{-- <select name="delivery_time" id="delivery_time" class="form-control" autocomplete="off" required>
                         <option value="">Select Time</option>
                         <option value="12:00am">12:00pm</option>
@@ -209,12 +220,14 @@
                 <div class="col-md-4">
                     <div class="mb-3">
                         <label for="email_list">Expose/Media/Redorder<span style="color:red">*</span></label>
-                        <select name="order_type" id="order_type" class="form-control" required>
+                        <select name="order_type" id="order_type" class="form-control">
                             <option value="">SELECT</option>
                             <option value="expose">Expose</option>
                             <option value="reorder">Reorder</option>
                             <option value="media">Media</option>
                         </select>
+                        <small class="error-message" style="color: red; display: none;"></small>
+
                     </div>
                 </div>
                 <div class="col-md-4">
@@ -402,7 +415,11 @@
 
 @section('js')
 
+<script>
+    $(document).ready(function () {
 
+    });
+</script>
 <script>
     $(document).ready(function () {
 
@@ -507,7 +524,6 @@
         const media_amount  = "{{$setting->media_amount_small}}";
         const expose_amount = "{{$setting->expose_amount_small}}";
 
-
         function calValues() {
 
             var total = 0;
@@ -537,131 +553,206 @@
         var count = 0; 
         $(document).on('click', '#addMTCTypeChoiceRow', function (e) {
             e.preventDefault();
-            ++count;
-        
-            let category_id = $('#category_id').val();
-            let sizes = '';
-            let countries = '';
-            $.ajax({
-                    dataType: 'json',
-                    type: 'GET',
-                    url: '{{ route("admin.sizes") }}',
-                    data: {
-                            "category_id": category_id
-                    },
-                    async: false,
-                    beforeSend: function () {
-                        $('#loading_image').fadeIn('fast');
-                    },
-                    complete: function () {
-                        $('#loading_image').fadeOut('fast');
-                    },
-                    success: function (response) {
-                        console.log(response);
-                        sizes    = response.products;
-                        countries = response.countries;
-                    }
-            });
 
-            $("#MTCTypetbChoice:last").append(`<tr>
-                                        <td>
-                                            <div class="form-group col-md-6" style=" width: 100%;">
-                                                    <select name="person_id[]" class="form-control person_id" required>
-                                                        <option value="Person1">Person 1</option>
-                                                        <option value="Person2">Person 2</option>
-                                                        <option value="Person3">Person 3</option>
-                                                        <option value="Person4">Person 4</option>
-                                                        <option value="Person5">Person 5</option>
-                                                        <option value="Person6">Person 6</option>
-                                                        <option value="Person7">Person 7</option>
-                                                        <option value="Person8">Person 8</option>
-                                                        <option value="Person9">Person 9</option>
-                                                        <option value="Person10">Person 10</option>
-                                                        <option value="Person11">Person 11</option>
-                                                        <option value="Person12">Person 12</option>
-                                                        <option value="Person13">Person 13</option>
-                                                        <option value="Person14">Person 14</option>
-                                                        <option value="Person15">Person 15</option>
-                                                        <option value="Person16">Person 16</option>
-                                                        <option value="Person17">Person 17</option>
-                                                        <option value="Person18">Person 18</option>
-                                                        <option value="Person19">Person 19</option>
-                                                        <option value="Person20">Person 20</option>
+            var isValid = true; // Flag to check overall validity
+
+            // Validate category selection
+            if ($('#category_id').val() === '') {
+                showError('#category_id', 'Please select a category');
+                isValid = false;
+            } else {
+                removeError('#category_id');
+            }
+            // Validate customer name
+            if ($('#customer_name').val().trim() === '') {
+                showError('#customer_name', 'Customer name is required');
+                isValid = false;
+            } else {
+                removeError('#customer_name');
+            }
+
+            // Validate customer phone
+            if ($('#phone').val().trim() === '') {
+                showError('#phone', 'Mobile Number is required');
+                isValid = false;
+            } else {
+                removeError('#phone');
+            }
+
+            // Validate delivery date
+            if ($('#delivery_date').val() === '') {
+                showError('#delivery_date', 'Delivery date is required');
+                isValid = false;
+            } else {
+                removeError('#delivery_date');
+            }
+
+            // Validate delivery time
+            if ($('#delivery_time').val() === '') {
+                showError('#delivery_time', 'Delivery time is required');
+                isValid = false;
+            } else {
+                removeError('#delivery_time');
+            }
+
+            if ($('#order_type').val() === '') {
+                showError('#order_type', 'Order Type is required');
+                isValid = false;
+            } else {
+                removeError('#order_type');
+            }
+
+            if ($('#no_of_persons').val() === '') {
+                showError('#no_of_persons', 'No Of Persons is required');
+                isValid = false;
+            } else {
+                removeError('#no_of_persons');
+            }
+            if (!isValid) {
+                // You can add your logic here to append the row or go to the next step
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Please fill all the required fields to continue',
+                });
+            } else {
+                ++count;
+            
+                let category_id = $('#category_id').val();
+                let sizes = '';
+                let countries = '';
+                $.ajax({
+                        dataType: 'json',
+                        type: 'GET',
+                        url: '{{ route("admin.sizes") }}',
+                        data: {
+                                "category_id": category_id
+                        },
+                        async: false,
+                        beforeSend: function () {
+                            $('#loading_image').fadeIn('fast');
+                        },
+                        complete: function () {
+                            $('#loading_image').fadeOut('fast');
+                        },
+                        success: function (response) {
+                            console.log(response);
+                            sizes    = response.products;
+                            countries = response.countries;
+                        }
+                });
+    
+                $("#MTCTypetbChoice:last").append(`<tr>
+                                            <td>
+                                                <div class="form-group col-md-6" style=" width: 100%;">
+                                                        <select name="person_id[]" class="form-control person_id" required>
+                                                            <option value="Person1">Person 1</option>
+                                                            <option value="Person2">Person 2</option>
+                                                            <option value="Person3">Person 3</option>
+                                                            <option value="Person4">Person 4</option>
+                                                            <option value="Person5">Person 5</option>
+                                                            <option value="Person6">Person 6</option>
+                                                            <option value="Person7">Person 7</option>
+                                                            <option value="Person8">Person 8</option>
+                                                            <option value="Person9">Person 9</option>
+                                                            <option value="Person10">Person 10</option>
+                                                            <option value="Person11">Person 11</option>
+                                                            <option value="Person12">Person 12</option>
+                                                            <option value="Person13">Person 13</option>
+                                                            <option value="Person14">Person 14</option>
+                                                            <option value="Person15">Person 15</option>
+                                                            <option value="Person16">Person 16</option>
+                                                            <option value="Person17">Person 17</option>
+                                                            <option value="Person18">Person 18</option>
+                                                            <option value="Person19">Person 19</option>
+                                                            <option value="Person20">Person 20</option>
+                                                        </select>
+                                                        
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <select name="sizes[]" class="form-control sizes" required>
+                                                        <option value="">Select Size</option>
+                                                        `+sizes+`
                                                     </select>
+                                                </div>
+                                            </td>
+    
+                                            <td>
+                                                <div class="form-group">
+                                                    <select name="country[]" class="form-control country" required>
+                                                        <option value="">Select Country</option>
+                                                        `+countries+`
                                                     
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="form-group">
-                                                <select name="sizes[]" class="form-control sizes" required>
-                                                    <option value="">Select Size</option>
-                                                    `+sizes+`
-                                                </select>
-                                            </div>
-                                        </td>
-
-                                        <td>
-                                            <div class="form-group">
-                                                <select name="country[]" class="form-control country" required>
-                                                    <option value="">Select Country</option>
-                                                    `+countries+`
-                                                
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="form-group">
-                                                <select name="qty[]" class="qty form-control">
-                                                        <option value="0">Select Quantity</option>
-                                                        <option value="4">4</option>
-                                                        <option value="8">8</option>
-                                                        <option value="12">12</option>
-                                                        <option value="16">16</option>
-                                                        <option value="20">20</option>
-                                                        <option value="24">24</option>
-                                                        <option value="28">28</option>
-                                                        <option value="32">32</option>
-                                                        <option value="36">36</option>
-                                                        <option value="40">40</option>
-                                                        <option value="44">44</option>
-                                                        <option value="48">48</option>
-                                                        <option value="52">52</option>
-                                                        <option value="56">56</option>
-                                                        <option value="60">60</option>
-                                                        <option value="64">64</option>
-                                                        <option value="68">68</option>
-                                                        <option value="72">72</option>
-                                                        <option value="76">76</option>
-                                                        <option value="80">80</option>
-                                                        <option value="84">84</option>
-                                                        <option value="88">88</option>
-                                                        <option value="92">92</option>
-                                                        <option value="96">96</option>
-                                                        <option value="100">100</option>
-                                                        <option value="104">104</option>
-                                                        <option value="108">108</option>
-                                                        <option value="112">112</option>
-                                                        <option value="116">116</option>
-                                                        <option value="120">120</option>
                                                     </select>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="form-group">
-                                                <input type="text" name="amount[]" class="amount form-control" value="0" readonly>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <div class="form-group">
-                                                <textarea name="remarks[]" cols="18" rows="2"></textarea>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <button class="btnDeleteChoice btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
-                                        </td>
-                                    </tr>`);
-
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <select name="qty[]" class="qty form-control">
+                                                            <option value="0">Select Quantity</option>
+                                                            <option value="4">4</option>
+                                                            <option value="8">8</option>
+                                                            <option value="12">12</option>
+                                                            <option value="16">16</option>
+                                                            <option value="20">20</option>
+                                                            <option value="24">24</option>
+                                                            <option value="28">28</option>
+                                                            <option value="32">32</option>
+                                                            <option value="36">36</option>
+                                                            <option value="40">40</option>
+                                                            <option value="44">44</option>
+                                                            <option value="48">48</option>
+                                                            <option value="52">52</option>
+                                                            <option value="56">56</option>
+                                                            <option value="60">60</option>
+                                                            <option value="64">64</option>
+                                                            <option value="68">68</option>
+                                                            <option value="72">72</option>
+                                                            <option value="76">76</option>
+                                                            <option value="80">80</option>
+                                                            <option value="84">84</option>
+                                                            <option value="88">88</option>
+                                                            <option value="92">92</option>
+                                                            <option value="96">96</option>
+                                                            <option value="100">100</option>
+                                                            <option value="104">104</option>
+                                                            <option value="108">108</option>
+                                                            <option value="112">112</option>
+                                                            <option value="116">116</option>
+                                                            <option value="120">120</option>
+                                                        </select>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <input type="text" name="amount[]" class="amount form-control" value="0" readonly>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <div class="form-group">
+                                                    <textarea name="remarks[]" cols="18" rows="2"></textarea>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <button class="btnDeleteChoice btn btn-sm btn-danger"><i class="fa fa-trash"></i></button>
+                                            </td>
+                                        </tr>`);
+            }
         });
+
+        // Show error function
+        function showError(selector, message) {
+            $(selector).css('border', '1px solid red'); // Make the border red
+            $(selector).next('.error-message').text(message).show(); // Show error message
+        }
+
+        // Remove error function
+        function removeError(selector) {
+            $(selector).css('border', ''); // Reset the border
+            $(selector).next('.error-message').hide(); // Hide the error message
+        }
 
         $(document).on('change', '#is_background', function() {
             let bg = $(this).val();
