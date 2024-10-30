@@ -72,19 +72,51 @@ class BigOrderController extends Controller
         // return view('admin.big_orders.index', compact('orders'));
     }
 
+    public function assignOrderNumber() {
+
+        $order_number = OrderNumber::where('order_number', 'LIKE', 'B%')->where('is_used', 0)->pluck('order_number')->first();
+        if($order_number == null) {
+            $order_no   = Order::where('order_number', 'LIKE', 'B%')->orderByDESC('id')->skip(0)->take(1)->pluck("order_number")->first();
+            if($order_no != null) {
+                $order_number = str_replace("Bb","",$order_no);
+                $order_number = "Bb".(($order_number) + 1);
+            } else {
+                $order_number = "Bb2300";
+            }
+        }
+        return view('admin.big_orders.assign_order_number', compact("order_number"));
+    }
+
     public function create()
     {
         $categories   = Category::skip(2)->take(2)->get();
         $setting      = Setting::find(1);
-        $order_number = OrderNumber::where('order_number', 'LIKE', 'B%')->where('is_used', 0)->pluck('order_number')->first();
-        // $order_no   = Order::where('order_number', 'LIKE', 'B%')->orderByDESC('id')->skip(0)->take(1)->pluck("order_number")->first();
-        // if($order_no != null) {
-        //     $order_number =str_replace("Bb","",$order_no);
-        //     $order_number ="Bb".(($order_number) + 1);
-        // } else {
-        //     $order_number ="Bb2300";
-        // }
-        return view('admin.big_orders.create', compact("categories", "order_number", "setting"));
+        $order_number = Order::where('order_number', 'LIKE', 'B%')->where('user_id', auth()->user()->id)->where('status', "assigned")->pluck('order_number')->first();
+        return view('admin.big_orders.create', compact("categories","order_number", "setting"));
+    }
+
+    public function assignNumber(Request $request) {
+        try {
+
+            $check = Order::where('order_number', 'LIKE', 'S%')->where('user_id', auth()->user()->id)->where('status', "assigned")->pluck('order_number')->first();
+            if($check == null) {
+                $order = Order::create([
+                 "order_number" => $request->order_number,
+                 "user_id"      => auth()->user()->id,
+                 'category_id'  => 0,
+                 "status"       => "assigned"
+                ]);
+                $orderNumber = OrderNumber::where('order_number', $request->order_number)->first();
+                $orderNumber->is_used = 1;
+                $orderNumber->save();
+                return redirect('admin/orderBigDC/create')->with("success", "Order number assigned");
+            } else {
+                return redirect('admin/orderBigDC/create')->with("error", "You already have assigned Order number");
+            }
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with("error", $e->getMessage());
+        }
     }
 
     public function store(Request $request)
@@ -96,36 +128,41 @@ class BigOrderController extends Controller
             // } else {
                 $out_amount = $request->remaining_amount;
             // }
-            $order = Order::create([
-                "order_number"       => $request->order_number,
-                "user_id"            => auth()->user()->id,
-                'category_id'        => $request->category_id,
-                'customer_name'      => $request->customer_name,
-                'phone'              => $request->phone,
-                'no_of_persons'      => $request->no_of_persons,
-                'creating_date'      => $request->creating_date,
-                'delivery_date'      => $request->delivery_date,
-                'delivery_time'      => $request->delivery_time,
-                'order_nature'       => $request->order_nature,
-                'order_nature_amount'=> $request->order_nature_amount, 
-                'is_email'          => $request->has('is_email') ? 1 : 0,
-                'email_amount'      => $request->email_amount,
-                'emails'            => $request->emails, 
-                'order_type'        => $request->order_type,
-                "re_order_number"   => $request->re_order_number,
-                'amount'            => $request->total,
-                'grand_total'       => $request->grand_total,
-                'discount_amount'   => $request->discount_amount,
-                'net_amount'        => $request->net_amount,
-                'outstanding_amount'=> $out_amount, 
+
+            $order_number = Order::where('order_number', 'LIKE', 'B%')->where('user_id', auth()->user()->id)->where('status', "assigned")->pluck('id')->first();
+
+            $order = Order::find($order_number);
+            $order->order_number      = $request->order_number;
+            $order->user_id           = auth()->user()->id;
+            $order->category_id       = $request->category_id;
+            $order->customer_name     = $request->customer_name;
+            $order->phone             = $request->phone;
+            $order->no_of_persons     = $request->no_of_persons;
+            $order->creating_date     = $request->creating_date;
+            $order->delivery_date     = $request->delivery_date;
+            $order->delivery_time     = $request->delivery_time;
+            $order->order_nature      = $request->order_nature;
+            $order->order_nature_amount= $request->order_nature_amount;
+            $order->is_email          = $request->has('is_email') ? 1 : 0;
+            $order->email_amount      = $request->email_amount;
+            $order->emails            = $request->emails;
+            $order->order_type        = $request->order_type;
+            $order->re_order_number   = $request->re_order_number;
+            $order->amount            = $request->total;
+            $order->grand_total       = $request->grand_total;
+            $order->discount_amount   = $request->discount_amount;
+            $order->net_amount        = $request->net_amount;
+            $order->outstanding_amount= $out_amount;
+            $order->remarks           = $request->main_remarks;
+            $order->remarks           = $request->main_remarks;
+            $order->status            = "Active";
+            $order->save();
                 // 'payment_method'    => $request->payment_method,
                 // 'received_by'       => auth()->user()->id,
                 // 'amount_received'   => $request->amount_received,
                 // 'amount_charged'    => $request->amount_charged,
                 // 'cash_back'         => $request->cash_back,
                 // 'remaining_amount'  => $request->remaining_amount,
-                'remarks'           => $request->main_remarks
-            ]);
 
             if($request->remaining_amount != 0) {
                 $orderPayment = OrderPayment::create([
@@ -140,12 +177,11 @@ class BigOrderController extends Controller
             }
 
 
-            $orderNumber = OrderNumber::where('order_number', $request->order_number)->first();
-            $orderNumber->is_used = 1;
-            $orderNumber->save();
+            // $orderNumber = OrderNumber::where('order_number', $request->order_number)->first();
+            // $orderNumber->is_used = 1;
+            // $orderNumber->save();
 
             if(isset($request->person_id)) {
-                
                 foreach ($request->person_id as $key => $value) {
                    
                     OrderDetail::create([
@@ -1069,7 +1105,7 @@ class BigOrderController extends Controller
         try {
             if (request()->ajax()) {
             
-                $orders = Order::with("category", "assignUser")->where('status', '!=', "Cancelled")->orderByDESC('id');
+                $orders = Order::with("category", "assignUser")->whereNotIn('status', ["Cancelled","assigned"])->orderByDESC('id');
                 return datatables()->eloquent($orders)
                     ->addColumn('category', function ($data) {
                         return $data->category->title;

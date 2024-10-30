@@ -14,7 +14,7 @@
                 <h3>Product (Big)</h3>
             </div>
             <div class="col-md-2">
-                <a href="{{ route('admin.product.create') }}" class="btn btn-primary btn-icon">
+                <a href="{{ route('admin.product.create') }}?type=big" class="btn btn-primary btn-icon">
                     <i class="bi bi-plus-circle"></i> Create Product
                 </a>
             </div>

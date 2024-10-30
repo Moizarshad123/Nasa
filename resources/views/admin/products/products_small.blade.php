@@ -14,7 +14,7 @@
                 <h3>Product (Small)</h3>
             </div>
             <div class="col-md-2">
-                <a href="{{ route('admin.product.create') }}" class="btn btn-primary btn-icon">
+                <a href="{{ route('admin.product.create') }}?type=small" class="btn btn-primary btn-icon">
                     <i class="bi bi-plus-circle"></i> Create Product
                 </a>
             </div>
@@ -27,27 +27,19 @@
             <thead>
                 <tr>
                     <th>Category</th>
-                    <th>Size</th>
-                    <th>Premium Standard Cost</th>
-                    <th>Studio LPM Total</th>
-                    <th>Media LPM Total</th>
-                    <th>Studio Frame Total</th>
-                    <th>Media Frame Total</th>
-                    <th class="text-end">Actions</th>
+                    <th>Cost</th>
+                    <th>Quantity</th>
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($products as $item)
                     <tr>
                         <td>{{$item->category->title}}</td>
-                        <td>{{$item->title}}</td>
                         <td>{{$item->premium_standard_cost}}</td>
-                        <td>{{$item->studio_lpm_total}}</td>
-                        <td>{{$item->media_lpm_total}}</td>
-                        <td>{{$item->studio_frame_total}}</td>
-                        <td>{{$item->media_frame_total}}</td>
+                        <td>{{$item->qty}}</td>
                         <td>
-                            <div class="d-flex">
+                            <div>
                                 <div class="dropdown ms-auto">
                                     <a href="#" data-bs-toggle="dropdown" class="btn btn-floating"
                                         aria-haspopup="true" aria-expanded="false">

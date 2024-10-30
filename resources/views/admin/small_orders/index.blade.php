@@ -14,9 +14,15 @@
                 <h3>Order (Small)</h3>
             </div>
             <div class="col-md-2">
-                <a href="{{ route('admin.orderSmallDC.create') }}" class="btn btn-primary btn-icon">
+                {{-- <a href="{{ route('admin.orderSmallDC.create') }}" class="btn btn-primary btn-icon">
+                    <i class="bi bi-plus-circle"></i> Add New Order
+                </a> --}}
+
+                <a href="{{ route('admin.assignOrderNumberSmall') }}" class="btn btn-primary btn-icon">
                     <i class="bi bi-plus-circle"></i> Add New Order
                 </a>
+
+                
             </div>
         </div>
       

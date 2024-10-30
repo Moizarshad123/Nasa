@@ -34,6 +34,9 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::GET('get-amall-order-rates', "getSmallOrderRate")->name('getSmallOrderRate');
         Route::get('print-small/{id}', 'printViewSmall')->name('print.view');
         Route::get('order-history', 'orderHistory')->name('orderHistory');
+        Route::get('/assign-order-number-small', 'assignOrderNumberSmall')->name('assignOrderNumberSmall');
+        Route::post('/assign-number-small', 'assignNumberSmall')->name('assignNumberSmall');
+
     });
 
     
@@ -54,6 +57,10 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::get('print/{id}', 'printView')->name('print.view');
         Route::get('/pos-slip', 'generatePdf');
         Route::get('/till-close', 'tillCloseReceipt')->name('tillCloseReceipt');
+        Route::get('/assign-order-number', 'assignOrderNumber')->name('assignOrderNumber');
+        Route::post('/assign-number', 'assignNumber')->name('assignNumber');
+
+        
 
 
         Route::GET('view-order/{id}',"viewOrder")->name('viewOrder');

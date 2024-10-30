@@ -75,32 +75,39 @@
                         </div>
                     </div>
                     <div class="row mb-5 g-4">
-                        <div class="col-md-3 col-sm-6">
+                        <div class="col-md-4 col-sm-6">
                             <p class="fw-bold">Email Requirement</p>
                            {{ $order->is_email ? "YES" : "NO" }}
                         </div>
-                        <div class="col-md-3 col-sm-6">
+                        <div class="col-md-4 col-sm-6">
                             <p class="fw-bold">Email Amount</p>
                             {{ $order->email_amount ?? "" }}
                         </div>
-                        <div class="col-md-3 col-sm-6">
+                        <div class="col-md-4 col-sm-6">
                             <p class="fw-bold">Emails</p>
                             {{ $order->emails ?? ""}}
                         </div>
                       
-                        <div class="col-md-3 col-sm-6">
+                        {{-- <div class="col-md-3 col-sm-6">
                             <p class="fw-bold">Remarks</p>
                             {{ $order->remarks ?? ""}}
-                        </div>
+                        </div> --}}
                     </div>
                     <div class="row mb-5 g-4">
-                        <div class="col-md-6 col-sm-6">
+                        <div class="col-md-4 col-sm-4">
                             <p class="fw-bold">Expose/Media/Reorder</p>
                            {{ $order->order_type ?? "" }}
                         </div>
-                        <div class="col-md-6 col-sm-6">
+                        <div class="col-md-4 col-sm-4">
                             <p class="fw-bold">Expose/Media/Reorder Amount</p>
                             {{ $order->amount ?? "" }}
+                        </div>
+
+                        <div class="col-md-4 col-sm-4">
+                            @if($order->order_type == "reorder")
+                                <p class="fw-bold">Reorder Number</p>
+                                {{ $order->re_order_number ?? "" }}
+                            @endif
                         </div>
                        
                     </div>
@@ -141,7 +148,7 @@
                                             <option value="4" {{$order->status == "Printing Department" ? 'selected' : ""}}>Printing Department</option>
                                             <option value="5" {{$order->status == "Ready" ? 'selected' : ""}}>Job Ready</option>
                                         @endif
-                                        @if($order->status != "Printing Department" && $order->status != "Ready" && $order->status != "Completed")
+                                        @if($order->status != "Active")
                                             <option value="7" {{$order->status == "Cancelled" ? 'selected' : ""}}>Sales Return</option>
                                         @endif
                                     @endif
@@ -258,7 +265,7 @@
                                     @foreach ($detail as $item)
                                         <tr>
                                             <td>{{ $item->expose ?? ""}}</td>
-                                            <td>{{ $item->product->title ?? ""}}</td>
+                                            <td>{{ $item->size ?? ""}}</td>
                                             <td>{{ $item->qty ?? ""}}</td>
                                             <td>{{ $item->country ?? ""}}</td>
                                             <td>{{ $item->total ?? ""}}</td>

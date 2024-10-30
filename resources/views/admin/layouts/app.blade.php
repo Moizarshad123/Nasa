@@ -25,6 +25,14 @@
         input[type=number] {
             -moz-appearance: textfield;
         }
+        .toast-success {
+            background-color: #51A351 !important; /* Success message background */
+            color: #fff !important; /* Success message text color */
+        }
+        .toast-error {
+            background-color: #D9534F !important; /* Error message background */
+            color: #fff !important; /* Error message text color */
+        }
     </style>
 
     @yield('css')
@@ -64,11 +72,23 @@
 
     @include('admin.layouts.scripts')
 
+    
+
+    <script>
+        toastr.options = {
+            "closeButton": true,
+            "progressBar": true,
+            "timeOut": "3000",
+            "extendedTimeOut": "1000",
+            "positionClass": "toast-top-right", 
+        };
+    </script>
+
     @if(session()->has('success'))
-        <script type="text/javascript">  toastr.success('{{ session('success')}}');</script>
+    <script type="text/javascript">  toastr.success('{{ session('success')}}');</script>
     @endif
     @if(session()->has('error'))
-        <script type="text/javascript"> toastr.error('{{ session('error')}}');</script>
+    <script type="text/javascript"> toastr.error('{{ session('error')}}');</script>
     @endif
     @yield('js')
 </body>
