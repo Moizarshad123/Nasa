@@ -7,7 +7,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SmallOrderController;
 use App\Http\Controllers\Admin\OrderNumberController;
 use App\Http\Controllers\Admin\UserController;
-
+use App\Http\Controllers\Admin\TillController;
 
 Route::match(['get', 'post'], 'login', [AdminController::class, 'login'])->name('login');
 Route::match(['get', 'post'], 'register', [AdminController::class, 'register'])->name('register');
@@ -36,7 +36,6 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::get('order-history', 'orderHistory')->name('orderHistory');
         Route::get('/assign-order-number-small', 'assignOrderNumberSmall')->name('assignOrderNumberSmall');
         Route::post('/assign-number-small', 'assignNumberSmall')->name('assignNumberSmall');
-
     });
 
     
@@ -56,13 +55,9 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::GET('sales-return/{id}',"sales_return")->name('salesReturn');
         Route::get('print/{id}', 'printView')->name('print.view');
         Route::get('/pos-slip', 'generatePdf');
-        Route::get('/till-close', 'tillCloseReceipt')->name('tillCloseReceipt');
+        
         Route::get('/assign-order-number', 'assignOrderNumber')->name('assignOrderNumber');
         Route::post('/assign-number', 'assignNumber')->name('assignNumber');
-
-        
-
-
         Route::GET('view-order/{id}',"viewOrder")->name('viewOrder');
         Route::GET('payment/{id}',"payment")->name('payment');
         Route::POST('add-payment',"add_payment")->name('addPayment');
@@ -71,17 +66,20 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         // Route::GET('change-order-status/{id}/{status}',"changeOrderStatus")->name('changeOrderStatus');
     });
 
+    Route::controller(TillController::class)->group(function() {
+        
+        Route::get('dashboard', 'dashboard')->name('dashboard');
+        Route::match(['get', 'post'],'open-till', 'open_till')->name('openTill');
+        Route::match(['get', 'post'],'close-till', 'close_till')->name('closeTill');
+        Route::match(['get', 'post'],'cash-till', 'cash_till')->name('cashTill');
+        Route::get('/till-close', 'tillCloseReceipt')->name('tillCloseReceipt');
+
+    });
+
     Route::controller(AdminController::class)->group(function() {
         
         Route::get('dashboard', 'dashboard')->name('dashboard');
-        Route::post('open-till', 'open_till')->name('openTill');
-        Route::post('close-till', 'close_till')->name('closeTill');
         Route::post('cash-in', 'cashIn')->name('cashIn');
-
-
-
         Route::match(['get', 'post'], '/settings', 'site_setting')->name('settings');
     });
 });
-// Auth::routes();
-// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

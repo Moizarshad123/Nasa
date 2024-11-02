@@ -1,4 +1,8 @@
 <!-- menu -->
+@php 
+    $checkTillOpen  = App\Models\TillOpen::where('date',date('Y-m-d'))->where('user_id', auth()->user()->id)->where('type', 'till_open')->first();
+    $checkTillClose = App\Models\TillOpen::where('date',date('Y-m-d'))->where('user_id', auth()->user()->id)->where('type', 'till_close')->first();
+@endphp
 <div class="menu">
     <div class="menu-header">
         <a href="{{ route('admin.dashboard') }}" class="menu-header-logo">
@@ -40,64 +44,70 @@
                 </a>
                 <ul>
                     <li>
-                        <a href="javascript:;" id="tillOpenButton">Till Open</a>
+                        <a href="{{ route('admin.openTill') }}">Till Open</a>
                     </li>
                     <li>
-                        <a href="javascript:;" id="tillCloseButton">Till Close</a>
+                        <a href="{{ route('admin.closeTill') }}" >Till Close</a>
                     </li>
                     <li>
-                        <a href="javascript:;" id="tillCashIn">Cash In</a>
+                        <a href="{{ route('admin.cashTill') }}" id="tillCashIn">Cash In</a>
                     </li>
                     <li>
-                        <a href="javascript:;" id="tillCashOut">Cash Out</a>
+                        <a href="{{ route('admin.cashTill') }}" id="tillCashOut">Cash Out</a>
+                    </li>
+                    <li>
+                        @if($checkTillOpen != null && $checkTillClose != null)
+                            <a target="blank" href="{{ route('admin.tillCloseReceipt') }}">Print Till Close Receipt</a>
+                        @endif
                     </li>
                 </ul>
             </li>
+            @if($checkTillOpen != null && $checkTillClose == null)
+                <li>
+                    <a class="{{ request()->IS('admin/orderBigDC') ? 'active' : '' }}"  href="{{ route('admin.orderBigDC.index') }}">
+                        <span class="nav-link-icon">
+                            <i class="bi bi-person-badge"></i>
+                        </span>
+                        <span>Order Big DC</span>
+                    </a>
+                </li>
+            
+                <li>
+                    <a class="{{ request()->IS('admin/orderSmallDC') ? 'active' : '' }}"  href="{{ route('admin.orderSmallDC.index') }}">
+                        <span class="nav-link-icon">
+                            <i class="bi bi-receipt"></i>
+                        </span>
+                        <span>Order Small DC</span>
+                    </a>
+                </li>
 
-            <li>
-                <a class="{{ request()->IS('admin/orderBigDC') ? 'active' : '' }}"  href="{{ route('admin.orderBigDC.index') }}">
-                    <span class="nav-link-icon">
-                        <i class="bi bi-person-badge"></i>
-                    </span>
-                    <span>Order Big DC</span>
-                </a>
-            </li>
-         
-            <li>
-                <a class="{{ request()->IS('admin/orderSmallDC') ? 'active' : '' }}"  href="{{ route('admin.orderSmallDC.index') }}">
-                    <span class="nav-link-icon">
-                        <i class="bi bi-receipt"></i>
-                    </span>
-                    <span>Order Small DC</span>
-                </a>
-            </li>
+                <li>
+                    <a class="{{ request()->IS('admin/editing-department') ? 'active' : '' }}"  href="{{ route('admin.editingDepartment') }}">
+                        <span class="nav-link-icon">
+                            <i class="bi bi-paperclip"></i>
+                        </span>
+                        <span>Editing Department</span>
+                    </a>
+                </li>
 
-            <li>
-                <a class="{{ request()->IS('admin/editing-department') ? 'active' : '' }}"  href="{{ route('admin.editingDepartment') }}">
-                    <span class="nav-link-icon">
-                        <i class="bi bi-paperclip"></i>
-                    </span>
-                    <span>Editing Department</span>
-                </a>
-            </li>
+                <li>
+                    <a class="{{ request()->IS('admin/printing-department') ? 'active' : '' }}"  href="{{ route('admin.printingDepartment') }}">
+                        <span class="nav-link-icon">
+                            <i class="bi bi-check-circle"></i>
+                        </span>
+                        <span>Printing Department</span>
+                    </a>
+                </li>
 
-            <li>
-                <a class="{{ request()->IS('admin/printing-department') ? 'active' : '' }}"  href="{{ route('admin.printingDepartment') }}">
-                    <span class="nav-link-icon">
-                        <i class="bi bi-check-circle"></i>
-                    </span>
-                    <span>Printing Department</span>
-                </a>
-            </li>
-
-            <li>
-                <a class="{{ request()->IS('admin/all-orders') ? 'active' : '' }}"  href="{{ route('admin.allOrders') }}">
-                    <span class="nav-link-icon">
-                        <i class="bi bi-receipt"></i>
-                    </span>
-                    <span>All Orders</span>
-                </a>
-            </li>
+                <li>
+                    <a class="{{ request()->IS('admin/all-orders') ? 'active' : '' }}"  href="{{ route('admin.allOrders') }}">
+                        <span class="nav-link-icon">
+                            <i class="bi bi-receipt"></i>
+                        </span>
+                        <span>All Orders</span>
+                    </a>
+                </li>
+            @endif
            
             @if(auth()->user()->role_id == 1)
 

@@ -42,13 +42,13 @@
                 <div class="col-md-4">
                     <div class="mb-3">
                         <label for="exampleInputEmail1" class="form-label">Size<span style="color: red">*</span></label>
-                        <select name="size" class="form-control" id="size" required>
+                        <input type="text" value="{{$product->title}}"  name="size" class="form-control" id="size" required>
+                        {{-- <select name="size" class="form-control" id="size" required>
                             <option value="">Select Size</option>
                             @foreach ($sizes as $item)
                                 <option value="{{ $item->size }}" {{ $item->size == $product->title ? "selected" : ""}}>{{ $item->size }}</option>
                             @endforeach
-
-                        </select>
+                        </select> --}}
                     </div>
                 </div>
             @else

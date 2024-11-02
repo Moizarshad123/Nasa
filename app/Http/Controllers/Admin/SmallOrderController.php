@@ -214,8 +214,8 @@ class SmallOrderController extends Controller
                     "payment_method"  => $request->payment_method,
                     "received_by"     => auth()->user()->id,
                     "amount_charged"  => $request->amount_charged,
-                    "outstanding_amount" => $request->remaining_amount
-                    // "amount_received" => $request->amount_received,
+                    "outstanding_amount" => $request->remaining_amount,
+                    "amount_received" => $request->amount_charged,
                     // "cash_back"       => $request->cash_back,
                 ]);
             }

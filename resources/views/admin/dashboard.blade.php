@@ -29,7 +29,7 @@
     
   
     <!-- Till open and Close Modal -->
-    <div class="modal fade" id="tillOpenModal" tabindex="-1" role="dialog" aria-labelledby="tillOpenModalLabel" aria-hidden="true">
+    {{-- <div class="modal fade" id="tillOpenModal" tabindex="-1" role="dialog" aria-labelledby="tillOpenModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
         <div class="modal-content" style="width: 170%;">
             <div class="modal-header">
@@ -138,9 +138,9 @@
             
         </div>
         </div>
-    </div>
+    </div> --}}
 
-    <!-- Cash IN Modal -->
+    {{-- <!-- Cash IN Modal -->
     <div class="modal fade" id="tillCashIn" tabindex="-2" role="dialog" aria-labelledby="tillCloseModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
         <div class="modal-content" style="    width: 170%;">
@@ -218,7 +218,7 @@
             </div>
         </div>
         </div>
-    </div>
+    </div> --}}
 @endsection
 
 @section('js')
