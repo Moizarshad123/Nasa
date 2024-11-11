@@ -23,12 +23,14 @@
                     <th>Order#</th>
                     <th>Category</th>
                     <th>Customer Name</th>
-                    <th>Mobile</th>
-                    <th>Delivery Date</th>
-                    <th>Delivery Time</th>
+                    <th>Customer Mobile</th>
+                    <th>Order Delivery Date</th>
+                    <th>Order Delivery Time</th>
                     <th>Order Nature</th>
-                    <th>Order Status</th>
                     <th>Outstanding Amount</th>
+                    <th>Assign To</th>
+                    <th>Order Type</th>
+                    <th>Order Status</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -90,12 +92,20 @@
                     name: 'order_nature'
                 },
                 {
-                    data: 'orderStatus',
-                    name: 'orderStatus'
-                },
-                {
                     data: 'outstanding_amount',
                     name: 'outstanding_amount'
+                },
+                {
+                    data: 'assignTo',
+                    name: 'assignTo'
+                },
+                {
+                    data: 'order_type',
+                    name: 'order_type'
+                },
+                {
+                    data: 'orderStatus',
+                    name: 'orderStatus'
                 },
                 {
                     data: 'action',

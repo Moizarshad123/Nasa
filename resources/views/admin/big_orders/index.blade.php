@@ -82,10 +82,10 @@
                     <th>Order#</th>
                     <th>Category</th>
                     <th>Customer Name</th>
-                    <th>Mobile</th>
-                    <th>Delivery Date</th>
-                    <th>Delivery Time</th>
-                    {{-- <th>Order Nature</th> --}}
+                    <th>Customer Mobile</th>
+                    <th>Order Delivery Date</th>
+                    <th>Order Delivery Time</th>
+                    <th>Order Nature</th>
                     <th>Order Type</th>
                     <th>Outstanding Amount</th>
                     <th>Order Status</th>
@@ -166,10 +166,10 @@
                     data: 'order_nature',
                     name: 'order_nature'
                 },
-                // {
-                //     data: 'order_type',
-                //     name: 'order_type'
-                // },
+                {
+                    data: 'order_type',
+                    name: 'order_type'
+                },
                 {
                     data: 'outstanding_amount',
                     name: 'outstanding_amount'

@@ -44,7 +44,10 @@ class SmallOrderController extends Controller
                         return '<span class="badge bg-warning">'.$data->status.'</span>';
                     })
                     ->addColumn('action', function ($data) {
-                        return '<a target="blank" href="'.url('admin/print-small/'.$data->id).'" class="dropdown-item"><i class="fa-solid fa-print"></i></a>';
+                        return '<div class="d-flex">
+                        <a href="'.url('admin/view-order/'.$data->id).'" class="dropdown-item"><i style="color:#000" class="fa fa-eye"></i></a> | 
+                        <a target="blank" href="'.url('admin/payment/'.$data->id).'" class="dropdown-item"><i class="fa-regular fa-money-bill-1"></i></a> | 
+                        <a target="blank" href="'.url('admin/print-small/'.$data->id).'" class="dropdown-item"><i class="fa-solid fa-print"></i></a></div>';
                     })                        
                     // ->addColumn('action', function ($data) {
 

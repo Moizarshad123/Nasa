@@ -20,14 +20,10 @@
 
                 <a href="{{ route('admin.assignOrderNumberSmall') }}" class="btn btn-primary btn-icon">
                     <i class="bi bi-plus-circle"></i> Add New Order
-                </a>
-
-                
+                </a>  
             </div>
         </div>
-      
     </div>
-
     <div class="table-responsive">
         <table class="table table-custom table-lg mb-0" id="ordersTable">
             <thead>
@@ -35,15 +31,14 @@
                     <th>Order#</th>
                     <th>Category</th>
                     <th>Customer Name</th>
-                    <th>Mobile</th>
-                    <th>Delivery Date</th>
-                    <th>Delivery Time</th>
+                    <th>Customer Mobile</th>
+                    <th>Order Delivery Date</th>
+                    <th>Order Delivery Time</th>
                     <th>Order Nature</th>
-                    {{-- <th>Order Type</th> --}}
+                    <th>Order Type</th>
                     <th>Outstanding Amount</th>
                     <th>Order Status</th>
                     <th>Action</th>
-                    {{-- <th class="text-end">Actions</th> --}}
                 </tr>
             </thead>
             <tbody>
@@ -120,10 +115,10 @@
                     data: 'order_nature',
                     name: 'order_nature'
                 },
-                // {
-                //     data: 'order_type',
-                //     name: 'order_type'
-                // },
+                {
+                    data: 'order_type',
+                    name: 'order_type'
+                },
                 {
                     data: 'outstanding_amount',
                     name: 'outstanding_amount'

@@ -36,13 +36,13 @@
                     <th>Order#</th>
                     <th>Category</th>
                     <th>Customer Name</th>
-                    <th>Mobile</th>
-                    <th>Delivery Date</th>
-                    <th>Delivery Time</th>
+                    <th>Customer Mobile</th>
+                    <th>Order Delivery Date</th>
+                    <th>Order Delivery Time</th>
                     <th>Order Nature</th>
-                    <th>Order Type</th>
+                    {{-- <th>Order Type</th> --}}
                     <th>Order Status</th>
-                    <th>Assign To</th>
+                    {{-- <th>Assign To</th> --}}
                     <th class="text-end">Action</th>
                 </tr>
             </thead>
@@ -125,18 +125,18 @@
                     data: 'order_nature',
                     name: 'order_nature'
                 },
-                {
-                    data: 'order_type',
-                    name: 'order_type'
-                },
+                // {
+                //     data: 'order_type',
+                //     name: 'order_type'
+                // },
                 {
                     data: 'orderStatus',
                     name: 'orderStatus'
                 },
-                {
-                    data: 'assignTo',
-                    name: 'assignTo'
-                },
+                // {
+                //     data: 'assignTo',
+                //     name: 'assignTo'
+                // },
 
                 {
                     data: 'action',

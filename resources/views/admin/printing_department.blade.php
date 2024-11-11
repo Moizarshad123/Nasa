@@ -29,7 +29,6 @@
             </div>
         </form>
     </div>
-
     <div class="table-responsive">
         <table class="table table-custom table-lg mb-0" id="ordersTable">
             <thead>
@@ -37,10 +36,11 @@
                     <th>Order#</th>
                     <th>Category</th>
                     <th>Customer Name</th>
-                    <th>Mobile</th>
-                    <th>Delivery Date</th>
-                    <th>Delivery Time</th>
+                    <th>Customer Mobile</th>
+                    <th>Order Delivery Date</th>
+                    <th>Order Delivery Time</th>
                     <th>Order Nature</th>
+                    <th>Order Type</th>
                     <th>Order Status</th>
                     <th class="text-end">Action</th>
                 </tr>
@@ -118,6 +118,10 @@
                 {
                     data: 'order_nature',
                     name: 'order_nature'
+                },
+                {
+                    data: 'order_type',
+                    name: 'order_type'
                 },
                 {
                     data: 'orderStatus',
