@@ -73,6 +73,8 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::match(['get', 'post'],'close-till', 'close_till')->name('closeTill');
         Route::match(['get', 'post'],'cash-till', 'cash_till')->name('cashTill');
         Route::get('/till-close', 'tillCloseReceipt')->name('tillCloseReceipt');
+        Route::get('/till-report', 'tillReport')->name('tillReport');
+        Route::get('/till-report-receipt/{id}', 'tillReportReceipt')->name('tillReportReceipt');
 
     });
 

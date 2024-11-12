@@ -60,6 +60,10 @@
                             <a target="blank" href="{{ route('admin.tillCloseReceipt') }}">Print Till Close Receipt</a>
                         @endif
                     </li>
+                    <li>
+                        <a href="{{ route('admin.tillReport') }}">Till Report</a>
+                    </li>
+                    
                 </ul>
             </li>
             @if($checkTillOpen != null && $checkTillClose == null)
