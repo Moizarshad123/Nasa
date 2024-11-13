@@ -535,7 +535,7 @@ class TillController extends Controller
     public function tillReport(Request $request) {
         // $till_report = TillOpen::with("user")->orderByDESC('id')->groupBy('date')->get();
         $till_report = DB::table('till_opens')
-                        ->select('date',
+                        ->select('user_id','date',
                             DB::raw('MAX(CASE WHEN type = "till_open" THEN amount END) as till_open_amount'),
                             DB::raw('MAX(CASE WHEN type = "till_close" THEN amount END) as till_close_amount')
                         )
@@ -545,20 +545,21 @@ class TillController extends Controller
         return view('admin.tills.report', compact('till_report'));
     }
 
-    public function tillReportReceipt($date) {
+    public function tillReportReceipt($date, $userid) {
+
         $content        = "";
-        $opening_cash   = TillOpen::where('date', $request->date)->where('type', 'till_open')->pluck('amount')->first();
-        $gross_sales    = Order::with('payments')->where('user_id', auth()->user()->id)->where('creating_date', date('Y-m-d'))->get();
-        $tot_discounts  = Order::where('user_id', auth()->user()->id)->where('creating_date', date('Y-m-d'))->sum('discount_amount');
-        $sales_return   = Order::where('user_id', auth()->user()->id)->where('creating_date', date('Y-m-d'))->where('status', 'Cancelled')->sum('refund_amount');
-        $gross_salesAmt = OrderPayment::whereDate('created_at', date('Y-m-d'))->where('received_by', auth()->user()->id)->sum('amount_received');
-        $cardSales      = OrderPayment::where('payment_method', "Card")->where('received_by', auth()->user()->id)->whereDate('created_at', date('Y-m-d'))->sum('amount_received');
-        $closing_cash   = TillOpen::where('user_id', auth()->user()->id)->where('date', date('Y-m-d'))->where('type', 'till_close')->first();
-        $cash_in        = TillOpen::where('user_id', auth()->user()->id)->where('date', date('Y-m-d'))->where('type', 'cash_in')->sum('amount');
-        $cash_out       = TillOpen::where('user_id', auth()->user()->id)->where('date', date('Y-m-d'))->where('type', 'cash_out')->sum('amount');
-        $cash_ins       = TillOpen::where('user_id', auth()->user()->id)->where('date', date('Y-m-d'))->where('type', 'cash_in')->get();
-        $cash_outs      = TillOpen::where('user_id', auth()->user()->id)->where('date', date('Y-m-d'))->where('type', 'cash_out')->get();
-        $cardKiSales    = OrderPayment::with("amountReceivedByUer", "order")->where('payment_method', "Card")->where('received_by', auth()->user()->id)->whereDate('created_at', date('Y-m-d'))->get();
+        $opening_cash   = TillOpen::where('date', $date)->where('type', 'till_open')->pluck('amount')->first();
+        $gross_sales    = Order::with('payments')->where('user_id', $userid)->where('creating_date', date($date))->get();
+        $tot_discounts  = Order::where('user_id', $userid)->where('creating_date', date($date))->sum('discount_amount');
+        $sales_return   = Order::where('user_id', $userid)->where('creating_date', date($date))->where('status', 'Cancelled')->sum('refund_amount');
+        $gross_salesAmt = OrderPayment::whereDate('created_at', $date)->where('received_by', $userid)->sum('amount_received');
+        $cardSales      = OrderPayment::where('payment_method', "Card")->where('received_by', $userid)->whereDate('created_at', date($date))->sum('amount_received');
+        $closing_cash   = TillOpen::where('user_id', $userid)->where('date', date($date))->where('type', 'till_close')->first();
+        $cash_in        = TillOpen::where('user_id', $userid)->where('date', date($date))->where('type', 'cash_in')->sum('amount');
+        $cash_out       = TillOpen::where('user_id', $userid)->where('date', date($date))->where('type', 'cash_out')->sum('amount');
+        $cash_ins       = TillOpen::where('user_id', $userid)->where('date', date($date))->where('type', 'cash_in')->get();
+        $cash_outs      = TillOpen::where('user_id', $userid)->where('date', date($date))->where('type', 'cash_out')->get();
+        $cardKiSales    = OrderPayment::with("amountReceivedByUer", "order")->where('payment_method', "Card")->where('received_by', $userid)->whereDate('created_at', date($date))->get();
         $getNetSales    = $gross_salesAmt - ($tot_discounts + $sales_return);
         $getCashSales   = $getNetSales - $cardSales;
         $roundOff       = $getNetSales - ($getCashSales + $cardSales); 

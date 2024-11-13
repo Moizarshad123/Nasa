@@ -42,7 +42,7 @@
                         
                     </td>
                     <td>
-                        <a href="{{ route('admin.tillReportReceipt', $item->id) }}"><i class="fa-solid fa-print"></i></a>
+                        <a href="{{ url('admin/till-report-receipt/'.$item->date.'/'.$item->user_id) }}"><i class="fa-solid fa-print"></i></a>
                     </td>
                 </tr>
              @empty
