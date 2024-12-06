@@ -703,25 +703,27 @@
         });
 
         $(document).on('keyup', '#discount_amount', function (e) {
-            let disount_amt = $(this).val();
+            let discount_amt = $(this).val();
             let grand_total = $('#grand_total').val();
-            if(disount_amt <= grand_total) {
-
-                console.log("yes");
-                let total       = parseFloat(grand_total) - parseFloat(disount_amt);
-        
-                $('#net_amount').val(total);
-                $('#outstanding_amount').val(total);
-            } else {
-                Swal.fire({
-                    icon: "error",
-                    title: "Error",
-                    text: "Discounted amount is not greater than total!",
-                });
-                $('#discount_amount').val(0);
+            if(discount_amt) {
+                if (parseFloat(discount_amt) > parseFloat(grand_total)) {
+    
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "Discounted amount is not greater than total!",
+                    });
+                    $('#discount_amount').val(0); 
+                } else {
+                    console.log("yes");
+                    let total       = parseFloat(grand_total) - parseFloat(discount_amt);
+            
+                    $('#net_amount').val(total);
+                    $('#outstanding_amount').val(total);
+                }
+    
+                calValues();
             }
-
-            calValues();
         });
 
         $(document).on('change', '.studio_lpm_total_check', function() {

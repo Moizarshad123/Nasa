@@ -77,16 +77,16 @@ class BigOrderController extends Controller
 
     public function assignOrderNumber() {
 
-        $order_number = OrderNumber::where('order_number', 'LIKE', 'B%')->where('is_used', 0)->pluck('order_number')->first();
-        if($order_number == null) {
-            $order_no   = Order::where('order_number', 'LIKE', 'B%')->orderByDESC('id')->skip(0)->take(1)->pluck("order_number")->first();
-            if($order_no != null) {
-                $order_number = str_replace("Bb","",$order_no);
-                $order_number = "Bb".(($order_number) + 1);
-            } else {
-                $order_number = "Bb2300";
-            }
+        // $order_number = OrderNumber::where('order_number', 'LIKE', 'B%')->where('is_used', 0)->pluck('order_number')->first();
+        // if($order_number == null) {
+        $order_no   = Order::where('order_number', 'LIKE', 'B%')->orderByDESC('id')->skip(0)->take(1)->pluck("order_number")->first();
+        if($order_no != null) {
+            $order_number = str_replace("Bb","",$order_no);
+            $order_number = "Bb".(($order_number) + 1);
+        } else {
+            $order_number = "Bb2300";
         }
+        // }
         return view('admin.big_orders.assign_order_number', compact("order_number"));
     }
 
@@ -94,14 +94,18 @@ class BigOrderController extends Controller
     {
         $categories   = Category::skip(2)->take(2)->get();
         $setting      = Setting::find(1);
-        $order_number = Order::where('order_number', 'LIKE', 'B%')->where('user_id', auth()->user()->id)->where('status', "assigned")->pluck('order_number')->first();
+        // $order_number = Order::where('order_number', 'LIKE', 'B%')->where('user_id', auth()->user()->id)->where('status', "assigned")->pluck('order_number')->first();
+        $order_number = Order::where('order_number', 'LIKE', 'B%')->where('user_id', auth()->user()->id)->orderByDESC('id')->skip(0)->take(1)->pluck('order_number')->first();
+
         return view('admin.big_orders.create', compact("categories","order_number", "setting"));
     }
 
     public function assignNumber(Request $request) {
         try {
 
-            $check = Order::where('order_number', 'LIKE', 'S%')->where('user_id', auth()->user()->id)->where('status', "assigned")->pluck('order_number')->first();
+            // $check = Order::where('order_number', 'LIKE', 'S%')->where('user_id', auth()->user()->id)->where('status', "assigned")->pluck('order_number')->first();
+            $check = Order::where('order_number', 'LIKE', 'B%')->where('user_id', auth()->user()->id)->pluck('order_number')->first();
+
             if($check == null) {
                 $order = Order::create([
                  "order_number" => $request->order_number,
