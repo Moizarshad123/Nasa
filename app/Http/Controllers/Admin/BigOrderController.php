@@ -28,13 +28,22 @@ class BigOrderController extends Controller
         try {
             if (request()->ajax()) {
             
-                $orders = Order::with("category")->where("order_number", "like", "Bb%")->where('status', "Active")->orderByDESC('id')->get();
+                
+                $orders = Order::with("category")
+                                ->where("order_number", "like", "Bb%")
+                                ->whereIn('status', ["assigned","Active"])
+                                ->orderByDESC('id')->get();
+
                 return datatables()->of($orders)
                     ->addColumn('category', function ($data) {
-                        return $data->category->title;
+                        return $data?->category?->title;
                     })
                     ->addColumn('del_date', function ($data) {
-                        return date('d-m-Y', strtotime($data->delivery_date));
+                        if(isset($data->delivery_date)) {
+                            return date('d-m-Y', strtotime($data->delivery_date));
+                        } else {
+                            return "";
+                        }
                     })
                     ->addColumn('orderStatus', function ($data) {
                         return '<span class="badge bg-warning">'.$data->status.'</span>';
@@ -43,10 +52,16 @@ class BigOrderController extends Controller
                         // }
                     })   
                     ->addColumn('action', function ($data) {
-                        return '<div class="d-flex">
-                        <a href="'.url('admin/view-order/'.$data->id).'" class="dropdown-item"><i style="color:#000" class="fa fa-eye"></i></a> | 
-                        <a target="blank" href="'.url('admin/payment/'.$data->id).'" class="dropdown-item"><i class="fa-regular fa-money-bill-1"></i></a> | 
-                        <a target="blank" href="'.url('admin/print/'.$data->id).'" class="dropdown-item"><i class="fa-solid fa-print"></i></a></div>';
+
+                        if($data->status == "assigned") {
+                            return '<div class="d-flex">
+                            <a href="'.url('admin/orderBigDC/'.$data->id.'/edit').'" class="dropdown-item"><i style="color:#000" class="fa fa-edit"></i></a></div>';
+                        } else {
+                            return '<div class="d-flex">
+                            <a href="'.url('admin/view-order/'.$data->id).'" class="dropdown-item"><i style="color:#000" class="fa fa-eye"></i></a> | 
+                            <a target="blank" href="'.url('admin/payment/'.$data->id).'" class="dropdown-item"><i class="fa-regular fa-money-bill-1"></i></a> | 
+                            <a target="blank" href="'.url('admin/print/'.$data->id).'" class="dropdown-item"><i class="fa-solid fa-print"></i></a></div>';
+                        }
                     })    
                     
                     ->rawColumns(['action', 'orderStatus', 'del_date', 'category'])->make(true);
@@ -76,18 +91,23 @@ class BigOrderController extends Controller
     }
 
     public function assignOrderNumber() {
+        $checkTillClose = TillOpen::where('date',date('Y-m-d'))->where('user_id', auth()->user()->id)->where('type', 'till_close')->first();
 
-        // $order_number = OrderNumber::where('order_number', 'LIKE', 'B%')->where('is_used', 0)->pluck('order_number')->first();
-        // if($order_number == null) {
-        $order_no   = Order::where('order_number', 'LIKE', 'B%')->orderByDESC('id')->skip(0)->take(1)->pluck("order_number")->first();
-        if($order_no != null) {
-            $order_number = str_replace("Bb","",$order_no);
-            $order_number = "Bb".(($order_number) + 1);
+        if($checkTillClose == null) {
+            // $order_number = OrderNumber::where('order_number', 'LIKE', 'B%')->where('is_used', 0)->pluck('order_number')->first();
+            // if($order_number == null) {
+            $order_no   = Order::where('order_number', 'LIKE', 'B%')->orderByDESC('id')->skip(0)->take(1)->pluck("order_number")->first();
+            if($order_no != null) {
+                $order_number = str_replace("Bb","",$order_no);
+                $order_number = "Bb".(($order_number) + 1);
+            } else {
+                $order_number = "Bb2300";
+            }
+            // }
+            return view('admin.big_orders.assign_order_number', compact("order_number"));
         } else {
-            $order_number = "Bb2300";
+            return redirect("admin/orderBigDC")->with("error", "You cannot create an order because till is close");
         }
-        // }
-        return view('admin.big_orders.assign_order_number', compact("order_number"));
     }
 
     public function create()
@@ -95,7 +115,11 @@ class BigOrderController extends Controller
         $categories   = Category::skip(2)->take(2)->get();
         $setting      = Setting::find(1);
         // $order_number = Order::where('order_number', 'LIKE', 'B%')->where('user_id', auth()->user()->id)->where('status', "assigned")->pluck('order_number')->first();
-        $order_number = Order::where('order_number', 'LIKE', 'B%')->where('user_id', auth()->user()->id)->orderByDESC('id')->skip(0)->take(1)->pluck('order_number')->first();
+        $order_number = Order::where('order_number', 'LIKE', 'B%')
+                                ->where('user_id', auth()->user()->id)
+                                ->where('status', 'assigned')
+                                ->orderByDESC('id')->skip(0)->take(1)
+                                ->pluck('order_number')->first();
 
         return view('admin.big_orders.create', compact("categories","order_number", "setting"));
     }
@@ -104,7 +128,10 @@ class BigOrderController extends Controller
         try {
 
             // $check = Order::where('order_number', 'LIKE', 'S%')->where('user_id', auth()->user()->id)->where('status', "assigned")->pluck('order_number')->first();
-            $check = Order::where('order_number', 'LIKE', 'B%')->where('user_id', auth()->user()->id)->pluck('order_number')->first();
+            $check = Order::where('order_number', 'LIKE', 'B%')
+                            ->where('user_id', auth()->user()->id)
+                            ->where('status', 'assigned')
+                            ->pluck('order_number')->first();
 
             if($check == null) {
                 $order = Order::create([
@@ -316,7 +343,7 @@ class BigOrderController extends Controller
                             <span class="detail"><span class="label">Customer Name:</span> '.$order->customer_name.'</span>
                             <span class="detail"><span class="label">Contact No:</span>'.$order->phone.'</span>
                             <span class="detail"><span class="label">No Of Expose:</span> '.$order->no_of_persons.'</span>
-                            <span class="detail"><span class="label">Order Nature:</span> '.$order->category->title.'</span>
+                            <span class="detail"><span class="label">Order Nature:</span> '.$order?->category?->title.'</span>
                             <span class="detail"><span class="label">Order Status:</span> '.$order->order_nature.'</span>
                             <span class="detail" style="font-size:10px"><span class="label">Booking Date/Time:</span>'. date('d-m-Y h:i A', strtotime($order->created_at)).'</span>
                             <span class="detail" style="font-size:10px"><span class="label">Collection Date/Time:</span> '.date('d-m-Y', strtotime($order->delivery_date)).' '.date('h:i A', strtotime($order->delivery_time)).'</span>
@@ -416,8 +443,9 @@ class BigOrderController extends Controller
         $categories = Category::skip(2)->take(2)->get();
         $setting    = Setting::find(1);
         $order      = Order::find($id);
-        $detail     = OrderDetail::where('order_id', $id)->get();
-        return view('admin.big_orders.edit', compact('order', 'detail', 'categories', 'setting'));
+        $order_number = $order->order_number;
+        return view('admin.big_orders.create', compact('categories', 'setting', 'order_number'));
+        // return view('admin.big_orders.edit', compact('order', 'categories', 'setting'));
     }
 
     public function update(Request $request, $id)
@@ -730,8 +758,15 @@ class BigOrderController extends Controller
     }
 
     public function payment($orderId) {
-        $order  = Order::find($orderId);
-        return view('admin.payment',compact('order'));
+
+        $checkTillClose = TillOpen::where('date',date('Y-m-d'))->where('user_id', auth()->user()->id)->where('type', 'till_close')->first();
+
+        if($checkTillClose == null) {
+            $order  = Order::find($orderId);
+            return view('admin.payment',compact('order'));
+        } else {
+            return redirect()->back()->with("error", "You cannot create payment because till is close");
+        }
     }
 
     public function add_payment(Request $request) {

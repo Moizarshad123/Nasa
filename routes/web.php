@@ -36,6 +36,13 @@ Route::prefix('admin')->middleware('admin')->name('admin.')->group(function () {
         Route::get('order-history', 'orderHistory')->name('orderHistory');
         Route::get('/assign-order-number-small', 'assignOrderNumberSmall')->name('assignOrderNumberSmall');
         Route::post('/assign-number-small', 'assignNumberSmall')->name('assignNumberSmall');
+
+        Route::get('send-emails', 'sendEmails')->name('sendEmails');
+        Route::get('mark-done/{id}', 'markDone')->name('markDone');
+
+        
+
+        
     });
 
     

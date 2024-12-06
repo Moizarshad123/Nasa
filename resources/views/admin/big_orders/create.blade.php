@@ -63,7 +63,7 @@
                                             <select name="category_id" class="form-control" id="category_id" required>
                                                 <option value="">Select Category</option>
                                                 @foreach ($categories as $item)
-                                                    <option value="{{$item->id}}">{{$item->title}}</option>
+                                                    <option value="{{$item->id}}" {{ old('category_id') == $item->id ? 'selected' : '' }}>{{$item->title}}</option>
                                                 @endforeach
                         
                                             </select>
@@ -90,26 +90,26 @@
                                         <div class="mb-3">
                                             <label for="exampleInputEmail1" class="form-label">Number Of Person/Expose</label>
                                             <select name="no_of_persons" id="no_of_persons" class="form-control" >
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
+                                                <option value="1" {{ old('no_of_persons') == 1 ? 'selected' : '' }}>1</option>
+                                                <option value="2" {{ old('no_of_persons') == 2 ? 'selected' : '' }}>2</option>
+                                                <option value="3" {{ old('no_of_persons') == 3 ? 'selected' : '' }}>3</option>
+                                                <option value="4" {{ old('no_of_persons') == 4 ? 'selected' : '' }}>4</option>
+                                                <option value="5" {{ old('no_of_persons') == 5 ? 'selected' : '' }}>5</option>
+                                                <option value="6" {{ old('no_of_persons') == 6 ? 'selected' : '' }}>6</option>
+                                                <option value="7" {{ old('no_of_persons') == 7 ? 'selected' : '' }}>7</option>
+                                                <option value="8" {{ old('no_of_persons') == 8 ? 'selected' : '' }}>8</option>
+                                                <option value="9" {{ old('no_of_persons') == 9 ? 'selected' : '' }}>9</option>
+                                                <option value="10" {{ old('no_of_persons') == 10 ? 'selected' : '' }}>10</option>
+                                                <option value="11" {{ old('no_of_persons') == 11 ? 'selected' : '' }}>11</option>
+                                                <option value="12" {{ old('no_of_persons') == 12 ? 'selected' : '' }}>12</option>
+                                                <option value="13" {{ old('no_of_persons') == 13 ? 'selected' : '' }}>13</option>
+                                                <option value="14" {{ old('no_of_persons') == 14 ? 'selected' : '' }}>14</option>
+                                                <option value="15" {{ old('no_of_persons') == 15 ? 'selected' : '' }}>15</option>
+                                                <option value="16" {{ old('no_of_persons') == 16 ? 'selected' : '' }}>16</option>
+                                                <option value="17" {{ old('no_of_persons') == 17 ? 'selected' : '' }}>17</option>
+                                                <option value="18" {{ old('no_of_persons') == 18 ? 'selected' : '' }}>18</option>
+                                                <option value="19" {{ old('no_of_persons') == 19 ? 'selected' : '' }}>19</option>
+                                                <option value="20" {{ old('no_of_persons') == 920 ? 'selected' : '' }}>20</option>
                                             </select>
                                         </div>
                                     </div>
@@ -132,41 +132,41 @@
                                         <label for="order_delivery_time">Order Delivery Time</label>
                                         <select name="delivery_time" id="delivery_time" class="form-control" autocomplete="off">
                                             <option value="">Select Time</option>
-                                            <option value="12:00am">12:00pm</option>
-                                            <option value="08:00am">08:00am</option>
-                                            <option value="08:30am">08:30am</option>
-                                            <option value="09:00am">09:00am</option>
-                                            <option value="09:30am">09:30am</option>
-                                            <option value="10:00am">10:00am</option>
-                                            <option value="10:30am">10:30am</option>
-                                            <option value="11:00am">11:00am</option>
-                                            <option value="11:30am">11:30am</option>
-                                            <option value="12:00pm">12:00pm</option>
-                                            <option value="12:30pm">12:30pm</option>
-                                            <option value="01:00pm">01:00pm</option>
-                                            <option value="01:30pm">01:30pm</option>
-                                            <option value="02:00pm">02:00pm</option>
-                                            <option value="02:30pm">02:30pm</option>
-                                            <option value="03:00pm">03:00pm</option>
-                                            <option value="03:30pm">03:30pm</option>
-                                            <option value="04:00pm">04:00pm</option>
-                                            <option value="04:30pm">04:30pm</option>
-                                            <option value="05:00pm">05:00pm</option>
-                                            <option value="05:30pm">05:30pm</option>
-                                            <option value="06:00pm">06:00pm</option>
-                                            <option value="06:30pm">06:30pm</option>
-                                            <option value="07:00pm">07:00pm</option>
-                                            <option value="07:30pm">07:30pm</option>
-                                            <option value="08:00pm">08:00pm</option>
-                                            <option value="08:30pm">08:30pm</option>
-                                            <option value="09:00pm">09:00pm</option>
-                                            <option value="09:30pm">09:30pm</option>
-                                            <option value="10:00pm">10:00pm</option>
-                                            <option value="10:30pm">10:30pm</option>
-                                            <option value="11:00pm">11:00pm</option>
-                                            <option value="11:30pm">11:30pm</option>
-                                            <option value="12:00am">12:00am</option>
-                                            <option value="12:30am">12:30am</option>
+                                            <option value="12:00am" {{ old('delivery_time') == "12:00am" ? 'selected' : '' }}>12:00pm</option>
+                                            <option value="08:00am" {{ old('delivery_time') == "08:00am" ? 'selected' : '' }}>08:00am</option>
+                                            <option value="08:30am" {{ old('delivery_time') == "08:30am" ? 'selected' : '' }}>08:30am</option>
+                                            <option value="09:00am" {{ old('delivery_time') == "09:00am" ? 'selected' : '' }}>09:00am</option>
+                                            <option value="09:30am" {{ old('delivery_time') == "09:30am" ? 'selected' : '' }}>09:30am</option>
+                                            <option value="10:00am" {{ old('delivery_time') == "10:00am" ? 'selected' : '' }}>10:00am</option>
+                                            <option value="10:30am" {{ old('delivery_time') == "10:30am" ? 'selected' : '' }}>10:30am</option>
+                                            <option value="11:00am" {{ old('delivery_time') == "11:00am" ? 'selected' : '' }}>11:00am</option>
+                                            <option value="11:30am" {{ old('delivery_time') == "11:30am" ? 'selected' : '' }}>11:30am</option>
+                                            <option value="12:00pm" {{ old('delivery_time') == "12:00pm" ? 'selected' : '' }}>12:00pm</option>
+                                            <option value="12:30pm" {{ old('delivery_time') == "12:30pm" ? 'selected' : '' }}>12:30pm</option>
+                                            <option value="01:00pm" {{ old('delivery_time') == "01:00pm" ? 'selected' : '' }}>01:00pm</option>
+                                            <option value="01:30pm" {{ old('delivery_time') == "01:30pm" ? 'selected' : '' }}>01:30pm</option>
+                                            <option value="02:00pm" {{ old('delivery_time') == "02:00pm" ? 'selected' : '' }}>02:00pm</option>
+                                            <option value="02:30pm" {{ old('delivery_time') == "02:30pm" ? 'selected' : '' }}>02:30pm</option>
+                                            <option value="03:00pm" {{ old('delivery_time') == "03:00pm" ? 'selected' : '' }}>03:00pm</option>
+                                            <option value="03:30pm" {{ old('delivery_time') == "03:30pm" ? 'selected' : '' }}>03:30pm</option>
+                                            <option value="04:00pm" {{ old('delivery_time') == "04:00pm" ? 'selected' : '' }}>04:00pm</option>
+                                            <option value="04:30pm" {{ old('delivery_time') == "04:30pm" ? 'selected' : '' }}>04:30pm</option>
+                                            <option value="05:00pm" {{ old('delivery_time') == "05:00pm" ? 'selected' : '' }}>05:00pm</option>
+                                            <option value="05:30pm" {{ old('delivery_time') == "05:30pm" ? 'selected' : '' }}>05:30pm</option>
+                                            <option value="06:00pm" {{ old('delivery_time') == "06:00pm" ? 'selected' : '' }}>06:00pm</option>
+                                            <option value="06:30pm" {{ old('delivery_time') == "06:30pm" ? 'selected' : '' }}>06:30pm</option>
+                                            <option value="07:00pm" {{ old('delivery_time') == "07:00pm" ? 'selected' : '' }}>07:00pm</option>
+                                            <option value="07:30pm" {{ old('delivery_time') == "07:30pm" ? 'selected' : '' }}>07:30pm</option>
+                                            <option value="08:00pm" {{ old('delivery_time') == "08:00pm" ? 'selected' : '' }}>08:00pm</option>
+                                            <option value="08:30pm" {{ old('delivery_time') == "08:30pm" ? 'selected' : '' }}>08:30pm</option>
+                                            <option value="09:00pm" {{ old('delivery_time') == "09:00pm" ? 'selected' : '' }}>09:00pm</option>
+                                            <option value="09:30pm" {{ old('delivery_time') == "09:30pm" ? 'selected' : '' }}>09:30pm</option>
+                                            <option value="10:00pm" {{ old('delivery_time') == "10:00pm" ? 'selected' : '' }}>10:00pm</option>
+                                            <option value="10:30pm" {{ old('delivery_time') == "10:30pm" ? 'selected' : '' }}>10:30pm</option>
+                                            <option value="11:00pm" {{ old('delivery_time') == "11:00pm" ? 'selected' : '' }}>11:00pm</option>
+                                            <option value="11:30pm" {{ old('delivery_time') == "11:30pm" ? 'selected' : '' }}>11:30pm</option>
+                                            <option value="12:00am" {{ old('delivery_time') == "12:00am" ? 'selected' : '' }}>12:00am</option>
+                                            <option value="12:30am" {{ old('delivery_time') == "12:30am" ? 'selected' : '' }}>12:30am</option>
                                         </select>
                                     </div>
                                 </div>
@@ -176,8 +176,8 @@
                                         <div class="mb-3">
                                             <label for="order_nature">Order Nature</label>
                                             <select name="order_nature" id="order_nature" class="form-control">
-                                                <option value="normal">Normal</option>
-                                                <option value="urgent">Urgent</option>
+                                                <option value="normal" {{ old('order_nature') == "normal" ? 'selected' : '' }}>Normal</option>
+                                                <option value="urgent" {{ old('order_nature') == "urgent" ? 'selected' : '' }}>Urgent</option>
                                             </select>
                                         </div>
                                     </div>
@@ -206,7 +206,7 @@
                                     <div class="col-md-4">
                                         <div class="mb-3" id="showEmails">
                                             <label for="email_list">Emails</label>
-                                            <textarea type="text"  class="form-control" name="emails" id="emails" ></textarea>
+                                            <textarea type="text"  class="form-control" name="emails" id="emails" >{{old('emails')}}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -217,9 +217,9 @@
                                             <label for="email_list">Expose/Media/Redorder<span style="color:red">*</span></label>
                                             <select name="order_type" id="order_type" class="form-control">
                                                 <option value="">SELECT</option>
-                                                <option value="expose">Expose</option>
-                                                <option value="reorder">Reorder</option>
-                                                <option value="media">Media</option>
+                                                <option value="expose" {{ old('order_type') == "expose" ? 'selected' : '' }}>Expose</option>
+                                                <option value="reorder" {{ old('order_type') == "reorder" ? 'selected' : '' }}>Reorder</option>
+                                                <option value="media" {{ old('order_type') == "media" ? 'selected' : '' }}>Media</option>
                                             </select>
                                         </div>
                                     </div>
@@ -369,9 +369,7 @@
                                     <div class="col-md-3">
                                         <div class="mb-3">
                                             <label for="remarks">Outstanding Amount</label>
-                                            
                                             <input type="text" readonly class="form-control" name="outstanding_amount" id="outstanding_amount" value="0" />
-                        
                                         </div>
                                     </div>
                                 </div>
@@ -436,14 +434,10 @@
 
                             </div>
                         </form>
-                        
                     </div>
-                  
                 </div>
-    
             </div>
             <!-- ./ content -->
-    
     {{-- <div id="confirmModal" class="modal fade" role="dialog">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -617,7 +611,7 @@
             });
 
             $("#MTCTypetbChoice:last").append(`<tr>
-                                        <td>
+                                        <td style="width: 135px !important;">
                                             <div class="form-group col-md-6" style=" width: 100%;">
                                                     <select name="person_id[]" class="form-control" class="person_id">
                                                         <option value="Expose1">Expose 1</option>
@@ -704,8 +698,15 @@
 
         $(document).on('keyup', '#discount_amount', function (e) {
             let discount_amt = $(this).val();
+
+            if (discount_amt === "") {
+                $('#discount_amount').val(0)
+                discount_amt = 0;
+            }
+            console.log(discount_amt);
+            
             let grand_total = $('#grand_total').val();
-            if(discount_amt) {
+            // if(discount_amt) {
                 if (parseFloat(discount_amt) > parseFloat(grand_total)) {
     
                     Swal.fire({
@@ -715,15 +716,15 @@
                     });
                     $('#discount_amount').val(0); 
                 } else {
-                    console.log("yes");
-                    let total       = parseFloat(grand_total) - parseFloat(discount_amt);
+                    let total = parseFloat(grand_total) - parseFloat(discount_amt);
+                    console.log(grand_total, discount_amt);
             
                     $('#net_amount').val(total);
                     $('#outstanding_amount').val(total);
                 }
     
                 calValues();
-            }
+            // }
         });
 
         $(document).on('change', '.studio_lpm_total_check', function() {

@@ -31,7 +31,7 @@
 <!-- Content -->
 
 <div class="container-xxl flex-grow-1 container-p-y">
-    <form method="POST" action="{{ route('admin.orderBigDC.update', $oder->id)}}">
+    <form method="POST" action="{{ route('admin.orderBigDC.update', $order->id)}}">
         @csrf
         @method('PUT')
         <div class="row">
@@ -41,7 +41,7 @@
                     <select name="category_id" class="form-control" id="category_id" required>
                         <option value="">Select Category</option>
                         @foreach ($categories as $item)
-                            <option value="{{$item->id}}" {{ $order->category_id == $item->id ? "selected" : ""}}>{{$item->title}}</option>
+                            <option value="{{$item->id}}">{{$item->title}}</option>
                         @endforeach
 
                     </select>
@@ -52,7 +52,7 @@
             <div class="col-md-4">
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Customer Name</label>
-                    <input type="text" name="customer_name" value="{{ $order->customer_name }}" class="form-control" id="customer_name" aria-describedby="customer_name">
+                    <input type="text" name="customer_name" value="{{ old('customer_name') }}" class="form-control" id="customer_name" aria-describedby="customer_name">
                 </div>
             </div>
             <div class="col-md-4">
@@ -89,7 +89,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label for="exampleInputEmail1" class="form-label">Order Delivery Date</label>
-                    <input type="date" class="form-control" name="delivery_date" value="{{ $order->delivery_date }}">
+                    <input type="date" class="form-control" name="delivery_date" value="{{ old('delivery_date') }}">
                 </div>
             </div>
             <div class="col-md-6">
@@ -147,7 +147,7 @@
             <div class="col-md-6">
                 <div class="mb-3">
                     <label for="order_nature_amount">Order Nature Amount</label>
-                    <input type="text" class="form-control" name="order_nature_amount" id="order_nature_amount" value="{{ $order->order_nature_amount }}" />
+                    <input type="text" class="form-control" name="order_nature_amount" id="order_nature_amount" value="{{ old('order_nature_amount') }}" />
                 </div>
             </div>
         </div>
@@ -163,14 +163,14 @@
             <div class="col-md-4">
                 <div class="mb-3">
                     <label for="email_amount">Email Amount</label>
-                    <input type="text" class="form-control" readonly name="email_amount" id="email_amount" value="{{ $order->email_amount }}" />
+                    <input type="text" class="form-control" readonly name="email_amount" id="email_amount" value="{{ old('email_amount') }}" />
                 </div>
             </div>
             <div class="col-md-4">
                 @if($order->is_email == 1)
                     <div class="mb-3">
                         <label for="email_list">Emails</label>
-                        <textarea type="text"  class="form-control" name="emails" id="emails">{{ $order->emails }}</textarea>
+                        <textarea type="text"  class="form-control" name="emails" id="emails">{{ old('emails') }}</textarea>
                     </div>
                 @else 
                     <div class="mb-3" id="showEmails">
@@ -195,14 +195,14 @@
             <div class="col-md-3">
                 <div class="mb-3">
                     <label for="amount">Amount</label>
-                    <input type="text" readonly class="form-control" name="total" id="amount" value="{{  $order->amount }}" />
+                    <input type="text" readonly class="form-control" name="total" id="amount" value="{{  old('amount') }}" />
                 </div>
             </div>
             <div class="col-md-3">
                 @if($order->order_type == "reorder")
                     <div class="mb-3">
                         <label for="reorder_number">Re Order Number</label>
-                        <input type="text" class="form-control" name="re_order_number" id="re_order_number" value="{{$order->re_order_number}}" />
+                        <input type="text" class="form-control" name="re_order_number" id="re_order_number" value="{{ old('re_order_number') }}" />
                     </div>
                 @else
                     <div class="mb-3" id="reOrderNumber">
@@ -214,7 +214,7 @@
             <div class="col-md-3">
                 <div class="mb-3" >
                     <label for="remarks">Remarks</label>
-                    <textarea id="remarks" class="form-control" name="main_remarks" rows="4" cols="50">{{ $order->main_remarks }} </textarea>
+                    <textarea id="remarks" class="form-control" name="main_remarks" rows="4" cols="50">{{ old('main_remarks') }} </textarea>
                 </div>
             </div>
         </div>
@@ -318,25 +318,25 @@
                 <div class="mb-3">
                     
                     <label for="amount">Grand total</label>
-                    <input type="text" readonly class="form-control" name="grand_total" id="grand_total" value="{{ $order->grand_total }}" />
+                    <input type="text" readonly class="form-control" name="grand_total" id="grand_total" />
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="mb-3">
                     <label for="discount_amount">Discount Amount</label>
-                    <input type="text" class="form-control" name="discount_amount" id="discount_amount" value="{{ $order->discount_amount }}" />
+                    <input type="text" class="form-control" name="discount_amount" id="discount_amount" />
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="mb-3">
                     <label for="reorder_number">Net Amount</label>
-                    <input type="text" readonly class="form-control" name="net_amount" id="net_amount" value="{{ $order->net_amount }}" />
+                    <input type="text" readonly class="form-control" name="net_amount" id="net_amount" />
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="mb-3">
                     <label for="remarks">Outstanding Amount</label>
-                    <input type="text" readonly class="form-control" name="outstanding_amount" id="outstanding_amount" value="{{ $order->outstanding_amount }}" />
+                    <input type="text" readonly class="form-control" name="outstanding_amount" id="outstanding_amount" />
                 </div>
             </div>
         </div>

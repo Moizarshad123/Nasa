@@ -16,6 +16,7 @@ use App\Models\OrderSmallRate;
 use App\Models\OrderNumber;
 use App\Models\OrderHistory;
 use App\Models\OrderPayment;
+use App\Models\TillOpen;
 
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -31,23 +32,35 @@ class SmallOrderController extends Controller
         try {
             if (request()->ajax()) {
             
-                $orders = Order::with("category")->where("order_number", "like", "SD%")->where('status', "Active")->orderByDESC('id')->get();
+                $orders = Order::with("category")
+                                ->where("order_number", "like", "SD%")
+                                ->whereIn('status', ["Active","assigned"])
+                                ->orderByDESC('id')->get();
                 return datatables()->of($orders)
                     ->addColumn('category', function ($data) {
-                        return $data->category->title;
+                        return $data?->category?->title;
                     })
                     ->addColumn('del_date', function ($data) {
-                        return date('d-m-Y', strtotime($data->delivery_date));
+                        if(isset($data->delivery_date)) {
+                            return date('d-m-Y', strtotime($data->delivery_date));
+                        } else {
+                            return "";
+                        }
                     })
                     ->addColumn('orderStatus', function ($data) {
                        
                         return '<span class="badge bg-warning">'.$data->status.'</span>';
                     })
                     ->addColumn('action', function ($data) {
-                        return '<div class="d-flex">
-                        <a href="'.url('admin/view-order/'.$data->id).'" class="dropdown-item"><i style="color:#000" class="fa fa-eye"></i></a> | 
-                        <a target="blank" href="'.url('admin/payment/'.$data->id).'" class="dropdown-item"><i class="fa-regular fa-money-bill-1"></i></a> | 
-                        <a target="blank" href="'.url('admin/print-small/'.$data->id).'" class="dropdown-item"><i class="fa-solid fa-print"></i></a></div>';
+                        if($data->status == "assigned") {
+                            return '<div class="d-flex">
+                            <a href="'.url('admin/orderSmallDC/'.$data->id.'/edit').'" class="dropdown-item"><i style="color:#000" class="fa fa-edit"></i></a></div>';
+                        } else {
+                            return '<div class="d-flex">
+                            <a href="'.url('admin/view-order/'.$data->id).'" class="dropdown-item"><i style="color:#000" class="fa fa-eye"></i></a> | 
+                            <a target="blank" href="'.url('admin/payment/'.$data->id).'" class="dropdown-item"><i class="fa-regular fa-money-bill-1"></i></a> | 
+                            <a target="blank" href="'.url('admin/print-small/'.$data->id).'" class="dropdown-item"><i class="fa-solid fa-print"></i></a></div>';
+                        }
                     })                        
                     // ->addColumn('action', function ($data) {
 
@@ -115,17 +128,25 @@ class SmallOrderController extends Controller
 
     public function assignOrderNumberSmall() {
 
-        $order_number = OrderNumber::where('order_number', 'LIKE', 'S%')->where('is_used', 0)->pluck('order_number')->first();
-        if($order_number == null) {
-            $order_no   = Order::where('order_number', 'LIKE', 'S%')->orderByDESC('id')->skip(0)->take(1)->pluck("order_number")->first();
-            if($order_no != null) {
-                $order_number = str_replace("Bb","",$order_no);
-                $order_number = "SD".(($order_number) + 1);
-            } else {
-                $order_number = "SD2300";
+        $checkTillClose = TillOpen::where('date',date('Y-m-d'))->where('user_id', auth()->user()->id)->where('type', 'till_close')->first();
+        if($checkTillClose == null) {
+            $order_number = OrderNumber::where('order_number', 'LIKE', 'S%')->where('is_used', 0)->pluck('order_number')->first();
+            if($order_number == null) {
+                $order_no   = Order::where('order_number', 'LIKE', 'S%')->orderByDESC('id')->skip(0)->take(1)->pluck("order_number")->first();
+                if($order_no != null) {
+                    $order_number = str_replace("Bb","",$order_no);
+                    $order_number = "SD".(($order_number) + 1);
+                } else {
+                    $order_number = "SD2300";
+                }
             }
+            return view('admin.small_orders.assign_order_small', compact("order_number"));
+
+        } else {
+            return redirect("admin/orderSmallDC")->with("error", "You cannot create an order because till is close");
+
         }
-        return view('admin.small_orders.assign_order_small', compact("order_number"));
+
     }
 
     public function create()
@@ -479,7 +500,13 @@ class SmallOrderController extends Controller
 
     public function edit($id)
     {
-        //
+        $bookingTime    = now();
+        $collectionTime = $this->calculateCollectionTime($bookingTime);
+        $categories     = Category::skip(0)->take(2)->get();
+        $order          = Order::find($id);
+        $order_number   = $order->order_number;
+        $setting        = Setting::find(1);
+        return view('admin.small_orders.create', compact("collectionTime", "order_number", "categories", "setting"));
     }
 
     public function update(Request $request, $id)
@@ -508,5 +535,23 @@ class SmallOrderController extends Controller
         }
 
         return response()->json($amount);
+    }
+
+
+    public function sendEmails() {
+        $orders = Order::where('status','!=', 'assigned')
+                        ->where('is_email', 1)
+                        ->where('email_sent',0)
+                        ->where('user_id', auth()->user()->id)
+                        ->orderByDESC('id')->get();
+        return view('admin.emails', compact('orders'));
+    }
+
+    public function markDone($orderId) {
+        $order = Order::find($orderId);
+        $order->email_sent = 1;
+        $order->save();
+
+        return redirect()->back()->with("success", "Email send successfully");
     }
 }

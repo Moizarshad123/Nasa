@@ -57,7 +57,7 @@
                         <select name="category_id" class="form-control" id="category_id">
                             <option value="">Select Category</option>
                             @foreach ($categories as $item)
-                                <option value="{{$item->id}}">{{$item->title}}</option>
+                                <option value="{{$item->id}}" {{ old('category_id') == $item->id ? 'selected' : '' }}>{{$item->title}}</option>
                             @endforeach
     
                         </select>
@@ -181,8 +181,8 @@
                     <div class="mb-3">
                         <label for="order_nature">Order Nature</label>
                         <select name="order_nature" id="order_nature" class="form-control">
-                            <option value="normal">Normal</option>
-                            <option value="urgent">Urgent</option>
+                            <option value="normal" {{ old('order_nature') == "normal" ? 'selected' : '' }}>Normal</option>
+                            <option value="urgent" {{ old('order_nature') == "urgent" ? 'selected' : '' }}>Urgent</option>
                         </select>
                     </div>
                 </div>
@@ -211,7 +211,7 @@
                 <div class="col-md-4">
                     <div class="mb-3" id="showEmails">
                         <label for="email_list">Emails</label>
-                        <textarea type="text"  class="form-control" name="emails" id="emails" ></textarea>
+                        <textarea type="text"  class="form-control" name="emails" id="emails" >{{ old('emails') }}</textarea>
                     </div>
                 </div>
             </div>
@@ -222,9 +222,9 @@
                         <label for="email_list">Expose/Media/Redorder<span style="color:red">*</span></label>
                         <select name="order_type" id="order_type" class="form-control">
                             <option value="">SELECT</option>
-                            <option value="expose">Expose</option>
-                            <option value="reorder">Reorder</option>
-                            <option value="media">Media</option>
+                            <option value="expose" {{ old('order_type') == "expose" ? 'selected' : '' }}>Expose</option>
+                            <option value="reorder" {{ old('order_type') == "reorder" ? 'selected' : '' }}>Reorder</option>
+                            <option value="media" {{ old('order_type') == "media" ? 'selected' : '' }}>Media</option>
                         </select>
                         <small class="error-message" style="color: red; display: none;"></small>
 
@@ -773,25 +773,53 @@
             calValues();
         });
 
-        $(document).on('keyup', '#discount_amount', function (e) {
-            let disount_amt = $(this).val();
-            let grand_total = $('#grand_total').val();
-            if(disount_amt <= grand_total) {
+        // old function 
+        // $(document).on('keyup', '#discount_amount', function (e) {
+        //     let disount_amt = $(this).val();
+        //     let grand_total = $('#grand_total').val();
+        //     if(disount_amt <= grand_total) {
 
-                console.log("yes");
-                let total       = parseFloat(grand_total) - parseFloat(disount_amt);
+        //         console.log("yes");
+        //         let total       = parseFloat(grand_total) - parseFloat(disount_amt);
         
-                $('#net_amount').val(total);
-                $('#outstanding_amount').val(total);
-            } else {
+        //         $('#net_amount').val(total);
+        //         $('#outstanding_amount').val(total);
+        //     } else {
+        //         Swal.fire({
+        //             icon: "error",
+        //             title: "Error",
+        //             text: "Discounted amount is not greater than total!",
+        //         });
+        //         $('#discount_amount').val(0);
+        //     }
+
+        //     calValues();
+        // });
+
+        $(document).on('keyup', '#discount_amount', function (e) {
+            let discount_amt = $(this).val();
+            if (discount_amt === "") {
+                $('#discount_amount').val(0)
+                discount_amt = 0;
+            }
+            console.log(discount_amt);
+            
+            let grand_total = $('#grand_total').val();
+            if (parseFloat(discount_amt) > parseFloat(grand_total)) {
+
                 Swal.fire({
                     icon: "error",
                     title: "Error",
                     text: "Discounted amount is not greater than total!",
                 });
-                $('#discount_amount').val(0);
+                $('#discount_amount').val(0); 
+            } else {
+                let total = parseFloat(grand_total) - parseFloat(discount_amt);
+                console.log(grand_total, discount_amt);
+        
+                $('#net_amount').val(total);
+                $('#outstanding_amount').val(total);
             }
-
             calValues();
         });
 

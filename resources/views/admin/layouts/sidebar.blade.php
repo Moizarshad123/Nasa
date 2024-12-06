@@ -50,11 +50,11 @@
                         <a href="{{ route('admin.closeTill') }}" >Till Close</a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.cashTill') }}" id="tillCashIn">Cash In</a>
+                        <a href="{{ route('admin.cashTill') }}" id="tillCashIn">Cash In + Out</a>
                     </li>
-                    <li>
+                    {{-- <li>
                         <a href="{{ route('admin.cashTill') }}" id="tillCashOut">Cash Out</a>
-                    </li>
+                    </li> --}}
                     <li>
                         @if($checkTillOpen != null && $checkTillClose != null)
                             <a target="blank" href="{{ route('admin.tillCloseReceipt') }}">Print Till Close Receipt</a>
@@ -66,7 +66,9 @@
                     
                 </ul>
             </li>
-            @if($checkTillOpen != null && $checkTillClose == null)
+            {{-- @if($checkTillOpen != null && $checkTillClose == null) --}}
+            @if($checkTillOpen != null)
+
                 <li>
                     <a class="{{ request()->IS('admin/orderBigDC') ? 'active' : '' }}"  href="{{ route('admin.orderBigDC.index') }}">
                         <span class="nav-link-icon">
@@ -84,6 +86,7 @@
                         <span>Order Small DC</span>
                     </a>
                 </li>
+            @endif
 
                 <li>
                     <a class="{{ request()->IS('admin/editing-department') ? 'active' : '' }}"  href="{{ route('admin.editingDepartment') }}">
@@ -111,7 +114,15 @@
                         <span>All Orders</span>
                     </a>
                 </li>
-            @endif
+
+                <li>
+                    <a class="{{ request()->IS('admin/send-emails') ? 'active' : '' }}"  href="{{ route('admin.sendEmails') }}">
+                        <span class="nav-link-icon">
+                            <i class="bi bi-receipt"></i>
+                        </span>
+                        <span>Send Emails</span>
+                    </a>
+                </li>
            
             @if(auth()->user()->role_id == 1)
 
